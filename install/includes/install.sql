@@ -419,5 +419,5 @@ CREATE TABLE `tbl_dashboard_panels` (
 
 -- *** DATA:`tbl_dashboard_panels` ***
 INSERT INTO `tbl_dashboard_panels` (`id`, `label`, `type`, `config`, `placement`, `sort_order`) VALUES (1, 'Sytem overview', 'symphony_overview', 'N;', 'secondary', 1);
-INSERT INTO `tbl_dashboard_panels` (`id`, `label`, `type`, `config`, `placement`, `sort_order`) VALUES (2, 'Sym8 news', 'rss_reader', 'a:3:{s:3:"url";s:39:"https://sym8.io/public-api/releases.rss";s:4:"show";s:6:"full-3";s:5:"cache";s:4:"3600";}', 'secondary', 2);
+INSERT INTO `tbl_dashboard_panels` (`id`, `label`, `type`, `config`, `placement`, `sort_order`) VALUES (2, 'Sym8 news', 'rss_reader', 'a:3:{s:3:"url";s:39:"https://sym8.io/public-api/releases.rss";s:4:"show";s:6:"full-3";s:5:"cache";s:3:"720";}', 'secondary', 2);
 
