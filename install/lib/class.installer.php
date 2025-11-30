@@ -691,8 +691,95 @@ class Installer extends Administration
                     'Could not create ‘workspace/utilities’ directory. Check permission on the root folder.',
                     $start);
             }
+
+            // Copy default template files to the workspace directory
+            // by tiloschroeder
+
+            // Create app directory first for Pico CSS file
+            if (!is_dir(DOCROOT . '/app')) {
+                if (!General::realiseDirectory(DOCROOT . '/app', $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘app’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
+            if (!is_dir(DOCROOT . '/app/css')) {
+                if (!General::realiseDirectory(DOCROOT . '/app/css', $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘app/css’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
+
+            $installables = array(
+                                INSTALL . '/installable/app_pico.pink.min.css' => DOCROOT . '/app/css/pico.pink.min.css',
+                                INSTALL . '/installable/app_sym8.css'          => DOCROOT . '/app/css/sym8.css',
+                                INSTALL . '/installable/pages_home.xsl'        => PAGES . '/home.xsl',
+                                INSTALL . '/installable/pages_403.xsl'         => PAGES . '/403.xsl',
+                                INSTALL . '/installable/pages_404.xsl'         => PAGES . '/404.xsl',
+                                INSTALL . '/installable/utilities_master.xsl'  => UTILITIES . '/master.xsl',
+                                INSTALL . '/installable/utilities_40x.xsl'     => UTILITIES . '/40x.xsl'
+                            );
+
+            foreach ($installables as $source => $target) {
+                if (!file_exists($target)) {
+                    Symphony::Log()->pushToLog(sprintf(
+                        'Copy "%s" to "%s".',
+                        basename($source),
+                        $target
+                    ), E_NOTICE, true, true);
+
+                    if (!General::copyFile($source, $target)) {
+                        self::__abort(sprintf(
+                            'Could not write file "%s". Check permission on %s',
+                            basename($target),
+                            $target
+                        ), $start);
+                    }
+                }
+            }
+
         } else {
             Symphony::Log()->pushToLog('An existing ‘workspace’ directory was found at this location. Symphony will use this workspace.', E_NOTICE, true, true);
+
+            // I ran into this issue: even if a workspace directory exists,
+            // check whether all required subdirectories really exist.
+            // by tiloschroeder
+            if (!is_dir(DATASOURCES)) {
+                Symphony::Log()->pushToLog('WRITING: Creating ‘data-sources’ folder (/workspace/data-sources)', E_NOTICE, true, true);
+                if (!General::realiseDirectory(DATASOURCES, $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘workspace/data-sources’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
+
+            if (!is_dir(EVENTS)) {
+                Symphony::Log()->pushToLog('WRITING: Creating ‘events’ folder (/workspace/events)', E_NOTICE, true, true);
+                if (!General::realiseDirectory(EVENTS, $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘workspace/events’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
+
+            if (!is_dir(PAGES)) {
+                Symphony::Log()->pushToLog('WRITING: Creating ‘pages’ folder (/workspace/pages)', E_NOTICE, true, true);
+                if (!General::realiseDirectory(PAGES, $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘workspace/pages’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
+
+            if (!is_dir(UTILITIES)) {
+                Symphony::Log()->pushToLog('WRITING: Creating ‘utilities’ folder (/workspace/utilities)', E_NOTICE, true, true);
+                if (!General::realiseDirectory(UTILITIES, $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘workspace/utilities’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
 
             // MySQL: Importing workspace data
             Symphony::Log()->pushToLog('MYSQL: Importing Workspace Data...', E_NOTICE, true, true);
