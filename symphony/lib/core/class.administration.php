@@ -227,7 +227,7 @@ class Administration extends Symphony
         try {
             // The updater contains a version higher than the current Symphony version.
             if ($this->isUpgradeAvailable()) {
-                $message = __('An update has been found in your installation to upgrade Symphony to %s.', array($this->getMigrationVersion())) . ' <a href="' . URL . '/install/">' . __('View update.') . '</a>';
+                $message = __('An update has been found in your installation to upgrade Symphony to %s.', array($this->getMigrationVersion())) . ' <a href="' . SYMPHONY_URL . '/system/update/">' . __('View update.') . '</a>';
 
                 // The updater contains a version lower than the current Symphony version.
                 // The updater is the same version as the current Symphony install.
