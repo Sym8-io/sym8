@@ -138,4 +138,37 @@ $dictionary = array(
     'Disable upscaling of images beyond the original size' =>
     'Отключить масштабирование изображения за пределы первоначального размера',
 
+    'The cache for images is disabled. For better performance, enable it in the %s.' =>
+    'Кэш для изображений отключен. Для повышения производительности включите его в %s.',
+
+    'JIT preferences' =>
+    'настройках JIT',
+
+    'The cache for images is disabled. For better performance, ask your developer to enable it.' =>
+    'Кэш для изображений отключен. Для повышения производительности попросите разработчика включить его.',
+
+    'Enable cache for images (recommend)' =>
+    'Включить кэш для изображений (рекомендуется)',
+
+    'When disabled, images are regenerated each time they are called up (slower, but helpful for debugging or development).' =>
+    'Когда кэш отключен, изображения перегенерируются при каждом вызове (это замедляет работу, но полезно для отладки или разработки).',
+
+    'Image quality ' =>
+    'Качество изображения',
+
+    '%s is a required field.' =>
+    '%s — обязательное поле.',
+
+    'Quality' =>
+    'Качество',
+
+    'Value must be a number.' =>
+    'Значение должно быть числом.',
+
+    'Value must be less than or equal to %s.' =>
+    'Значение должно быть меньше или равно %s.',
+
+    'Value must be greater than or equal to %s.' =>
+    'Значение должно быть больше или равно %s.',
+
 );

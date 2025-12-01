@@ -33,7 +33,7 @@ Class datasourcejit_image_manipulation_recipes extends Datasource
         if (file_exists(WORKSPACE . '/jit-image-manipulation/recipes.php')) include(WORKSPACE . '/jit-image-manipulation/recipes.php');
         // Add recipes array as XML
         if (is_array($recipes) && !empty($recipes)) {
-            foreach($recipes as $position => $recipe) {
+            foreach ($recipes as $position => $recipe) {
                 $recipe_xml = new XMLElement('recipe', null, $recipe);
                 $result->appendChild($recipe_xml);
             }

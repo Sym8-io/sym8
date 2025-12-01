@@ -15,6 +15,10 @@
         </author>
     </authors>
     <releases>
+        <release version="2.4.2" date="2025-11-28" min="2.3" max="2.x.x">
+            - Added image type `bmp`
+            - Update the readme
+        </release>
         <release version="2.4.1" date="2025-05-12" min="2.3" max="2.x.x">
             - Change charset to `utf8mb4`
         </release>

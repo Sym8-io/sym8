@@ -15,7 +15,7 @@ $validators = array(
 $upload = array(
     // Suggested order: Most common file types first
     // Webp images are now availabel as image format
-    'image' => '/\.(?:bmp|gif|jpe?g|png|webp)$/i',
+    'image' => '/\.(?:bmp|gif|jpe?g|png|webp|avif)$/i',
     'document' => '/\.(?:docx?|pdf|rtf|txt)$/i',
     'video' => '/\.(?:mp4|m4v|webm|ogv)$/i',
     'archive' => '/\.(?:zip)$/i',

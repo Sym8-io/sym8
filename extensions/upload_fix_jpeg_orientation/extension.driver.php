@@ -71,7 +71,12 @@ class extension_upload_fix_jpeg_orientation extends Extension
 
             if ( $img !== false ) {
                 imagejpeg($img, $tmp_file, 100);
-                imagedestroy($img);
+
+                if (class_exists('GdImage') && $img instanceof GdImage) {
+                    unset($img);
+                } elseif (is_resource($img)) {
+                    imagedestroy($img);
+                }
             }
         }
     }
