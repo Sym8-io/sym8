@@ -1,120 +1,118 @@
 <?php
 
-	$about = array(
-		'name' => 'Русский',
-		'author' => array(
-			'name' => 'Александр Бирюков',
-			'email' => 'info@alexbirukov.ru',
-			'website' => 'http://alexbirukov.ru'
-		),
-		'release-date' => '2013-01-21'
-	);
+$about = array(
+    'name' => 'Русский',
+    'author' => array(
+        'name' => 'Александр Бирюков',
+        'email' => 'info@alexbirukov.ru',
+        'website' => 'http://alexbirukov.ru'
+    ),
+    'release-date' => '2013-01-21'
+);
 
-	/**
-	 * Dashboard
-	 */
-	$dictionary = array(
+/**
+ * Dashboard
+ */
+$dictionary = array(
+    'Dashboard' =>
+    'Панель сайта',
 
-		'Dashboard' => 
-		'Панель сайта',
+    'Untitled Panel' =>
+    'Блок без имени',
 
-		'Untitled Panel' => 
-		'Блок без имени',
+    'drag to re-order' =>
+    'перетащите для сортировки',
 
-		'drag to re-order' => 
-		'перетащите для сортировки',
+    'Data Source to Table' =>
+    'Данные в виде таблицы',
 
-		'Data Source to Table' => 
-		'Данные в виде таблицы',
+    'RSS Reader' =>
+    'RSS Ридер',
 
-		'RSS Reader' => 
-		'RSS Ридер',
+    'HTML Block' =>
+    'HTML блок',
 
-		'HTML Block' => 
-		'HTML блок',
+    'Markdown Text' =>
+    'Текст с разметкой',
 
-		'Markdown Text' => 
-		'Текст с разметкой',
+    'Symphony Overview' =>
+    'Основные параметры',
 
-		'Symphony Overview' => 
-		'Основные параметры',
+    'Feed URL' =>
+    'URL потока',
 
-		'Feed URL' => 
-		'URL потока',
+    'Items to display' =>
+    'Записи для показа',
 
-		'Items to display' => 
-		'Записи для показа',
+    'Full view' =>
+    'Подробный вид',
 
-		'Full view' => 
-		'Подробный вид',
+    'All items' =>
+    'Все записи',
 
-		'All items' => 
-		'Все записи',
+    'items' =>
+    'записи',
 
-		'items' => 
-		'записи',
+    'List view' =>
+    'В виде списка',
 
-		'List view' => 
-		'В виде списка',
+    'Cache (minutes)' =>
+    'Кэшировать (мин.)',
 
-		'Cache (minutes)' => 
-		'Кэшировать (мин.)',
+    'Page URL' =>
+    'URL страницы',
 
-		'Page URL' => 
-		'URL страницы',
+    'Markdown Text Block' =>
+    'Текстовый блок с разметкой',
 
-		'Markdown Text Block' => 
-		'Текстовый блок с разметкой',
+    'Text' =>
+    'Текст',
 
-		'Text' => 
-		'Текст',
+    'The Data Source with the name <code>%s</code> could not be found.' =>
+    'Источиник данных с именем <code>%s</code> не найден.',
 
-		'The Data Source with the name <code>%s</code> could not be found.' => 
-		'Источиник данных с именем <code>%s</code> не найден.',
+    'Error: could not retrieve panel XML feed.' =>
+    'Ошибка: не удаётся получить XML данные.',
 
-		'Error: could not retrieve panel XML feed.' => 
-		'Ошибка: не удаётся получить XML данные.',
+    'Error: could not retrieve panel HTML.' =>
+    'Ошибка: не удаётся получить HTML данные.',
 
-		'Error: could not retrieve panel HTML.' => 
-		'Ошибка: не удаётся получить HTML данные.',
+    'Website Name' =>
+    'Имя сайта',
 
-		'Website Name' => 
-		'Имя сайта',
+    'Latest is %s' =>
+    'Последние из %s',
 
-		'Latest is %s' => 
-		'Последние из %s',
+    'Configuration' =>
+    'Настройка',
 
-		'Configuration' => 
-		'Настройка',
+    'Statistics' =>
+    'Сататистика',
 
-		'Statistics' => 
-		'Сататистика',
+    'Nice to meet you' =>
+    'Приятно вас видеть',
 
-		'Nice to meet you' => 
-		'Приятно вас видеть',
+    'Good morning' =>
+    'Доброе утро',
 
-		'Good morning' => 
-		'Доброе утро',
+    'Welcome back' =>
+    'С возвращением',
 
-		'Welcome back' => 
-		'С возвращением',
+    'Good evening' =>
+    'Добрый вечер',
 
-		'Good evening' => 
-		'Добрый вечер',
+    'New Panel' =>
+    'Новая панель',
 
-		'New Panel' => 
-		'Новая панель',
+    'Enable Editing' =>
+    'Вкл. редактирование',
 
-		'Enable Editing' => 
-		'Вкл. редактирование',
+    'Disable Editing' =>
+    'Выкл. редактирование',
 
-		'Disable Editing' => 
-		'Выкл. редактирование',
+    'Save Panel' =>
+    'Сохранить панель',
 
-		'Save Panel' => 
-		'Сохранить панель',
-
-		'Delete Panel' => 
-		'Удалить панель',
-
-	);
+    'Delete Panel' =>
+    'Удалить панель',
+);

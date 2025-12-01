@@ -1,35 +1,34 @@
 #nav .dashboard ul {
-    display: none;
+  display: none;
 }
-
 
 #dashboard .panel .badge,
 #dashboard .secondary .panel .badge {
-    display: inline-block;
-    padding: 0.25em 1em 0.2em;
-    font-weight: 700;
-    text-align: center;
-    border-radius: 3rem;
-    margin-bottom: 0.35em;
-    width: max-content;
+  display: inline-block;
+  padding: 0.25em 1em 0.2em;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 3rem;
+  margin-bottom: 0.35em;
+  width: max-content;
 }
 
 .badge-success {
-    color: #fff;
-    background-color: #28a745;
+  color: #fff;
+  background-color: #28a745;
 }
 
 .badge-warning {
-    color: #fff;
-    background-color: #ffc107;
+  color: #fff;
+  background-color: #ffc107;
 }
 
 .badge-danger {
-    color: #fff;
-    background-color: #dc3545;
+  color: #fff;
+  background-color: #dc3545;
 }
 
 .badge-info {
-    color: #fff;
-    background-color: #007bff;
+  color: #fff;
+  background-color: #007bff;
 }

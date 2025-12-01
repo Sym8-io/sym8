@@ -20,6 +20,17 @@
         <item type="image" url="http://symphonyextensions.com/nickdunn/dashboard/media/dashboard.png">Example dashboard</item>
     </media>
     <releases>
+        <release version="2.2.3" date="2025-11-21" min="2.5.0" max="2.x.x">
+            * Added PHP 8.5 lifecycle data
+        </release>
+        <release version="2.2.2" date="2025-10-24" min="2.5.0" max="2.x.x">
+            * Update the license url
+            * No functional changes
+        </release>
+        <release version="2.2.1" date="2025-10-23" min="2.5.0" max="2.x.x">
+            * Code formatting update
+            * Fix for outdated PHP major versions
+        </release>
         <release version="2.2.0" date="2025-04-09" min="2.5.0" max="2.x.x">
             * Sym8 version is compared daily via API endpoint
             * PHP versions created as a data record in accordance with the supported versions

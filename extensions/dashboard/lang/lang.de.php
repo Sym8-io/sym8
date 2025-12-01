@@ -1,108 +1,106 @@
 <?php
 
-	$about = array(
-		'name' => 'Deutsch',
-		'author' => array(
-			'name' => 'Nils Hörrmann',
-			'email' => 'nils.hoerrmann@hbk-bs.de',
-			'website' => ''
-		),
-		'release-date' => '2011-02-15'
-	);
+$about = array(
+    'name' => 'Deutsch',
+    'author' => array(
+        'name' => 'Nils Hörrmann',
+        'email' => 'nils.hoerrmann@hbk-bs.de',
+        'website' => ''
+    ),
+    'release-date' => '2011-02-15'
+);
 
-	/**
-	 * Dashboard
-	 */
-	$dictionary = array(
+/**
+ * Dashboard
+ */
+$dictionary = array(
+    'All items' =>
+    'Alle Einträge',
 
-		'All items' => 
-		'Alle Einträge',
+    'Cache (minutes)' =>
+    'Cache (Minuten)',
 
-		'Cache (minutes)' => 
-		'Cache (Minuten)',
+    'Cancel' =>
+    'Abbrechen',
 
-		'Cancel' => 
-		'Abbrechen',
+    'Configuration' =>
+    'Konfiguration',
 
-		'Configuration' => 
-		'Konfiguration',
+    'Dashboard' =>
+    'Übersicht',
 
-		'Dashboard' => 
-		'Übersicht',
+    'Data Source to Table' =>
+    'Datenquelle als Tabelle',
 
-		'Data Source to Table' => 
-		'Datenquellentabelle',
+    'Delete Panel' =>
+    'Abschnitt löschen',
 
-		'Delete Panel' => 
-		'Abschnitt löschen',
+    'Feed URL' =>
+    'Feed-URL',
 
-		'Feed URL' => 
-		'Feed-URL',
+    'Full view' =>
+    'Gesamtansicht',
 
-		'Full view' => 
-		'Gesamtansicht',
+    'Good evening' =>
+    'Guten Abend',
 
-		'Good evening' => 
-		'Guten Abend',
+    'Good morning' =>
+    'Guten Morgen',
 
-		'Good morning' => 
-		'Guten Morgen',
+    'HTML Block' =>
+    'HTML-Abschnitt',
 
-		'HTML Block' => 
-		'HTML-Abschnitt',
+    'Items to display' =>
+    'Zahl der Einträge',
 
-		'Items to display' => 
-		'Zahl der Einträge',
+    'List view' =>
+    'Listenansicht',
 
-		'List view' => 
-		'Listenansicht',
+    'Markdown Text' =>
+    'Markdown-Text',
 
-		'Markdown Text' => 
-		'Markdown-Text',
+    'Markdown Text Block' =>
+    'Markdown-Abschnitt',
 
-		'Markdown Text Block' => 
-		'Markdown-Abschnitt',
+    'Nice to meet you' =>
+    'Schön dich zu sehen',
 
-		'Nice to meet you' => 
-		'Schön Sie kennenzulernen',
+    'Page URL' =>
+    'Seiten-URL',
 
-		'Page URL' => 
-		'Seiten-URL',
+    'RSS Reader' =>
+    'RSS-Reader',
 
-		'RSS Reader' => 
-		'RSS-Reader',
+    'Save Panel' =>
+    'Abschnitt speichern',
 
-		'Save Panel' => 
-		'Abschnitt speichern',
+    'Statistics' =>
+    'Statistiken',
 
-		'Statistics' => 
-		'Statistiken',
+    'Symphony Overview' =>
+    'Symphony-Übersicht',
 
-		'Symphony Overview' => 
-		'Symphony-Übersicht',
+    'Text' =>
+    'Text',
 
-		'Text' => 
-		'Text',
+    'The Data Source with the name <code>%s</code> could not be found.' =>
+    'Die Datenquelle mit dem Namen <code>%s</code> konnte nicht gefunden werden.',
 
-		'The Data Source with the name <code>%s</code> could not be found.' => 
-		'Die Datenquelle mit dem Namen <code>%s</code> konnte nicht gefunden werden.',
+    'Untitled Panel' =>
+    'Abschnitt ohne Titel',
 
-		'Untitled Panel' => 
-		'Abschnitt ohne Titel',
+    'Welcome back' =>
+    'Willkommen zurück',
 
-		'Welcome back' => 
-		'Willkommen zurück',
+    'drag to re-order' =>
+    'zum Sortieren schieben',
 
-		'drag to re-order' => 
-		'zum Sortieren schieben',
+    'items' =>
+    'Einträge',
 
-		'items' => 
-		'Einträge',
+    'Enable Editing' =>
+    'Bearbeiten aktivieren',
 
-		'Enable Editing' => 
-		'Anpassen',
-
-		'Disable Editing' => 
-		'Speichern',
-
-	);
+    'Disable Editing' =>
+    'Bearbeiten deaktivieren',
+);

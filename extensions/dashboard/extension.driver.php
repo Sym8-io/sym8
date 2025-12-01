@@ -142,9 +142,7 @@ Class Extension_Dashboard extends Extension
             ));
 
             return Symphony::Database()->getInsertID();
-        }
-
-        else {
+        } else {
             Symphony::Database()->query(sprintf(
                 "UPDATE tbl_dashboard_panels SET
                 label = '%s',
@@ -158,14 +156,11 @@ Class Extension_Dashboard extends Extension
             ));
 
             return (int)$panel['id'];
-
         }
-
     }
 
     public static function buildPanelHTML($p)
     {
-
         $panel = new XMLElement('div', NULL, array('class' => 'panel', 'id' => 'id-' . $p['id']));
         $panel->appendChild(new XMLElement('a', __('Edit'), array('class' => 'panel-edit', 'href' => URL . '/symphony/extension/dashboard/panel_config/?id=' . $p['id'] . '&type=' . $p['type'])));
         $panel->appendChild(new XMLElement('h3', (($p['label'] == '') ? __('Untitled Panel') : $p['label']) . ('<span>'.__('drag to re-order').'</span>')));
@@ -198,7 +193,6 @@ Class Extension_Dashboard extends Extension
 
     public static function buildPanelOptions($type, $panel_id, $errors)
     {
-
         $panel_config = self::getPanel($panel_id);
         $form = null;
 
@@ -226,12 +220,10 @@ Class Extension_Dashboard extends Extension
         ));
 
         return $form;
-
     }
 
     public static function validatePanelOptions($type, $panel_id)
     {
-
         $panel_config = self::getPanel($panel_id);
         $panel_config['config'] = $panel_config['config'] ?? null;
         $panel_config['label'] = $panel_config['label'] ?? null;
@@ -257,7 +249,6 @@ Class Extension_Dashboard extends Extension
         ));
 
         return $errors;
-
     }
 
     public function dashboard_panel_types($context)
@@ -265,13 +256,12 @@ Class Extension_Dashboard extends Extension
         $context['types']['datasource_to_table'] = __('Data Source to Table');
         $context['types']['rss_reader'] = __('RSS Reader');
         $context['types']['html_block'] = __('HTML Block');
-		$context['types']['markdown_text'] = __('Markdown Text');
+        $context['types']['markdown_text'] = __('Markdown Text');
         $context['types']['symphony_overview'] = __('Symphony Overview');
     }
 
     public function dashboard_panel_options($context)
     {
-
         $config = $context['existing_config'];
         $config['type'] = $config['type'] ?? null;
         $config['url'] = $config['url'] ?? null;
@@ -281,12 +271,10 @@ Class Extension_Dashboard extends Extension
         $config['formatter'] = $config['formatter'] ?? null;
         $config['text'] = $config['text'] ?? null;
 
-        switch($context['type']) {
-
+        switch ($context['type']) {
             case 'datasource_to_table':
-
                 $datasources = array();
-                foreach(DatasourceManager::listAll() as $ds) {
+                foreach (DatasourceManager::listAll() as $ds) {
                     $datasources[] = array(
                         $ds['handle'],
                         ($config['datasource'] == $ds['handle']),
@@ -301,11 +289,8 @@ Class Extension_Dashboard extends Extension
                 $fieldset->appendChild($label);
 
                 $context['form'] = $fieldset;
-
-            break;
-
+                break;
             case 'rss_reader':
-
                 $fieldset = new XMLElement('fieldset', NULL, array('class' => 'settings'));
                 $fieldset->appendChild(new XMLElement('legend', __('RSS Reader')));
 
@@ -340,11 +325,8 @@ Class Extension_Dashboard extends Extension
                 $fieldset->appendChild($label);
 
                 $context['form'] = $fieldset;
-
-            break;
-
+                break;
             case 'html_block':
-
                 $fieldset = new XMLElement('fieldset', NULL, array('class' => 'settings'));
                 $fieldset->appendChild(new XMLElement('legend', __('HTML Block')));
 
@@ -355,16 +337,13 @@ Class Extension_Dashboard extends Extension
                 $fieldset->appendChild($label);
 
                 $context['form'] = $fieldset;
-
-            break;
-
+                break;
             case 'markdown_text':
-
                 $fieldset = new XMLElement('fieldset', NULL, array('class' => 'settings'));
                 $fieldset->appendChild(new XMLElement('legend', __('Markdown Text Block')));
 
                 $formatters = array();
-                foreach(TextformatterManager::listAll() as $tf) {
+                foreach (TextformatterManager::listAll() as $tf) {
                     $formatters[] = array(
                         $tf['handle'],
                         ($config['formatter'] == $tf['handle']),
@@ -382,25 +361,20 @@ Class Extension_Dashboard extends Extension
                 $fieldset->appendChild($label);
 
                 $context['form'] = $fieldset;
-
-            break;
+                break;
         }
-
     }
 
     public function render_panel($context)
     {
-
         require_once(TOOLKIT . '/class.gateway.php');
         require_once(CORE . '/class.cacheable.php');
 
         $config = $context['config'];
         $gatewayTimeout = 2;
 
-        switch($context['type']) {
-
+        switch ($context['type']) {
             case 'datasource_to_table':
-
                 $ds = DatasourceManager::create($config['datasource'], NULL, false);
                 if (!$ds) {
                     $context['panel']->appendChild(new XMLElement('div', __(
@@ -413,7 +387,7 @@ Class Extension_Dashboard extends Extension
                 $param_pool = array();
                 $xml = $ds->grab($param_pool);
 
-                if(!$xml) return;
+                if (!$xml) return;
                 $xml = $xml->generate();
 
                 require_once(TOOLKIT . '/class.xsltprocess.php');
@@ -424,33 +398,26 @@ Class Extension_Dashboard extends Extension
                 );
 
                 $context['panel']->appendChild(new XMLElement('div', $data));
-
-            break;
-
+                break;
             case 'rss_reader':
-
                 $cache_id = md5('rss_reader_cache' . $config['url']);
                 $cache = new Cacheable(Administration::instance()->Database());
                 $data = $cache->check($cache_id);
 
                 if (!$data) {
-
                     $gateway = new Gateway;
                     $gateway->init();
                     $gateway->setopt('URL', $config['url']);
                     $gateway->setopt('TIMEOUT', $gatewayTimeout);
                     $new_data = $gateway->exec();
                     $writeToCache = true;
-
                     if (!empty($new_data)) {
                         // Write to cache
                         $cache->write($cache_id, $new_data, $config['cache']);
-
                         $xml = $new_data;
                     } elseif ($data && isset($data['data'])) {
                         $xml = $data['data'];
                     }
-
                 } else {
                     $xml = $data['data'];
                 }
@@ -466,17 +433,13 @@ Class Extension_Dashboard extends Extension
                 );
 
                 $context['panel']->appendChild(new XMLElement('div', $data));
-
-            break;
-
+                break;
             case 'html_block':
-
                 $cache_id = md5('html_block_' . $config['url']);
                 $cache = new Cacheable(Administration::instance()->Database());
                 $data = $cache->check($cache_id);
 
                 if (!$data) {
-
                     $gateway = new Gateway;
                     $gateway->init();
                     $gateway->setopt('URL', $config['url']);
@@ -487,12 +450,10 @@ Class Extension_Dashboard extends Extension
                     if (!empty($new_data)) {
                         // Write to cache
                         $cache->write($cache_id, $new_data, $config['cache']);
-
                         $html = $new_data;
                     } elseif ($data && isset($data['data'])) {
                         $html = $data['data'];
                     }
-
                 } else {
                     $html = $data['data'];
                 }
@@ -500,11 +461,8 @@ Class Extension_Dashboard extends Extension
                 if (!$html) $html = '<p class="invalid">' . __('Error: could not retrieve panel HTML.') . '</p>';
 
                 $context['panel']->appendChild(new XMLElement('div', $html));
-
-            break;
-
+                break;
             case 'symphony_overview':
-
                 $phpVersions = array(
                     '8.0' => array(
                         'active' => '2022-11-26',
@@ -525,6 +483,10 @@ Class Extension_Dashboard extends Extension
                     '8.4' => array(
                         'active' => '2026-12-31',
                         'security' => '2028-12-31'
+                    ),
+                    '8.5' => array(
+                        'active' => '2027-12-31',
+                        'security' => '2029-12-31'
                     )
                 );
                 $currentPhpVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
@@ -558,14 +520,11 @@ Class Extension_Dashboard extends Extension
                     $gateway->setopt('TIMEOUT', $gatewayTimeout);
                     $new_data = $gateway->exec();
                     $writeToCache = true;
-
                     if (!empty($new_data)) {
                         // Write to cache
                         $cache->write($cacheId, $new_data, $cacheTime);
-
                         $apiVersion = json_decode($new_data);
                     }
-
                 } else {
                     $apiVersion = json_decode($data['data']);
                 }
@@ -585,19 +544,18 @@ Class Extension_Dashboard extends Extension
                 ));
 
                 $dl->appendChild(new XMLElement('dt', __('PHP-Version')));
-                if ( PHP_MAJOR_VERSION < 8 || !isset($phpVersions[$currentPhpVersion]) ) {
+                if (
+                    $today > $phpVersions[$currentPhpVersion]['security']
+                    || PHP_MAJOR_VERSION < 8
+                    || !isset($phpVersions[$currentPhpVersion])
+                ) {
                     $dl->appendChild(new XMLElement(
                         'dd',
                         '<span class="badge badge-danger">' . PHP_VERSION . '</span><br />Your PHP version is outdated. For security reasons, please go to your server management and set a newer PHP version for this host.'
                     ));
-                }
-                if ( $today > $phpVersions[$currentPhpVersion]['security'] ) {
-                    $dl->appendChild(new XMLElement(
-                        'dd',
-                        '<span class="badge badge-danger">' . PHP_VERSION . '</span><br />Your PHP version is outdated. For security reasons, please go to your server management and set a newer PHP version for this host.'
-                    ));
-                }
-                else if ( $today > $phpVersions[$currentPhpVersion]['active'] ) {
+                } elseif (
+                    $today > $phpVersions[$currentPhpVersion]['active']
+                ) {
                     $dl->appendChild(new XMLElement(
                         'dd',
                         '<span class="badge badge-warning">' . PHP_VERSION . '</span><br />Please go to your server management and check if a newer PHP version is available.'
@@ -613,7 +571,7 @@ Class Extension_Dashboard extends Extension
                 $container->appendChild($dl);
 
                 $entries = 0;
-                foreach(SectionManager::fetch() as $section) {
+                foreach (SectionManager::fetch() as $section) {
                     $entries += EntryManager::fetchCount($section->get('id'));
                 }
 
@@ -639,11 +597,8 @@ Class Extension_Dashboard extends Extension
                 }
 
                 $context['panel']->appendChild($container);
-
-            break;
-
+                break;
             case 'markdown_text':
-
                 $config['text'] = $config['text'] ?? null;
                 $config['formatter'] = $config['formatter'] ?? null;
 
@@ -651,11 +606,7 @@ Class Extension_Dashboard extends Extension
                 $html = $formatter->run($config['text']);
 
                 $context['panel']->appendChild(new XMLElement('div', $html));
-
-            break;
-
+                break;
         }
-
     }
-
 }
