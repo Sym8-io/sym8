@@ -13,6 +13,9 @@
         </author>
     </authors>
     <releases>
+        <release version="1.0.4" date="2025-11-27" min="2.7.0">
+            - added conditional `imagedestroy()`/`unset()` logic for PHP 7/8 interoperability
+        </release>
         <release version="1.0.3" date="2025-05-15" min="2.7.0">
             - added vertically flip
         </release>

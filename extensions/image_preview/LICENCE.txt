@@ -6,6 +6,7 @@ follows:
 
 Copyright 2012-2017 Deux Huit Huit
 Copyright 2011 Solutions Nitriques
+Copyright 2025 Sym8
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

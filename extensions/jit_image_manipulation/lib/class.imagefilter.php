@@ -19,27 +19,24 @@ Abstract Class ImageFilter
 
     protected static function __fill(&$res, &$dst, $colour = null)
     {
-
-        if(!$colour || strlen(trim($colour)) == 0){
+        if (!$colour || strlen(trim($colour)) == 0) {
             $tr_idx = imagecolortransparent($res);
-            if($tr_idx >= 0){
+            if ($tr_idx >= 0) {
                 $tr_colour = imagecolorsforindex($res, $tr_idx);
                 $tr_idx = imagecolorallocate($dst, $tr_colour['red'], $tr_colour['green'], $tr_colour['blue']);
                 imagefill($dst, 0, 0, $tr_idx);
                 imagecolortransparent($dst, $tr_idx);
-            }
-            else {
+            } else {
                 imagealphablending($dst, false);
                 $colour = imagecolorallocatealpha($dst, 0, 0, 0, 127);
                 imagefill($dst, 0, 0, $colour);
                 imagesavealpha($dst, true);
             }
 
-            if(function_exists('imageantialias')){
+            if (function_exists('imageantialias')) {
                 imageantialias($dst, true);
             }
-        }
-        else {
+        } else {
             $colour = self::expandColourString($colour);
 
             $col_a = array(
@@ -57,7 +54,7 @@ Abstract Class ImageFilter
         $w = imagesx($src);
         $h = imagesy($src);
 
-        if($resize) $dst = imagecreatetruecolor($w, $h);
+        if ($resize) $dst = imagecreatetruecolor($w, $h);
         imagecopy($dst, $src, 0, 0, 0, 0, $w, $h);
 
         return $dst;

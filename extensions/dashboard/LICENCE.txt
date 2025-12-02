@@ -4,6 +4,7 @@ is, unless otherwise specified, released under the MIT licence as follows:
 ----- begin license block -----
 
 Copyright 2010-2019 Symphony CMS Community (https://github.com/symphonists/tracker/graphs/contributors)
+Copyright 2025 Tilo Schröder (https://github.com/tiloschroeder/dashboard/blob/master/LICENCE.txt)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

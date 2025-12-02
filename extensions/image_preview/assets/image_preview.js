@@ -90,7 +90,7 @@
     };
 
     function looksLikeImage(url) {
-        return /\.(jpe?g|png|gif|webp|avif|svg)(\?.*)?$/i.test(url);
+        return /\.(bmp|jpe?g|png|gif|webp|avif|svg)(\?.*)?$/i.test(url);
     }
 
     var addImage = function(t, defaults) {

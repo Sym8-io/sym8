@@ -16,12 +16,10 @@ class Installer extends Administration
         self::$Profiler = Profiler::instance();
         self::$Profiler->sample('Engine Initialisation');
 
-        #if (get_magic_quotes_gpc()) {
         General::cleanArray($_SERVER);
         General::cleanArray($_COOKIE);
         General::cleanArray($_GET);
         General::cleanArray($_POST);
-        #}
 
         // Include the default Config for installation.
         include(INSTALL . '/includes/config_default.php');
@@ -291,13 +289,19 @@ class Installer extends Administration
         $errors = array();
         $fields = self::$POST['fields'];
 
+        // Clean values once at the top of each function
+        $fields['database']['host'] = trim($fields['database']['host']);
+        $fields['database']['user'] = trim($fields['database']['user']);
+        $fields['database']['port'] = trim($fields['database']['port']);
+        $fields['database']['db']   = trim($fields['database']['db']);
+
         // Testing the database connection
         try {
             Symphony::Database()->connect(
                 $fields['database']['host'],
                 $fields['database']['user'],
                 $fields['database']['password'],
-                $fields['database']['port'],
+                (int) $fields['database']['port'],
                 $fields['database']['db']
             );
         } catch (DatabaseException $e) {
@@ -358,8 +362,18 @@ class Installer extends Administration
             );
         }
 
+        // Database name not entered
+        // An empty database name is a convenience option but not standard.
+        // by tiloschroeder
+        if (trim($fields['database']['db']) === '') {
+            $errors['database-no-dbname']  = array(
+                'msg' => 'No database name entered.',
+                'details' => __('You must enter a valid name for the database.')
+            );
+        }
+
         // Website name not entered
-        if (trim($fields['general']['sitename']) == '') {
+        if (trim($fields['general']['sitename']) === '') {
             $errors['general-no-sitename']  = array(
                 'msg' => 'No sitename entered.',
                 'details' => __('You must enter a Site name. This will be shown at the top of your backend.')
@@ -367,7 +381,7 @@ class Installer extends Administration
         }
 
         // Website email address not entered
-        if (trim($fields['email_sendmail']['from_address']) == '') {
+        if (trim($fields['email_sendmail']['from_address']) === '') {
             $errors['mail-no-from-address']  = array(
                 'msg' => 'No email address entered.',
                 'details' => __('You must enter an email address. This is required for notification messages.')
@@ -375,7 +389,7 @@ class Installer extends Administration
         }
 
         // Username Not Entered
-        if (trim($fields['user']['username']) == '') {
+        if (trim($fields['user']['username']) === '') {
             $errors['user-no-username']  = array(
                 'msg' => 'No username entered.',
                 'details' => __('You must enter a Username. This will be your Symphony login information.')
@@ -383,7 +397,7 @@ class Installer extends Administration
         }
 
         // Password Not Entered
-        if (trim($fields['user']['password']) == '') {
+        if (trim($fields['user']['password']) === '') {
             $errors['user-no-password']  = array(
                 'msg' => 'No password entered.',
                 'details' => __('You must enter a Password. This will be your Symphony login information.')
@@ -399,7 +413,7 @@ class Installer extends Administration
         }
 
         // No Name entered
-        if (trim($fields['user']['firstname']) == '' || trim($fields['user']['lastname']) == '') {
+        if (trim($fields['user']['firstname']) === '' || trim($fields['user']['lastname']) === '') {
             $errors['user-no-name']  = array(
                 'msg' => 'Did not enter First and Last names.',
                 'details' =>  __('You must enter your name.')
@@ -423,7 +437,7 @@ class Installer extends Administration
         }
 
         // Admin path not entered
-        if (trim($fields['symphony']['admin-path']) == '') {
+        if (trim($fields['symphony']['admin-path']) === '') {
             $errors['no-symphony-path']  = array(
                 'msg' => 'No Symphony path entered.',
                 'details' => __('You must enter a path for accessing Symphony, or leave the default. This will be used to access Symphony\'s backend.')
@@ -493,6 +507,12 @@ class Installer extends Administration
         $fields = self::$POST['fields'];
         $start = time();
 
+        // Clean values once at the top of each function
+        $fields['database']['host'] = trim($fields['database']['host']);
+        $fields['database']['user'] = trim($fields['database']['user']);
+        $fields['database']['port'] = trim($fields['database']['port']);
+        $fields['database']['db']   = trim($fields['database']['db']);
+
         Symphony::Log()->writeToLog(PHP_EOL . '============================================', true);
         Symphony::Log()->writeToLog('INSTALLATION PROCESS STARTED (' . DateTimeObj::get('c') . ')', true);
         Symphony::Log()->writeToLog('============================================', true);
@@ -505,7 +525,7 @@ class Installer extends Administration
                 $fields['database']['host'],
                 $fields['database']['user'],
                 $fields['database']['password'],
-                $fields['database']['port'],
+                (int) $fields['database']['port'],
                 $fields['database']['db']
             );
         } catch (DatabaseException $e) {
@@ -691,8 +711,95 @@ class Installer extends Administration
                     'Could not create ‘workspace/utilities’ directory. Check permission on the root folder.',
                     $start);
             }
+
+            // Copy default template files to the workspace directory
+            // by tiloschroeder
+
+            // Create app directory first for Pico CSS file
+            if (!is_dir(DOCROOT . '/app')) {
+                if (!General::realiseDirectory(DOCROOT . '/app', $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘app’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
+            if (!is_dir(DOCROOT . '/app/css')) {
+                if (!General::realiseDirectory(DOCROOT . '/app/css', $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘app/css’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
+
+            $installables = array(
+                                INSTALL . '/installable/app_pico.pink.min.css' => DOCROOT . '/app/css/pico.pink.min.css',
+                                INSTALL . '/installable/app_sym8.css'          => DOCROOT . '/app/css/sym8.css',
+                                INSTALL . '/installable/pages_home.xsl'        => PAGES . '/home.xsl',
+                                INSTALL . '/installable/pages_403.xsl'         => PAGES . '/403.xsl',
+                                INSTALL . '/installable/pages_404.xsl'         => PAGES . '/404.xsl',
+                                INSTALL . '/installable/utilities_master.xsl'  => UTILITIES . '/master.xsl',
+                                INSTALL . '/installable/utilities_40x.xsl'     => UTILITIES . '/40x.xsl'
+                            );
+
+            foreach ($installables as $source => $target) {
+                if (!file_exists($target)) {
+                    Symphony::Log()->pushToLog(sprintf(
+                        'Copy "%s" to "%s".',
+                        basename($source),
+                        $target
+                    ), E_NOTICE, true, true);
+
+                    if (!General::copyFile($source, $target)) {
+                        self::__abort(sprintf(
+                            'Could not write file "%s". Check permission on %s',
+                            basename($target),
+                            $target
+                        ), $start);
+                    }
+                }
+            }
+
         } else {
             Symphony::Log()->pushToLog('An existing ‘workspace’ directory was found at this location. Symphony will use this workspace.', E_NOTICE, true, true);
+
+            // I ran into this issue: even if a workspace directory exists,
+            // check whether all required subdirectories really exist.
+            // by tiloschroeder
+            if (!is_dir(DATASOURCES)) {
+                Symphony::Log()->pushToLog('WRITING: Creating ‘data-sources’ folder (/workspace/data-sources)', E_NOTICE, true, true);
+                if (!General::realiseDirectory(DATASOURCES, $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘workspace/data-sources’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
+
+            if (!is_dir(EVENTS)) {
+                Symphony::Log()->pushToLog('WRITING: Creating ‘events’ folder (/workspace/events)', E_NOTICE, true, true);
+                if (!General::realiseDirectory(EVENTS, $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘workspace/events’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
+
+            if (!is_dir(PAGES)) {
+                Symphony::Log()->pushToLog('WRITING: Creating ‘pages’ folder (/workspace/pages)', E_NOTICE, true, true);
+                if (!General::realiseDirectory(PAGES, $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘workspace/pages’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
+
+            if (!is_dir(UTILITIES)) {
+                Symphony::Log()->pushToLog('WRITING: Creating ‘utilities’ folder (/workspace/utilities)', E_NOTICE, true, true);
+                if (!General::realiseDirectory(UTILITIES, $conf['directory']['write_mode'])) {
+                    self::__abort(
+                        'Could not create ‘workspace/utilities’ directory. Check permission on the root folder.',
+                        $start);
+                }
+            }
 
             // MySQL: Importing workspace data
             Symphony::Log()->pushToLog('MYSQL: Importing Workspace Data...', E_NOTICE, true, true);

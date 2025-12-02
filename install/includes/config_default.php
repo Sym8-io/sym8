@@ -105,7 +105,7 @@ $settings = array(
     ###### EMAIL_SENDMAIL ######
     'email_sendmail' => array(
         'from_name' => '',
-        'from_address' => 'notifications@example.net',
+        'from_address' => '',
     ),
     ########
 

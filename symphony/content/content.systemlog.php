@@ -15,13 +15,14 @@ class contentSystemLog extends AdministrationPage
     public function build(array $context = array())
     {
         parent::build();
-        $this->Context->appendChild(new XMLElement('h2', __('Symphony Log')));
+        // $this->Context->appendChild(new XMLElement('h2', __('Symphony Log')));
     }
 
     public function view()
     {
         $this->setPageType('form');
         $this->setTitle(__('Symphony Log'));
+        $this->appendSubheading(__('Symphony Log'));
 
         $logPath = ACTIVITY_LOG;
         $logContents = 'Log file not found.';

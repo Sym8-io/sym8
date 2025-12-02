@@ -1281,6 +1281,7 @@ class General
                     'jpeg'  => 'image/jpeg',
                     'png'   => 'image/png',
                     'webp'  => 'image/webp',
+                    'avif'  => 'image/avif',
                     'mp3'   => 'audio/mpeg',
                     'mp4a'  => 'audio/mp4',
                     'aac'   => 'audio/x-aac',

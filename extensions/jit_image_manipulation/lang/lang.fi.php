@@ -138,4 +138,37 @@ $dictionary = array(
     'An error occurred while saving the JIT recipes.' =>
     'Reseptejä tallennettaessa tapahtui virhe.',
 
+    'The cache for images is disabled. For better performance, enable it in the %s.' =>
+    'Kuvien välimuisti on poistettu käytöstä. Paremman suorituskyvyn saavuttamiseksi ota se käyttöön %s.',
+
+    'JIT preferences' =>
+    'JIT asetuksissa',
+
+    'The cache for images is disabled. For better performance, ask your developer to enable it.' =>
+    'Kuvien välimuisti on poistettu käytöstä. Paremman suorituskyvyn saavuttamiseksi pyydä kehittäjää ottamaan se käyttöön.',
+
+    'Enable cache for images (recommend)' =>
+    'Ota kuvien välimuisti käyttöön (suositus)',
+
+    'When disabled, images are regenerated each time they are called up (slower, but helpful for debugging or development).' =>
+    'Kun välimuisti on poistettu käytöstä, kuvat luodaan uudelleen joka kerta, kun ne avataan (hitaampaa, mutta hyödyllistä virheiden etsimisessä tai kehitystyössä).',
+
+    'Image quality ' =>
+    'Kuvan laatu',
+
+    '%s is a required field.' =>
+    '%s on pakollinen kenttä.',
+
+    'Quality' =>
+    'Latuu',
+
+    'Value must be a number.' =>
+    'Arvon on oltava luku.',
+
+    'Value must be less than or equal to %s.' =>
+    'Arvon on oltava pienempi tai yhtä suuri kuin %s.',
+
+    'Value must be greater than or equal to %s.' =>
+    'Arvon on oltava suurempi tai yhtä suuri kuin %s.',
+
 );

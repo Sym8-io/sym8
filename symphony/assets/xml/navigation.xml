@@ -32,6 +32,7 @@
             <item link="/system/extensions/info/" name="Extension Information" visible="no" />
 
             <item link="/system/log/" limit="developer" name="Symphony Log" />
+            <item link="/system/update/" limit="developer" name="Symphony Update" />
         </children>
     </group>
 </navigation>

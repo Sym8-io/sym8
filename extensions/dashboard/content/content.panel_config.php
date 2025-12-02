@@ -3,167 +3,166 @@
 require_once(TOOLKIT . '/class.administrationpage.php');
 require_once(EXTENSIONS . '/dashboard/extension.driver.php');
 
-class contentExtensionDashboardPanel_Config extends AjaxPage {
-	protected $panelErrors = array();
-	protected $panelConfig = array();
-	protected $panelLabel = null;
-	protected $panelPlacement = null;
-	protected $panelType = null;
-	protected $response = null;
-	
-	public function __construct() {
-		parent::__construct();
+class contentExtensionDashboardPanel_Config extends AjaxPage
+{
+    protected $panelErrors = array();
+    protected $panelConfig = array();
+    protected $panelLabel = null;
+    protected $panelPlacement = null;
+    protected $panelType = null;
+    protected $response = null;
 
-		// AjaxPage uses 'result' instead of 'response':
-		$this->_Result = new XMLElement('response');
-		$this->_Result->setIncludeHeader(true);
+    public function __construct()
+    {
+        parent::__construct();
 
-		$this->panelId = (
-			isset($_REQUEST['id'])
-				? $_REQUEST['id']
-				: null
-		);
-		$this->panelConfig = (
-			isset($_REQUEST['config'])
-				? $_REQUEST['config']
-				: null
-		);
-		$this->panelLabel = (
-			isset($_REQUEST['label'])
-				? $_REQUEST['label']
-				: null
-		);
-		$this->panelPlacement = (
-			isset($_REQUEST['placement'])
-				? $_REQUEST['placement']
-				: null
-		);
-		$this->panelType = (
-			isset($_REQUEST['type'])
-				? $_REQUEST['type']
-				: null
-		);
-	}
+        // AjaxPage uses 'result' instead of 'response':
+        $this->_Result = new XMLElement('response');
+        $this->_Result->setIncludeHeader(true);
 
-	public function view() {
-		if (isset($_POST['action']['submit'])) {
-			$this->panelErrors = Extension_Dashboard::validatePanelOptions(
-				$this->panelType, $this->panelId
-			);
+        $this->panelId = (
+            isset($_REQUEST['id'])
+            ? $_REQUEST['id']
+            : null
+        );
+        $this->panelConfig = (
+            isset($_REQUEST['config'])
+            ? $_REQUEST['config']
+            : null
+        );
+        $this->panelLabel = (
+            isset($_REQUEST['label'])
+            ? $_REQUEST['label']
+            : null
+        );
+        $this->panelPlacement = (
+            isset($_REQUEST['placement'])
+            ? $_REQUEST['placement']
+            : null
+        );
+        $this->panelType = (
+            isset($_REQUEST['type'])
+            ? $_REQUEST['type']
+            : null
+        );
+    }
 
-			if (empty($this->panelErrors)) {
-				$this->panelId = Extension_Dashboard::savePanel(
-					array(
-						'id'		=> $this->panelId,
-						'label'		=> $this->panelLabel,
-						'placement'	=> $this->panelPlacement,
-						'type'		=> $this->panelType
-					),
-					$this->panelConfig
-				);
-			}
-		}
+    public function view()
+    {
+        if (isset($_POST['action']['submit'])) {
+            $this->panelErrors = Extension_Dashboard::validatePanelOptions(
+                $this->panelType, $this->panelId
+            );
 
-		else if (isset($_POST['action']['delete'])) {
-			Extension_Dashboard::deletePanel($this->panelId);
+            if (empty($this->panelErrors)) {
+                $this->panelId = Extension_Dashboard::savePanel(
+                    array(
+                        'id'		=> $this->panelId,
+                        'label'		=> $this->panelLabel,
+                        'placement'	=> $this->panelPlacement,
+                        'type'		=> $this->panelType
+                    ),
+                    $this->panelConfig
+                );
+            }
+        } elseif (isset($_POST['action']['delete'])) {
+            Extension_Dashboard::deletePanel($this->panelId);
 
-			$this->_Result->setAttribute(
-				'id', $this->panelId
-			);
-			$this->_Result->setAttribute(
-				'placement', $this->panelPlacement
-			);
+            $this->_Result->setAttribute(
+                'id', $this->panelId
+            );
+            $this->_Result->setAttribute(
+                'placement', $this->panelPlacement
+            );
 
-			return;
-		}
+            return;
+        }
 
-		if (isset($this->panelId) && !empty($this->panelId)) {
-			$this->panelConfig = Extension_Dashboard::getPanel($this->panelId);
-			$this->panelLabel = $this->panelConfig['label'];
-			$this->panelPlacement = $this->panelConfig['placement'];
-		}
+        if (isset($this->panelId) && !empty($this->panelId)) {
+            $this->panelConfig = Extension_Dashboard::getPanel($this->panelId);
+            $this->panelLabel = $this->panelConfig['label'];
+            $this->panelPlacement = $this->panelConfig['placement'];
+        }
 
-		if (isset($_POST['action']['submit']) && empty($this->panelErrors)) {
-			$html = Extension_Dashboard::buildPanelHTML($this->panelConfig);
-			$class = $html->getAttribute('class');
-			$html->setAttribute('class', $class . ' new-panel');
+        if (isset($_POST['action']['submit']) && empty($this->panelErrors)) {
+            $html = Extension_Dashboard::buildPanelHTML($this->panelConfig);
+            $class = $html->getAttribute('class');
+            $html->setAttribute('class', $class . ' new-panel');
 
-			$this->_Result->setAttribute(
-				'id', $this->panelId
-			);
-			$this->_Result->setAttribute(
-				'placement', $this->panelPlacement
-			);
-			$this->_Result->setValue(
-				sprintf('<![CDATA[%s]]>', $html->generate())
-			);
-		}
+            $this->_Result->setAttribute(
+                'id', $this->panelId
+            );
+            $this->_Result->setAttribute(
+                'placement', $this->panelPlacement
+            );
+            $this->_Result->setValue(
+                sprintf('<![CDATA[%s]]>', $html->generate())
+            );
+        } else {
+            $this->addHeaderToPage('Content-Type', 'text/html');
 
-		else {
-			$this->addHeaderToPage('Content-Type', 'text/html');
+            $container = new XMLElement('form');
+            $container->setAttribute('id', 'save-panel');
+            $container->appendChild(new XMLElement('div', NULL, array('class' => 'top')));
 
-			$container = new XMLElement('form');
-			$container->setAttribute('id', 'save-panel');
-			$container->appendChild(new XMLElement('div', NULL, array('class' => 'top')));
+            $heading = new XMLElement('h3', __('Configuration') . ' <span>' . (isset($this->panelLabel) ? $this->panelLabel :__('Untitled Panel')) . '<span>');
+            $container->appendChild($heading);
 
-			$heading = new XMLElement('h3', __('Configuration') . ' <span>' . (isset($this->panelLabel) ? $this->panelLabel :__('Untitled Panel')) . '<span>');
-			$container->appendChild($heading);
+            $config_options = Extension_Dashboard::buildPanelOptions(
+                $this->panelType, $this->panelId, $this->panelErrors
+            );
 
-			$config_options = Extension_Dashboard::buildPanelOptions(
-				$this->panelType, $this->panelId, $this->panelErrors
-			);
+            $primary = new XMLElement('div', NULL, array('class' => 'panel-config'));
 
-			$primary = new XMLElement('div', NULL, array('class' => 'panel-config'));
+            $fieldset = new XMLElement('fieldset', NULL, array('class' => 'settings'));
+            $legend = new XMLElement('legend', __('General'));
+            $fieldset->appendChild($legend);
 
-			$fieldset = new XMLElement('fieldset', NULL, array('class' => 'settings'));
-			$legend = new XMLElement('legend', __('General'));
-			$fieldset->appendChild($legend);
-			
-			$group = new XMLElement('div', NULL, array('class' => 'group'));
-			
-			$group->appendChild(Widget::Label(__('Name'),
-				Widget::Input('label', $this->panelLabel)
-			));
-			$group->appendChild(Widget::Label(__('Placement'), 
-				Widget::Select('placement', array(
-					array(
-						'primary',
-						($this->panelPlacement == 'primary'),
-						__('Main content')
-					),
-					array(
-						'secondary',
-						($this->panelPlacement == 'secondary'),
-						__('Sidebar')
-					)
-				))
-			));
-			$fieldset->appendChild($group);
-			$primary->appendChild($fieldset);
+            $group = new XMLElement('div', NULL, array('class' => 'group'));
 
-			if ($config_options) $primary->appendChild($config_options);
+            $group->appendChild(Widget::Label(__('Name'),
+                Widget::Input('label', $this->panelLabel)
+            ));
+            $group->appendChild(Widget::Label(__('Placement'),
+                Widget::Select('placement', array(
+                    array(
+                        'primary',
+                        ($this->panelPlacement == 'primary'),
+                        __('Main content')
+                    ),
+                    array(
+                        'secondary',
+                        ($this->panelPlacement == 'secondary'),
+                        __('Sidebar')
+                    )
+                ))
+            ));
+            $fieldset->appendChild($group);
+            $primary->appendChild($fieldset);
 
-			$actions = new XMLElement('div', NULL, array('class' => 'actions'));
-			$actions->appendChild(Widget::Input('action[submit]', __('Save Panel'), 'submit', array('class' => 'button create')));
-			$actions->appendChild(Widget::Input('action[cancel]', __('Cancel'), 'submit'));
+            if ($config_options) $primary->appendChild($config_options);
 
-			if ($this->panelId) {
-				$actions->appendChild(new XMLElement('button', __('Delete Panel'), array(
-					'class' => 'delete',
-					'name' => 'action[delete]'
-				)));
-			}
+            $actions = new XMLElement('div', NULL, array('class' => 'actions'));
+            $actions->appendChild(Widget::Input('action[submit]', __('Save Panel'), 'submit', array('class' => 'button create')));
+            $actions->appendChild(Widget::Input('action[cancel]', __('Cancel'), 'submit'));
 
-			$primary->appendChild($actions);
+            if ($this->panelId) {
+                $actions->appendChild(new XMLElement('button', __('Delete Panel'), array(
+                    'class' => 'delete',
+                    'name' => 'action[delete]'
+                )));
+            }
 
-			$primary->appendChild(Widget::Input('id', $this->panelId, 'hidden'));
-			$primary->appendChild(Widget::Input('type', $this->panelType, 'hidden'));
+            $primary->appendChild($actions);
 
-			$container->appendChild($primary);
+            $primary->appendChild(Widget::Input('id', $this->panelId, 'hidden'));
+            $primary->appendChild(Widget::Input('type', $this->panelType, 'hidden'));
 
-			if (Symphony::isXSRFEnabled()) $container->prependChild(XSRF::formToken());
+            $container->appendChild($primary);
 
-			$this->_Result = $container;
-		}
-	}
+            if (Symphony::isXSRFEnabled()) $container->prependChild(XSRF::formToken());
+
+            $this->_Result = $container;
+        }
+    }
 }

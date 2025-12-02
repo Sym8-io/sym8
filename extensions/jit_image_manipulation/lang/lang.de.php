@@ -138,4 +138,37 @@ $dictionary = array(
     'Disable upscaling of images beyond the original size' =>
     'Das Aufblasen von Bilder über die Originalgröße hinaus verhindern',
 
+    'The cache for images is disabled. For better performance, enable it in the %s.' =>
+    'Der Cache für Bilder ist deaktiviert. Aktiviere ihn für eine bessere Leistung in den %s.',
+
+    'JIT preferences' =>
+    'JIT Einstellungen',
+
+    'The cache for images is disabled. For better performance, ask your developer to enable it.' =>
+    'Der Cache für Bilder ist deaktiviert. Frage deinen Entwickler, ihn für eine bessere Leistung zu aktivieren.',
+
+    'Enable cache for images (recommend)' =>
+    'Cache für Bilder aktivieren (empfohlen)',
+
+    'When disabled, images are regenerated each time they are called up (slower, but helpful for debugging or development).' =>
+    'Wenn deaktiviert, werden Bilder bei jedem Aufruf neu generiert (langsamer, aber hilfreich für die Fehlersuche oder Entwicklung).',
+
+    'Image quality ' =>
+    'Bild-Qualität',
+
+    '%s is a required field.' =>
+    '%s ist ein erforderliches Feld.',
+
+    'Quality' =>
+    'Qualität',
+
+    'Value must be a number.' =>
+    'Der Wert muss eine Zahl sein.',
+
+    'Value must be less than or equal to %s.' =>
+    'Der Wert muss kleiner oder gleich als %s sein.',
+
+    'Value must be greater than or equal to %s.' =>
+    'Der Wert muss grösser oder gleich als %s sein.',
+
 );
