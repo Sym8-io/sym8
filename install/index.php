@@ -27,7 +27,7 @@ $clean_path = rtrim($clean_path, '/\\');
 define('DOCROOT', $clean_path);
 
 // Required boot components
-define('VERSION', '2.84.0');
+define('VERSION', '2.84.1');
 define('INSTALL', DOCROOT . '/install');
 
 // Include autoloader:
