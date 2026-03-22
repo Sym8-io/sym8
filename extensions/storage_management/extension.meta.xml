@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension id="storage_management" status="released" xmlns="http://getsymphony.com/schemas/extension/1.0">
+  <name>Storage Management</name>
+  <description>
+    Offers a backend page to manage (clear) Symphony's caches mechanism
+  </description>
+  <repo type="github">https://github.com/sym8-io/storage_management</repo>
+  <types>
+    <type>Cache</type>
+    <type>Management</type>
+  </types>
+  <authors>
+    <author>
+      <name github="Sym8-io">Sym8</name>
+      <website>https://sym8.io/</website>
+    </author>
+  </authors>
+  <releases>
+    <release version="2.0.0" date="2026-03-19" min="2.3.1" max="2.x.x">
+      - Rename it to Storage Management
+      - Includes a disk usage graph
+    </release>
+    <release version="1.3.4" date="2017-07-25" min="2.3.1" max="2.x.x">
+      - Fix Symphony 2.7.0 compatibility
+    </release>
+    <release version="1.3.3" date="2016-08-11" min="2.3.1" max="2.6.x">
+      - Supported on PHP 7
+      - Fix database update to fit the parent method
+    </release>
+    <release version="1.3.2" date="2015-12-22" min="2.3.1" max="2.6.x">
+      - Fix cron includes for newer Symphonies
+    </release>
+    <release version="1.3.1" date="2015-05-21" min="2.3.1" max="2.6.x">
+      - Fix a bug related to the System nav group active status
+    </release>
+    <release version="1.3" date="2015-05-14" min="2.3.1" max="2.6.x">
+      - Added support for clearing Cacheable Datasource extension files (if installed)
+      - Added Slovak translation
+      - Marked as Symphony 2.6.x compatible
+      - Made the System nav group active when in the content page (Fixes issue #6)
+    </release>
+    <release version="1.2" date="2014-10-16" min="2.3.1" max="2.5.x">
+      - Added compatibility with Symphony 2.5
+    </release>
+    <release version="1.1.1" date="2014-08-26" min="2.3.1" max="2.4.0">
+      - Fixed issue #1, (wrong SQL count)
+    </release>
+    <release version="1.1" date="2014-03-25" min="2.3.1" max="2.5">
+      - Support for deleting cachelite files
+    </release>
+    <release version="1.0" date="2013-10-09" min="2.3.1" max="2.5">
+      - First release
+    </release>
+  </releases>
+</extension>
