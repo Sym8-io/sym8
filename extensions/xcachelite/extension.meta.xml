@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension id="xcachelite" status="released" xmlns="http://getsymphony.com/schemas/extension/1.0">
+  <name>xCacheLite</name>
+  <description>Lightweight frontend output caching with CacheLite.</description>
+  <repo type="github">https://github.com/sym8-io/xcachelite</repo>
+  <url type="issues">https://github.com/sym8-io/xcachelite/issues</url>
+  <types>
+    <type>Performance</type>
+    <type>Events</type>
+    <type>Cache</type>
+  </types>
+  <authors>
+    <author>
+      <name github="sym8-io">Sym8</name>
+      <website>https://sym8.io/</website>
+    </author>
+  </authors>
+  <releases>
+    <release version="3.0.0" date="2026-03-20" min="2.6.x" max="2.x.x">
+      - This release starts at version 3.0.0 to reflect significant changes in behavior and compatibility with Sym8.
+      - Change preference settings
+      - Change default cache headers
+      - Execution of the cron job only via a server cron job
+      - Use utf8mb4 as default charset for xCacheLite tables
+      - PHP 8 fixes
+      - Add latest Cache_Lite 1.8.3
+    </release>
+    <release version="2.2.0" date="2020-12-17" min="2.6.x" max="2.x.x">
+      - Add a BYPASS value in the header when an extension forces cache bypass
+    </release>
+    <release version="2.1.2" date="2018-08-29" min="2.6.x" max="2.x.x">
+      - Fix crash on deleting entries
+    </release>
+    <release version="2.1.1" date="2018-06-06" min="2.6.x" max="2.x.x">
+      - Fix 2.1.0 release notes
+    </release>
+    <release version="2.1.0" date="2018-04-20" min="2.6.x" max="2.x.x">
+      - Add a cron cache purge strategy
+    </release>
+    <release version="2.0.2" date="2017-04-18" min="2.6.x" max="2.x.x">
+      - Fix issue where the root page was always excluded from cache (#38)
+    </release>
+    <release version="2.0.1" date="2017-03-21" min="2.6.x" max="2.x.x">
+      - Fix issue on MySQL 5.5 (#37)
+    </release>
+    <release version="2.0.0" date="2017-01-20" min="2.6.x" max="2.x.x">
+      - Tidy up code style
+      - Refactored the database to make it more scalable (#36)
+      - Added the `CacheliteBypass` delegate (#30)
+      - Refactored the http headers (#27)
+    </release>
+    <release version="1.3.3" date="2016-12-12" min="2.3.x" max="2.x.x">
+      - Fixed an issue with Excluding pages
+    </release>
+    <release version="1.3.2" date="2016-05-17" min="2.3.x" max="2.x.x">
+      - Fixed an issue when the page xml is not valid
+    </release>
+    <release version="1.3.1" date="2016-03-06" min="2.3.x" max="2.x.x">
+      - Updated compatibility infos
+    </release>
+    <release version="1.3.0" date="2014-11-07" min="2.3.x" max="2.5.x">
+      - Fixed some issues (#9, #20, #22)
+      - Support for Symphony 2.5
+    </release>
+    <release version="1.2.0" date="2012-05-17" min="2.3.x">
+      - Compatible with Symphony 2.3
+      - Updated cachelite library to most recent version 1.7.12
+    </release>
+    <release version="1.1.3" date="2011-04-05" min="2.1.0">
+      - Don't cache is there is `$_POST` data
+    </release>
+    <release version="1.1.2" date="2011-04-05" min="2.1.0">
+      - Romanian translation from [vlad-ghita](https://github.com/vlad-ghita)
+      - Check context is set before clear
+    </release>
+    <release version="1.1.1" date="2011-04-05" min="2.1.0">
+      - Fix bug in excluded pages introduced by change in 1.1.0
+    </release>
+    <release version="1.1.0" date="2011-04-05" min="2.1.0">
+      - Fix bug in `?flush`
+      -  Made sure $_GET parameters are parsed consistently (i.e., regardless of order)
+    </release>
+    <release version="1.0.12" date="2011-04-05" min="2.1.0">
+      - Encode URLs
+    </release>
+    <release version="1.0.11" date="2011-04-05" min="2.1.0">
+      - Removed references to `Frontend`
+      - Cleaned up accessors
+    </release>
+    <release version="1.0.10" date="2011-04-05" min="2.1.0">
+      - Added support additional content types via the Content Type Mappings extension
+    </release>
+    <release version="1.0.9" date="2011-04-05" min="2.1.0">
+      - Added 304 header support
+    </release>
+    <release version="1.0.8" date="2011-04-05" min="2.1.0">
+      - Localisation and italian translation from [eKoeS](http://github.com/eKoeS)
+    </release>
+    <release version="1.0.7" date="2011-04-05" min="2.1.0">
+      - Minor cleanup to use newer accessors for Administration/Symphony instances
+    </release>
+    <release version="1.0.6" date="2011-04-05" min="2.1.0">
+      - Added functions for translation
+      - Fixed matching on page `?flush`
+      - Defaults for configuration
+    </release>
+    <release version="1.0.5" date="2011-04-05" min="2.1.0">
+      - Changed `intercept_page` delegate to `FrontendPageResolved`. Should now execute immediately after the Page is found, but before anything else happens.
+      - Because of the change above, headers are determined manually (as with normal pages). Supported types are HTML, XML and JSON.
+    </release>
+    <release version="1.0.4" date="2011-04-05" min="2.1.0">
+      - Added support for flushing the cache on a per-URL basis during `Event` execution
+    </release>
+    <release version="1.0.3" date="2011-04-05" min="2.1.0">
+      - Subscribe to the Delete delegate to flush pages when an entry is removed (delegate not included in Symphony 2.0.6) (Nick Dunn)
+      - Fixed bug introduced in 1.0.2 where caching was occurring for logged in users
+      - Fixed bug introduced in 1.0.2 where `?flush` was being included in the cache ID
+    </release>
+    <release version="1.0.2" date="2011-04-05" min="2.1.0">
+      - Added support for flushing the cache based on entry/section I
+    </release>
+  </releases>
+</extension>
