@@ -5,7 +5,7 @@
      */
 
     // Set appropriate error reporting:
-    error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
+    error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
     // Turn off old-style magic:
     ini_set('magic_quotes_runtime', false);
