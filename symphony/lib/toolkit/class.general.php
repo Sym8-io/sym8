@@ -337,7 +337,9 @@ class General
 
         // Remove emojis and symbol-type unicode characters early
         // by tiloschroeder
-        $string = preg_replace('/[\p{So}\p{Cn}\x{1F600}-\x{1F6FF}]+/u', '', $string);
+        // Allow only ASCII characters—the safest method, without checking PHP versions or using loops.
+        // Works reliably in PHP 7.1–8.5
+        $string = preg_replace('/[^a-zA-Z0-9\-]+/', '', $string);
 
         // Trim to word limit
         if ($max_length > 0) {
