@@ -215,7 +215,7 @@ define_safe('HTTPS', server_safe('HTTPS'));
  * @var string
  */
 $http_host = server_safe('HTTP_HOST');
-if (function_exists('idn_to_utf8')) {
+if (!empty($http_host) && function_exists('idn_to_utf8')) {
     // In PHP 7.2, `idn_to_utf8` should not be called with default parameters,
     // because the default for `variant` has been deprecated. However, the
     // alternative variant `INTL_IDNA_VARIANT_UTS46` was not introduced before
