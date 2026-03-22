@@ -1601,19 +1601,42 @@ class General
      *
      * @param integer $file_size
      *  the number to format.
+     * @param bool $trimTrailingZero
+     *  Returns an integer or a number with decimal place (default)
      * @return string
      *  the formatted number.
      */
-    public static function formatFilesize($file_size)
+    public static function formatFilesize($file_size, $trimTrailingZero = false)
     {
         $file_size = intval($file_size);
 
-        if ($file_size >= (1024 * 1024)) {
-            $file_size = number_format($file_size * (1 / (1024 * 1024)), 2) . ' MB';
+        if ($file_size >= (1024 * 1024 * 1024 * 1024)) {
+            $file_size = $file_size * (1 / (1024 * 1024 * 1024 * 1024));
+            $unit = 'TB';
+        } elseif ($file_size >= (1024 * 1024 * 1024)) {
+            $file_size = $file_size * (1 / (1024 * 1024 * 1024));
+            $unit = 'GB';
+        } elseif ($file_size >= (1024 * 1024)) {
+            $file_size = $file_size * (1 / (1024 * 1024));
+            $unit = 'MB';
         } elseif ($file_size >= 1024) {
-            $file_size = intval($file_size * (1/1024)) . ' KB';
+            $file_size = $file_size * (1/1024);
+            $unit = 'KB';
         } else {
-            $file_size = intval($file_size) . ' bytes';
+            $file_size = intval($file_size);
+            $unit = 'bytes';
+        }
+
+        $file_size = number_format($file_size, 1);
+        if ($trimTrailingZero === true) {
+            list($size, $decimalPlace) = explode('.', $file_size);
+            if ($decimalPlace === '0') {
+                $file_size = number_format($file_size) . ' ' . $unit;
+            } else {
+                $file_size = $file_size . ' ' . $unit;
+            }
+        } else {
+            $file_size = $file_size . ' ' . $unit;
         }
 
         return $file_size;
@@ -1631,16 +1654,18 @@ class General
     public static function convertHumanFileSizeToBytes($file_size)
     {
         $file_size = str_replace(
-            array(' MB', ' KB', ' bytes'),
-            array('M', 'K', 'B'),
+            array(' TB', ' GB', ' MB', ' KB', ' bytes'),
+            array('T', 'G', 'M', 'K', 'B'),
             trim($file_size)
         );
 
         $last = strtolower($file_size[strlen($file_size)-1]);
 
-        $file_size = (int) $file_size;
+        $file_size = (float) $file_size;
 
         switch ($last) {
+            case 't':
+                $file_size *= 1024;
             case 'g':
                 $file_size *= 1024;
             case 'm':
@@ -1649,7 +1674,7 @@ class General
                 $file_size *= 1024;
         }
 
-        return $file_size;
+        return (int) round($file_size);
     }
 
     /**
