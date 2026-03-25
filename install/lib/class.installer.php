@@ -841,6 +841,7 @@ class Installer extends Administration
             'importcsv',
             'health_check',
             'duplicate_section',
+            'xcachelite',
         );
         $disabled_extensions = array();
         foreach (new DirectoryIterator(EXTENSIONS) as $e) {

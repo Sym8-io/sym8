@@ -40,11 +40,11 @@ class UpdaterPage extends InstallerPage
 
     protected function viewUptodate()
     {
-        $h2 = new XMLElement('h2', __('Symphony is already up-to-date'));
-        $p = new XMLElement('p', __('It appears that Symphony has already been installed at this location and is up to date.'));
+        $div = new XMLElement('div', null, array('class' => 'message info-message'));
+        $div->appendChild(new XMLElement('h2', __('Symphony is already up-to-date'), array('class' => 'message-heading')));
+        $div->appendChild(new XMLElement('p', __('It appears that Symphony has already been installed at this location and is up to date.'), array('class' => 'message-details')));
 
-        $this->Form->appendChild($h2);
-        $this->Form->appendChild($p);
+        $this->Form->appendChild($div);
     }
 
     protected function viewReady()
