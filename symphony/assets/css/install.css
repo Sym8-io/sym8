@@ -1,0 +1,189 @@
+/*!
+ * Sym8
+ * https://sym8.io
+ * @author: tiloschroeder
+ * Copyright (c) 2026
+ * License MIT
+ */
+.container {
+  max-width: 840px;
+  padding-left: var(--pico-spacing);
+  padding-right: var(--pico-spacing);
+  padding-top: 5%;
+}
+
+h1 {
+  align-items: baseline;
+  display: flex;
+  flex-direction: row;
+  font-weight: 500;
+}
+
+h1 em {
+  font-size: medium;
+  margin-inline-start: var(--pico-spacing);
+}
+
+.form-heading {
+  font-weight: 400;
+}
+
+legend {
+  font-size: 1.825rem;
+}
+fieldset fieldset legend {
+  font-size: 1.4rem;
+}
+label {
+  cursor: pointer;
+}
+
+.fieldset-block {
+  border-bottom: 1px solid var(--pico-secondary-border);
+  margin-bottom: calc(3 * var(--pico-spacing));
+  padding: var(--pico-spacing) 0 calc(2 * var(--pico-spacing)) 0;
+}
+
+.fieldset-block:last-child {
+  border-bottom: 0;
+}
+
+/* Error Message Styling */
+.message {
+  padding: var(--pico-spacing);
+  margin: 0 0 var(--pico-spacing) 0;
+  border-radius: var(--pico-border-radius);
+  flex-basis: 100%;
+}
+
+:dir(ltr) .message {
+  border-left: calc(var(--pico-spacing) / 2) solid transparent;
+}
+
+:dir(rtl) .message {
+  border-right: calc(var(--pico-spacing) / 2) solid transparent;
+}
+
+.error-message {
+  background-color: #fdd;
+}
+
+:dir(ltr) .error-message {
+  border-left-color: #c00;
+}
+:dir(rtl) .error-message {
+  border-right-color: #c00;
+}
+
+.success-message {
+  background-color: #CBFCE1;
+  border-left-color: #007A50;
+}
+
+:dir(ltr) .success-message {
+  border-left-color: #007A50;
+}
+:dir(rtl) .success-message {
+  border-right-color: #007A50;
+}
+
+.info-message {
+  background-color: #E9F2FC;
+  border-left-color: #0172AD;
+}
+
+:dir(ltr) .info-message {
+  border-left-color: #0172AD;
+}
+:dir(rtl) .info-message {
+  border-right-color: #0172AD;
+}
+
+.message-heading {
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0 0 0.15rem 0;
+}
+
+.error-message .message-heading {
+  color: #900;
+}
+
+.success-message .message-heading {
+  color: #007a50;
+}
+
+.info-message .message-heading {
+  color: #0172ad;
+}
+
+.message-details {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.error-message .message-details,
+.success-message .message-details,
+.info-message .message-details {
+  color: #0f1114;
+}
+
+.success.actions,
+.language.actions {
+  border-top: 1px solid var(--pico-secondary-border);
+  display: flex;
+  justify-content: right;
+  margin-top: calc(3 * var(--pico-spacing));
+  padding-top: calc(3 * var(--pico-spacing));
+}
+
+:dir(rtl) .success.actions,
+:dir(rtl) .language.actions {
+  justify-content: left;
+}
+
+.success.actions input,
+.language.actions input {
+  display: flex;
+  max-width: 320px;
+}
+
+@media screen and (min-width: 576px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+
+  .two {
+    align-items: start;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .column {
+    flex: 1;
+  }
+
+  .two .column:first-child {
+    padding-inline-end: var(--pico-spacing);
+  }
+
+  .two .column:last-child {
+    padding-inline-start: var(--pico-spacing);
+  }
+}
+@media (min-width: 768px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
