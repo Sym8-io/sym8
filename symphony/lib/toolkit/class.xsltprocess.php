@@ -181,6 +181,9 @@ class XsltProcess
 
         }
 
+        libxml_clear_errors();
+        libxml_use_internal_errors(false);
+
         // Set parameters when defined
         if (!empty($parameters)) {
             General::flattenArray($parameters);
