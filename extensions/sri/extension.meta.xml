@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension id="sri" status="released" xmlns="http://getsymphony.com/schemas/extension/1.0">
+  <name>Subresource Integrity</name>
+  <description>
+    A simple way to compute base64 encoded sha (256, 384, 512) of assets files used in `link` and `script` tags.
+  </description>
+  <repo type="github">https://github.com/sym8-io/sri</repo>
+  <url type="issues">https://github.com/sym8-io/sri/issues</url>
+  <types>
+    <type>Subresource</type>
+    <type>Integrity</type>
+    <type>Security</type>
+  </types>
+  <authors>
+    <author>
+      <name github="Sym8-io">Sym8</name>
+      <website>https://sym8.io/</website>
+    </author>
+  </authors>
+  <dependencies>
+    <!-- None -->
+  </dependencies>
+  <releases>
+    <release version="1.2.1" date="2026-03-31" min="2.6.0" max="2.x.x">
+      - Update Readme
+    </release>
+    <release version="1.2.0" date="2026-03-31" min="2.6.0" max="2.x.x">
+      - Extension is now part of Sym8
+      - PSR-12 formatting
+    </release>
+    <release version="1.1.0" date="2019-04-23" min="2.6.0" max="2.x.x">
+      - Add support for running multiple host with the same database
+    </release>
+    <release version="1.0.2" date="2016-09-23" min="2.6.0" max="2.x.x">
+      - Prevent logs from filling up when file does not exists
+    </release>
+    <release version="1.0.1" date="2016-04-21" min="2.6.0" max="2.x.x">
+      - Use `hash_file()` instead of `hash(file_get_contents())`
+    </release>
+    <release version="1.0.0" date="2016-04-20" min="2.6.0" max="2.x.x">
+      - First release
+    </release>
+  </releases>
+</extension>

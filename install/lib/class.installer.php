@@ -842,6 +842,7 @@ class Installer extends Administration
             'health_check',
             'duplicate_section',
             'xcachelite',
+            'sri',
         );
         $disabled_extensions = array();
         foreach (new DirectoryIterator(EXTENSIONS) as $e) {
