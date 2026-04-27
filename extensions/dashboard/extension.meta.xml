@@ -20,6 +20,11 @@
         <item type="image" url="http://symphonyextensions.com/nickdunn/dashboard/media/dashboard.png">Example dashboard</item>
     </media>
     <releases>
+        <release version="2.2.4" date="2026-04-22" min="2.5.0" max="2.x.x">
+            * Fix for undefined variable $xml
+            * Added validation of XML
+            * Fix for very low color contrast for error messages
+        </release>
         <release version="2.2.3" date="2025-11-21" min="2.5.0" max="2.x.x">
             * Added PHP 8.5 lifecycle data
         </release>
