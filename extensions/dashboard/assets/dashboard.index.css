@@ -164,7 +164,7 @@
 }
 
 .panel p.invalid {
-  color: #999;
+  /*color: #999;*/
 }
 
 #dashboard.edit .panel h3 {
