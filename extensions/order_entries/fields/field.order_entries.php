@@ -321,7 +321,8 @@ Class fieldOrder_Entries extends Field
                     $input = Widget::Input(
                         'fields' . $fieldnamePrefix . '[' . $this->get('element_name') . '][' . $col . '][' . $key . ']' . $fieldnamePostfix,
                         (strlen($value) !== 0 || $col != 'value') ? (string)$value : (string)++$max_position["max"],
-                        ($isHidden  || $col != 'value') ? 'hidden' : 'text'
+                        ($isHidden || $col != 'value') ? 'hidden' : 'number',
+                        ($isHidden || $col != 'value') ? array() : array('step' => '1', 'min' => '1')
                     );
                     $inputs->appendChild($input);
                 }
@@ -335,7 +336,8 @@ Class fieldOrder_Entries extends Field
             $input = Widget::Input(
                 'fields' . $fieldnamePrefix . '[' . $this->get('element_name') . ']' . $fieldnamePostfix,
                 (strlen($value) !== 0 ? (string)$value : (string)++$max_position["max"]),
-                ($this->get('hide') == 'yes') ? 'hidden' : 'text'
+                ($this->get('hide') === 'yes') ? 'hidden' : 'number',
+                ($this->get('hide') === 'yes') ? array() : array('step' => '1', 'min' => '1')
             );
 
             if (!$isHidden) {
@@ -545,6 +547,31 @@ Class fieldOrder_Entries extends Field
     public function getParameterPoolValue(array $data, $entry_id = NULL)
     {
         return $this->getOrderValue($data);
+    }
+
+    public function getExampleFormMarkup()
+    {
+        $isHidden = $this->get('hide');
+
+        if ($isHidden === 'yes') {
+            return null;
+        } else {
+            $fieldId = $this->get('id');
+            $fieldName = $this->get('element_name');
+
+            $div = new XMLElement('div', null, array('class' => 'form-field'));
+            $label = Widget::Label($this->get('label'));
+            $label->setAttribute('for', $fieldName . '-' . $fieldId);
+
+            $input = Widget::input('fields[' . $fieldName . ']', null, 'number', array('step' => '1', 'min' => '1'));
+            $input->setAttribute('id', $fieldName . '-' . $fieldId);
+
+            $div->appendChild($label);
+            $div->appendChild($input);
+
+            return $div;
+        }
+
     }
 
 }
