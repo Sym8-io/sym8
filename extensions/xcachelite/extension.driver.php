@@ -936,12 +936,12 @@ class Extension_xcachelite extends Extension
 
     private function isErrorTemplate()
     {
-        $types = $this->_pagedata['type'];
-        if (empty($types) || !is_array($types)) {
-            return $this->_errorTemplate;
+        $types = $this->_pagedata['type'] ?? [];
+
+        if (!is_array($types) || empty($types)) {
+            return false;
         }
-        // Check for custom http status
-        $this->_errorTemplate = @in_array('404', $types) || @in_array('403', $types);
-        return $this->_errorTemplate;
+
+        return in_array('404', $types, true) || in_array('403', $types, true);
     }
 }
