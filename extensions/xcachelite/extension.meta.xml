@@ -16,6 +16,9 @@
     </author>
   </authors>
   <releases>
+    <release version="3.0.1" date="2026-04-01" min="2.6.x" max="2.x.x">
+        - Fix undefined property on pages without a page type
+    </release>
     <release version="3.0.0" date="2026-03-20" min="2.6.x" max="2.x.x">
       - This release starts at version 3.0.0 to reflect significant changes in behavior and compatibility with Sym8.
       - Change preference settings
