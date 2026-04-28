@@ -31,6 +31,8 @@ Sym8 ships with essential improvements and must-have extensions out of the box:
 
 - 🌐 Database connection changed from __utf8__ to __utf8mb4__ (multibyte)
 - ✅ __Dashboard__-Extension (required) — shows system environment (PHP version, available pages, data sources, sections) and includes a feed for upcoming Sym8 versions
+- 🖼 Generate images in any size on the fly—including `WebP` and `AVIF`
+- 💽 Lightweight and efficient cache & storage management
 - 🗜 __HTML5__-Extension: the trailing slash for self-closing elements is removed according to the recommendation of the W3C validator. Addional the HTML source code can be minified.
 - ✨ Minimalist frontend with [Pico CSS](https://picocss.com/) included for a clean start
 
