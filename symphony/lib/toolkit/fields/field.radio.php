@@ -37,19 +37,19 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
     {
         $values = preg_split('/,\s*/i', $this->get('static_options'), -1, PREG_SPLIT_NO_EMPTY);
 
-        if ( $this->get('dynamic_options') != '' ) {
+        if ($this->get('dynamic_options') != '') {
             $this->findAndAddDynamicOptions($values);
         }
 
         $values = array_map('trim', $values);
         // Fixes issues on PHP5.3. RE: #1773 ^BA
-        if ( empty($values) ) {
+        if (empty($values)) {
             return $values;
         }
 
         $states = array_combine($values, $values);
 
-        if ( $this->get('sort_options') === 'yes' ) {
+        if ($this->get('sort_options') === 'yes') {
             natsort($states);
         }
 
@@ -127,19 +127,19 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
 
     public function findAndAddDynamicOptions(&$values)
     {
-        if ( !is_array($values) ) {
+        if (!is_array($values)) {
             $values = array();
         }
 
         $results = false;
 
         // Fixes #1802
-        if ( !Symphony::Database()->tableExists('tbl_entries_data_' . $this->get('dynamic_options')) ) {
+        if (!Symphony::Database()->tableExists('tbl_entries_data_' . $this->get('dynamic_options'))) {
             return;
         }
 
         // Ensure that the table has a 'value' column
-        if ( (boolean)Symphony::Database()->fetchVar('Field', 0, sprintf(
+        if ((boolean)Symphony::Database()->fetchVar('Field', 0, sprintf(
             "SHOW COLUMNS FROM `tbl_entries_data_%d` LIKE '%s'",
             $this->get('dynamic_options'),
             'value'
@@ -153,7 +153,7 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
         }
 
         // In the case of a Upload field, use 'file' instead of 'value'
-        if ( ($results == false) && (boolean)Symphony::Database()->fetchVar('Field', 0, sprintf(
+        if (($results == false) && (boolean)Symphony::Database()->fetchVar('Field', 0, sprintf(
             "SHOW COLUMNS FROM `tbl_entries_data_%d` LIKE '%s'",
             $this->get('dynamic_options'),
             'file'
@@ -166,8 +166,8 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
             ));
         }
 
-        if ( $results ) {
-            if ( $this->get('sort_options') == 'no' ) {
+        if ($results) {
+            if ($this->get('sort_options') == 'no') {
                 natsort($results);
             }
 
@@ -181,15 +181,15 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
 
     public function findDefaults(array &$settings)
     {
-        if ( !isset($settings['display_inline']) ) {
+        if (!isset($settings['display_inline'])) {
             $settings['display_inline'] = 'no';
         }
 
-        if ( !isset($settings['show_association']) ) {
+        if (!isset($settings['show_association'])) {
             $settings['show_association'] = 'no';
         }
 
-        if ( !isset($settings['sort_options']) ) {
+        if (!isset($settings['sort_options'])) {
             $settings['sort_options'] = 'no';
         }
     }
@@ -218,7 +218,7 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
             array('', false, __('None'))
         );
 
-        if ( $this->get('dynamic_options') ) {
+        if ($this->get('dynamic_options')) {
             $options[] = array($this->get('dynamic_options'));
         }
 
@@ -228,7 +228,7 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
             ))
         );
 
-        if ( isset($errors['dynamic_options']) ) {
+        if (isset($errors['dynamic_options'])) {
             $div->appendChild(Widget::Error($label, $errors['dynamic_options']));
         } else {
             $div->appendChild($label);
@@ -259,11 +259,11 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
 
     public function checkFields(array &$errors, $checkForDuplicates = true)
     {
-        if ( !is_array($errors) ) {
+        if (!is_array($errors)) {
             $errors = array();
         }
 
-        if ( $this->get('static_options') == '' && ($this->get('dynamic_options') == '' || $this->get('dynamic_options') == 'none') ) {
+        if ($this->get('static_options') == '' && ($this->get('dynamic_options') == '' || $this->get('dynamic_options') == 'none')) {
             $errors['dynamic_options'] = __('At least one source must be specified, dynamic or static.');
         }
 
@@ -272,30 +272,30 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
 
     public function commit()
     {
-        if ( !Field::commit() ) {
+        if (!Field::commit()) {
             return false;
         }
 
         $id = $this->get('id');
 
-        if ( $id === false ) {
+        if ($id === false) {
             return false;
         }
 
         $fields = array();
 
-        if ( $this->get('static_options') != '' ) {
+        if ($this->get('static_options') != '') {
             $fields['static_options'] = $this->get('static_options');
         }
 
-        if ( $this->get('dynamic_options') != '' ) {
+        if ($this->get('dynamic_options') != '') {
             $fields['dynamic_options'] = $this->get('dynamic_options');
         }
 
         $fields['display_inline'] = ($this->get('display_inline') ? $this->get('display_inline') : 'no');
         $fields['sort_options'] = $this->get('sort_options') === 'yes' ? 'yes' : 'no';
 
-        if ( !FieldManager::saveSettings($id, $fields) ) {
+        if (!FieldManager::saveSettings($id, $fields)) {
             return false;
         }
 
@@ -304,7 +304,7 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
         // Dynamic Options isn't an array like in Select Box Link
         $field_id = $this->get('dynamic_options');
 
-        if ( !is_null($field_id) && is_numeric($field_id) ) {
+        if (!is_null($field_id) && is_numeric($field_id)) {
             SectionManager::createSectionAssociation(null, $id, (int)$field_id, $this->get('show_association') === 'yes' ? true : false, $this->get('association_ui'), $this->get('association_editor'));
         }
 
@@ -320,13 +320,13 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
         $states = $this->getToggleStates();
         $value = isset($data['value']) ? $data['value'] : null;
 
-        if ( !is_array($value) ) {
+        if (!is_array($value)) {
             $value = array($value);
         }
 
         $options = array();
 
-        foreach ( $states as $handle => $v ) {
+        foreach ($states as $handle => $v) {
             $options[] = array(General::sanitize($v), in_array($v, $value), General::sanitize($v));
         }
 
@@ -336,21 +336,21 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
         $legend = new XMLElement('legend', $this->get('label'));
         $fieldset->appendChild($legend);
 
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $legend->appendChild(new XMLElement('i', __('Optional')));
         }
 
         $i = 0;
         // Create the radio buttons
-        if ( $this->get('display_inline') === 'yes' ) {
+        if ($this->get('display_inline') === 'yes') {
             foreach ($options as $opt) {
                 $i++;
                 $radio = Widget::input($fieldname, $opt[0], 'radio'); // Value
                 $radio->setAttribute('id', $this->get('element_name') . 'Choice' . $i);
-                if ( $this->get('required') === 'yes' ) {
+                if ($this->get('required') === 'yes') {
                     $radio->setAttribute('required', 'required');
                 }
-                if ( $opt[1] === true ) {
+                if ($opt[1] === true) {
                     $radio->setAttribute('checked', 'checked');
                 }
 
@@ -366,10 +366,10 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
             foreach ($options as $opt) {
                 $label = new XMLElement('label');
                 $radio = Widget::input($fieldname, $opt[0], 'radio'); // Value
-                if ( $this->get('required') === 'yes' ) {
+                if ($this->get('required') === 'yes') {
                     $radio->setAttribute('required', 'required');
                 }
-                if ( $opt[1] === true ) {
+                if ($opt[1] === true) {
                     $radio->setAttribute('checked', 'checked');
                 }
 
@@ -382,7 +382,7 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
             }
         }
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($fieldset, $flagWithError));
         } else {
             $wrapper->appendChild($fieldset);
@@ -398,14 +398,14 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
     {
         $status = self::__OK__;
 
-        if ( !is_array($data) ) {
+        if (!is_array($data)) {
             return array(
                 'value' => $data,
                 'handle' => Lang::createHandle($data)
             );
         }
 
-        if ( empty($data) ) {
+        if (empty($data)) {
             return null;
         }
 
@@ -414,7 +414,7 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
             'handle' => array()
         );
 
-        foreach ( $data as $value ) {
+        foreach ($data as $value) {
             $result['value'][] = $value;
             $result['handle'][] = Lang::createHandle($value);
         }
@@ -442,17 +442,17 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( !is_array($data) ) {
+        if (!is_array($data)) {
             $data = array($data);
         }
 
-        if ( $mode === $modes->getValue ) {
-            if ( $this->get('display_inline') === 'no' ) {
+        if ($mode === $modes->getValue) {
+            if ($this->get('display_inline') === 'no') {
                 $data = array(implode('', $data));
             }
 
             return $data;
-        } elseif ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -495,32 +495,32 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
     {
         $modes = (object)$this->getExportModes();
 
-        if ( isset($data['handle']) && is_array($data['handle']) === false ) {
+        if (isset($data['handle']) && is_array($data['handle']) === false) {
             $data['handle'] = array(
                 $data['handle']
             );
         }
 
-        if ( isset($data['value']) && is_array($data['value']) === false ) {
+        if (isset($data['value']) && is_array($data['value']) === false) {
             $data['value'] = array(
                 $data['value']
             );
         }
 
         // Handle => Value pairs:
-        if ( $mode === $modes->listHandleToValue ) {
+        if ($mode === $modes->listHandleToValue) {
             return isset($data['handle'], $data['value'])
                 ? array_combine($data['handle'], $data['value'])
                 : array();
 
             // Array of handles:
-        } elseif ( $mode === $modes->listHandle ) {
+        } elseif ($mode === $modes->listHandle) {
             return isset($data['handle'])
                 ? $data['handle']
                 : array();
 
             // Array of values:
-        } elseif ( $mode === $modes->listValue || $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->listValue || $mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? $data['value']
                 : array();
@@ -535,12 +535,12 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
     {
         $existing_options = $this->getToggleStates();
 
-        if ( is_array($existing_options) && !empty($existing_options) ) {
+        if (is_array($existing_options) && !empty($existing_options)) {
             $optionlist = new XMLElement('ul');
             $optionlist->setAttribute('class', 'tags');
             $optionlist->setAttribute('data-interactive', 'data-interactive');
 
-            foreach ( $existing_options as $option ) {
+            foreach ($existing_options as $option) {
                 $optionlist->appendChild(
                     new XMLElement('li', General::sanitize($option))
                 );
@@ -556,22 +556,22 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) {
+        if (!is_array($records) || empty($records)) {
             return;
         }
 
         $groups = array($this->get('element_name') => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
 
-            if ( !isset($data['value']) ) continue;
+            if (!isset($data['value'])) continue;
 
-            if ( is_array($data['value']) ) {
-                foreach ( $data['value'] as $key => $v ) {
+            if (is_array($data['value'])) {
+                foreach ($data['value'] as $key => $v) {
                     $value = General::sanitize($v);
 
-                    if ( !isset($groups[$this->get('element_name')][$data['handle'][$key]]) ) {
+                    if (!isset($groups[$this->get('element_name')][$data['handle'][$key]])) {
                         $groups[$this->get('element_name')][$data['handle'][$key]] = array(
                             'attr' => array('handle' => $data['handle'][$key], 'value' => $value),
                             'records' => array(),
@@ -585,7 +585,7 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
             else {
                 $value = General::sanitize($data['value']);
 
-                if ( !isset($groups[$this->get('element_name')][$data['handle']]) ) {
+                if (!isset($groups[$this->get('element_name')][$data['handle']])) {
                     $groups[$this->get('element_name')][$data['handle']] = array(
                         'attr' => array('handle' => $data['handle'], 'value' => $value),
                         'records' => array(),
@@ -610,39 +610,41 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
 
         $options = array();
 
-        foreach ( $states as $handle => $v ) {
+        foreach ($states as $handle => $v) {
             $options[] = array($v, null, $v);
         }
+
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
 
         $fieldname = 'fields['.$this->get('element_name').']';
 
         $fieldset = new XMLElement('fieldset');
-        if ( $this->get('display_inline') === 'yes' ) {
-            $fieldset->setValue("\n" . '<!-- Displayed horizontally -->');
+        if ($this->get('display_inline') === 'yes') {
+            $fieldset->setValue("\n" . __('<!-- Displayed horizontally -->'));
         } else {
-            $fieldset->setValue("\n" . '<!-- Displayed vertically -->');
+            $fieldset->setValue("\n" . __('<!-- Displayed vertically -->'));
         }
         $legend = new XMLElement('legend', $this->get('label'));
         $fieldset->appendChild($legend);
 
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $legend->appendChild($mark);
         }
 
         $i = 0;
         // Create the radio buttons
-        if ( $this->get('display_inline') === 'yes' ) {
+        if ($this->get('display_inline') === 'yes') {
             foreach ($options as $opt) {
                 $i++;
                 $radio = Widget::input($fieldname, $opt[0], 'radio'); // Value
                 $radio->setAttribute('id', $this->get('element_name') . 'Choice' . $i);
-                if ( $this->get('required') === 'yes' ) {
+                if ($this->get('required') === 'yes') {
                     $radio->setAttribute('required', 'required');
                 }
-                if ( $opt[1] === true ) {
+                if ($opt[1] === true) {
                     $radio->setAttribute('checked', 'checked');
                 }
 
@@ -658,10 +660,10 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
             foreach ($options as $opt) {
                 $label = new XMLElement('label');
                 $radio = Widget::input($fieldname, $opt[0], 'radio'); // Value
-                if ( $this->get('required') === 'yes' ) {
+                if ($this->get('required') === 'yes') {
                     $radio->setAttribute('required', 'required');
                 }
-                if ( $opt[1] === true ) {
+                if ($opt[1] === true) {
                     $radio->setAttribute('checked', 'checked');
                 }
 
@@ -674,6 +676,8 @@ class FieldRadio extends FieldTagList implements ExportableField, ImportableFiel
             }
         }
 
-        return $fieldset;
+        $div->appendChild($fieldset);
+
+        return $div;
     }
 }

@@ -102,11 +102,11 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     public function fetchAssociatedEntrySearchValue($data, $field_id = null, $parent_entry_id = null)
     {
-        if ( !is_array($data) ) {
+        if (!is_array($data)) {
             return $data;
         }
 
-        if ( !is_array($data['handle']) ) {
+        if (!is_array($data['handle'])) {
             $data['handle'] = array($data['handle']);
             $data['value'] = array($data['value']);
         }
@@ -172,7 +172,7 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     public function set($field, $value)
     {
-        if ( $field == 'pre_populate_source' && !is_array($value) ) {
+        if ($field == 'pre_populate_source' && !is_array($value)) {
             $value = preg_split('/\s*,\s*/', $value, -1, PREG_SPLIT_NO_EMPTY);
         }
 
@@ -184,7 +184,7 @@ class FieldTagList extends Field implements ExportableField, ImportableField
      */
     public function findAllTags()
     {
-        if ( Symphony::Log() ) {
+        if (Symphony::Log()) {
             Symphony::Log()->pushDeprecateWarningToLog('FieldTagList::findAllTags()', 'FieldTagList::getToggleStates()');
         }
         $this->getToggleStates();
@@ -192,14 +192,14 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     public function getToggleStates()
     {
-        if ( !is_array($this->get('pre_populate_source')) ) {
+        if (!is_array($this->get('pre_populate_source'))) {
             return;
         }
 
         $values = array();
 
-        foreach ( $this->get('pre_populate_source') as $item ) {
-            if ( $item === 'none' ) {
+        foreach ($this->get('pre_populate_source') as $item) {
+            if ($item === 'none') {
                 break;
             }
 
@@ -208,7 +208,7 @@ class FieldTagList extends Field implements ExportableField, ImportableField
                 ($item == 'existing' ? $this->get('id') : $item)
             ));
 
-            if ( !is_array($result) || empty($result) ) {
+            if (!is_array($result) || empty($result)) {
                 continue;
             }
 
@@ -220,7 +220,7 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     private static function __tagArrayToString(array $tags)
     {
-        if ( empty($tags) ) {
+        if (empty($tags)) {
             return null;
         }
 
@@ -235,11 +235,11 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     public function findDefaults(array &$settings)
     {
-        if ( !isset($settings['pre_populate_source']) ) {
+        if (!isset($settings['pre_populate_source'])) {
             $settings['pre_populate_source'] = array('existing');
         }
 
-        if ( !isset($settings['show_association']) ) {
+        if (!isset($settings['show_association'])) {
             $settings['show_association'] = 'no';
         }
     }
@@ -254,8 +254,8 @@ class FieldTagList extends Field implements ExportableField, ImportableField
         $sections = SectionManager::fetch(null, 'ASC', 'name');
         $field_groups = array();
 
-        if ( is_array($sections) && !empty($sections) ) {
-            foreach ( $sections as $section ) {
+        if (is_array($sections) && !empty($sections)) {
+            foreach ($sections as $section) {
                 $field_groups[$section->get('id')] = array('fields' => $section->fetchFields(), 'section' => $section);
             }
         }
@@ -265,20 +265,20 @@ class FieldTagList extends Field implements ExportableField, ImportableField
             array('existing', (in_array('existing', $this->get('pre_populate_source'))), __('Existing Values')),
         );
 
-        foreach ( $field_groups as $group ) {
-            if ( !is_array($group['fields']) ) {
+        foreach ($field_groups as $group) {
+            if (!is_array($group['fields'])) {
                 continue;
             }
 
             $fields = array();
 
-            foreach ( $group['fields'] as $f ) {
-                if ( $f->get('id') != $this->get('id') && $f->canPrePopulate() ) {
+            foreach ($group['fields'] as $f) {
+                if ($f->get('id') != $this->get('id') && $f->canPrePopulate()) {
                     $fields[] = array($f->get('id'), (in_array($f->get('id'), $this->get('pre_populate_source'))), $f->get('label'));
                 }
             }
 
-            if ( is_array($fields) && !empty($fields) ) {
+            if (is_array($fields) && !empty($fields)) {
                 $options[] = array('label' => $group['section']->get('name'), 'options' => $fields);
             }
         }
@@ -301,13 +301,13 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     public function commit()
     {
-        if ( !parent::commit() ) {
+        if (!parent::commit()) {
             return false;
         }
 
         $id = $this->get('id');
 
-        if ( $id === false ) {
+        if ($id === false) {
             return false;
         }
 
@@ -316,19 +316,19 @@ class FieldTagList extends Field implements ExportableField, ImportableField
         $fields['pre_populate_source'] = (is_null($this->get('pre_populate_source')) ? 'none' : implode(',', $this->get('pre_populate_source')));
         $fields['validator'] = ($fields['validator'] == 'custom' ? null : $this->get('validator'));
 
-        if ( !FieldManager::saveSettings($id, $fields) ) {
+        if (!FieldManager::saveSettings($id, $fields)) {
             return false;
         }
 
         SectionManager::removeSectionAssociation($id);
 
-        if ( is_array($this->get('pre_populate_source')) ) {
-            foreach ( $this->get('pre_populate_source') as $field_id ) {
-                if ( $field_id === 'none' || $field_id === 'existing' ) {
+        if (is_array($this->get('pre_populate_source'))) {
+            foreach ($this->get('pre_populate_source') as $field_id) {
+                if ($field_id === 'none' || $field_id === 'existing') {
                     continue;
                 }
 
-                if ( !is_null($field_id) && is_numeric($field_id) ) {
+                if (!is_null($field_id) && is_numeric($field_id)) {
                     SectionManager::createSectionAssociation(null, $id, (int) $field_id, $this->get('show_association') === 'yes' ? true : false, $this->get('association_ui'), $this->get('association_editor'));
                 }
             }
@@ -345,38 +345,38 @@ class FieldTagList extends Field implements ExportableField, ImportableField
     {
         $value = null;
 
-        if ( isset($data['value']) ) {
+        if (isset($data['value'])) {
             $value = (is_array($data['value']) ? self::__tagArrayToString($data['value']) : $data['value']);
         }
 
         $label = Widget::Label($this->get('label'));
 
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
 
         $input = Widget::Input('fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix, (strlen($value) != 0 ? General::sanitize($value) : null));
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
         $label->appendChild($input);
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
         }
 
-        if ( $this->get('pre_populate_source') != null ) {
+        if ($this->get('pre_populate_source') != null) {
             $existing_tags = $this->getToggleStates();
 
-            if ( is_array($existing_tags) && !empty($existing_tags) ) {
+            if (is_array($existing_tags) && !empty($existing_tags)) {
                 $taglist = new XMLElement('ul');
                 $taglist->setAttribute('class', 'tags');
                 $taglist->setAttribute('data-interactive', 'data-interactive');
 
-                foreach ( $existing_tags as $tag ) {
+                foreach ($existing_tags as $tag) {
                     $taglist->appendChild(
                         new XMLElement('li', General::sanitize($tag))
                     );
@@ -389,7 +389,7 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     private function parseUserSubmittedData($data)
     {
-        if ( !is_array($data) ) {
+        if (!is_array($data)) {
             $data = preg_split('/\,\s*/i', $data, -1, PREG_SPLIT_NO_EMPTY);
         }
         return array_filter(array_map('trim', $data));
@@ -399,19 +399,19 @@ class FieldTagList extends Field implements ExportableField, ImportableField
     {
         $message = null;
 
-        if ( $this->get('required') === 'yes' && strlen(trim($data)) == 0 ) {
+        if ($this->get('required') === 'yes' && strlen(trim($data)) == 0) {
             $message = __('‘%s’ is a required field.', array($this->get('label')));
             return self::__MISSING_FIELDS__;
         }
 
-        if ( $this->get('validator') ) {
+        if ($this->get('validator')) {
             $data = $this->parseUserSubmittedData($data);
 
-            if ( empty($data) ) {
+            if (empty($data)) {
                 return self::__OK__;
             }
 
-            if ( !General::validateString($data, $this->get('validator')) ) {
+            if (!General::validateString($data, $this->get('validator'))) {
                 $message = __("'%s' contains invalid data. Please check the contents.", array($this->get('label')));
                 return self::__INVALID_FIELDS__;
             }
@@ -426,7 +426,7 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
         $data = $this->parseUserSubmittedData($data);
 
-        if ( empty($data) ) {
+        if (empty($data)) {
             return null;
         }
 
@@ -436,7 +436,7 @@ class FieldTagList extends Field implements ExportableField, ImportableField
         sort($data);
 
         $result = array();
-        foreach ( $data as $value ) {
+        foreach ($data as $value) {
             $result['value'][] = $value;
             $result['handle'][] = Lang::createHandle($value);
         }
@@ -450,20 +450,20 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     public function appendFormattedElement(XMLElement &$wrapper, $data, $encode = false, $mode = null, $entry_id = null)
     {
-        if ( !is_array($data) || empty($data) || is_null($data['value']) ) {
+        if (!is_array($data) || empty($data) || is_null($data['value'])) {
             return;
         }
 
         $list = new XMLElement($this->get('element_name'));
 
-        if ( !is_array($data['handle']) && !is_array($data['value']) ) {
+        if (!is_array($data['handle']) && !is_array($data['value'])) {
             $data = array(
                 'handle'    => array($data['handle']),
                 'value'     => array($data['value'])
             );
         }
 
-        foreach ( $data['value'] as $index => $value ) {
+        foreach ($data['value'] as $index => $value) {
             $list->appendChild(new XMLElement('item', General::sanitize($value), array(
                 'handle' => $data['handle'][$index]
             )));
@@ -474,13 +474,13 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     public function prepareTextValue($data, $entry_id = null)
     {
-        if ( !is_array($data) || empty($data) ) {
+        if (!is_array($data) || empty($data)) {
             return '';
         }
 
         $value = '';
 
-        if ( isset($data['value']) ) {
+        if (isset($data['value'])) {
             $value = (is_array($data['value']) ? self::__tagArrayToString($data['value']) : $data['value']);
         }
 
@@ -494,45 +494,50 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     public function getExampleFormMarkup()
     {
-        $wrapper = new XMLElement('div');
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
 
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
         $label = new XMLElement('label', $this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
 
         $input = Widget::Input('fields['.$this->get('element_name').']', null, 'text');
-        if ( $this->get('required') === 'yes' ) {
+        $input->setAttribute('id', $fieldName . '-' . $fieldId);
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
-        $label->appendChild($input);
-        $wrapper->appendChild($label);
-        if ( $this->get('pre_populate_source') != null ) {
+        $div->appendChild($label);
+        $div->appendChild($input);
+
+        if ($this->get('pre_populate_source') != null) {
             $existing_tags = $this->getToggleStates();
 
-            if ( is_array($existing_tags) && !empty($existing_tags) ) {
+            if (is_array($existing_tags) && !empty($existing_tags)) {
                 $taglist = new XMLElement('ul');
                 $taglist->setAttribute('class', 'tags');
                 $taglist->setAttribute('data-interactive', 'data-interactive');
 
-                $notice = "\n<!-- Please note: The values are a static example. To obtain the values dynamically, use a data source and access it in your template. -->";
+                $notice = __("\n<!-- Please note: The values are a static example. To obtain the values dynamically, use a data source and access it in your template. -->");
                 $taglist->setValue($notice);
 
-                foreach ( $existing_tags as $tag ) {
+                foreach ($existing_tags as $tag) {
                     $taglist->appendChild(
                         new XMLElement('li', General::sanitize($tag))
                     );
                 }
 
-                $wrapper->appendChild($taglist);
+                $div->appendChild($taglist);
             }
         }
 
-        return $wrapper;
+        return $div;
     }
 
     /*-------------------------------------------------------------------------
@@ -552,13 +557,13 @@ class FieldTagList extends Field implements ExportableField, ImportableField
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( is_array($data) ) {
+        if (is_array($data)) {
             $data = implode(', ', $data);
         }
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $data;
-        } elseif ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -601,38 +606,38 @@ class FieldTagList extends Field implements ExportableField, ImportableField
     {
         $modes = (object)$this->getExportModes();
 
-        if ( isset($data['handle']) && is_array($data['handle']) === false ) {
+        if (isset($data['handle']) && is_array($data['handle']) === false) {
             $data['handle'] = array(
                 $data['handle']
             );
         }
 
-        if ( isset($data['value']) && is_array($data['value']) === false ) {
+        if (isset($data['value']) && is_array($data['value']) === false) {
             $data['value'] = array(
                 $data['value']
             );
         }
 
         // Handle => value pairs:
-        if ( $mode === $modes->listHandleToValue ) {
+        if ($mode === $modes->listHandleToValue) {
             return isset($data['handle'], $data['value'])
                 ? array_combine($data['handle'], $data['value'])
                 : array();
 
             // Array of handles:
-        } elseif ( $mode === $modes->listHandle ) {
+        } elseif ($mode === $modes->listHandle) {
             return isset($data['handle'])
                 ? $data['handle']
                 : array();
 
             // Array of values:
-        } elseif ( $mode === $modes->listValue ) {
+        } elseif ($mode === $modes->listValue) {
             return isset($data['value'])
                 ? $data['value']
                 : array();
 
             // Comma seperated values:
-        } elseif ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? implode(', ', $data['value'])
                 : null;
@@ -645,15 +650,15 @@ class FieldTagList extends Field implements ExportableField, ImportableField
 
     public function displayFilteringOptions(XMLElement &$wrapper)
     {
-        if ( $this->get('pre_populate_source') != null ) {
+        if ($this->get('pre_populate_source') != null) {
             $existing_tags = $this->getToggleStates();
 
-            if ( is_array($existing_tags) && !empty($existing_tags) ) {
+            if (is_array($existing_tags) && !empty($existing_tags)) {
                 $taglist = new XMLElement('ul');
                 $taglist->setAttribute('class', 'tags');
                 $taglist->setAttribute('data-interactive', 'data-interactive');
 
-                foreach ( $existing_tags as $tag ) {
+                foreach ($existing_tags as $tag) {
                     $taglist->appendChild(
                         new XMLElement('li', General::sanitize($tag))
                     );
@@ -709,36 +714,36 @@ class FieldTagList extends Field implements ExportableField, ImportableField
     {
         $field_id = $this->get('id');
 
-        if ( self::isFilterRegex($data[0]) ) {
+        if (self::isFilterRegex($data[0])) {
             $this->buildRegexSQL($data[0], array('value', 'handle'), $joins, $where);
-        } elseif ( self::isFilterSQL($data[0]) ) {
+        } elseif (self::isFilterSQL($data[0])) {
             $this->buildFilterSQL($data[0], array('value', 'handle'), $joins, $where);
         } else {
             $negation = false;
             $null = false;
-            if ( preg_match('/^not:/', $data[0]) ) {
+            if (preg_match('/^not:/', $data[0])) {
                 $data[0] = preg_replace('/^not:/', null, $data[0]);
                 $negation = true;
-            } elseif ( preg_match('/^sql-null-or-not:/', $data[0]) ) {
+            } elseif (preg_match('/^sql-null-or-not:/', $data[0])) {
                 $data[0] = preg_replace('/^sql-null-or-not:/', null, $data[0]);
                 $negation = true;
                 $null = true;
             }
 
-            foreach ( $data as &$value ) {
+            foreach ($data as &$value) {
                 $value = $this->cleanValue($value);
             }
 
-            if ( $andOperation ) {
+            if ($andOperation) {
                 $condition = ($negation) ? '!=' : '=';
-                foreach ( $data as $key => $bit ) {
+                foreach ($data as $key => $bit) {
                     $joins .= " LEFT JOIN `tbl_entries_data_$field_id` AS `t{$field_id}_{$this->_key}` ON (`e`.`id` = `t{$field_id}_{$this->_key}`.entry_id) ";
                     $where .= " AND ((
                                         t{$field_id}_{$this->_key}.value $condition '$bit'
                                         OR t{$field_id}_{$this->_key}.handle $condition '$bit'
                                     )";
 
-                    if ( $null ) {
+                    if ($null) {
                         $where .= " OR `t{$field_id}_{$this->_key}`.`value` IS NULL) ";
                     } else {
                         $where .= ") ";
@@ -749,7 +754,7 @@ class FieldTagList extends Field implements ExportableField, ImportableField
                 $data = "'".implode("', '", $data)."'";
 
                 // Apply a different where condition if we are using $negation. RE: #29
-                if ( $negation ) {
+                if ($negation) {
                     $condition = 'NOT EXISTS';
                     $where .= " AND $condition (
                         SELECT *

@@ -97,7 +97,7 @@ class FieldMonth extends Field
         $default = new XMLElement('label', __('Set current month as value'));
         $default->setAttribute('class', 'column');
         $input = Widget::Input('fields['.$this->get('sortorder').'][default_month]', 'on', 'checkbox');
-        if ( $this->get('default_month') === 'on' ) {
+        if ($this->get('default_month') === 'on') {
             $input->setAttribute('checked', 'checked');
         }
         $default->appendChild($input);
@@ -106,9 +106,6 @@ class FieldMonth extends Field
         $custom = new XMLElement('label', __('Custom month <i>optional</i>'));
         $custom->setAttribute('class', 'column');
         $input = Widget::input('fields['.$this->get('sortorder').'][custom_month]', $this->get('custom_month'), 'month');
-        // Input type="month" is not yet supported by Firefox and Safari
-        $input->setAttribute('placeholder', 'yyyy-mm');
-        $input->setAttribute('aria-label', 'Please enter a month in the format “yyyy-mm”');
         $custom->appendChild($input);
 
         $div = new XMLElement('div', null, array('class' => 'two columns'));
@@ -120,18 +117,12 @@ class FieldMonth extends Field
         $min = new XMLElement('label', __('Earliest year and month to accept <i>optional</i>'));
         $min->setAttribute('class', 'column');
         $input = Widget::input('fields['.$this->get('sortorder').'][min]', $this->get('min'), 'month');
-        // Input type="month" is not yet supported by Firefox and Safari
-        $input->setAttribute('placeholder', 'yyyy-mm');
-        $input->setAttribute('aria-label', 'Please enter a month in the format “yyyy-mm”');
         $min->appendChild($input);
 
         // Max
         $max = new XMLElement('label', __('Latest year and month <i>optional</i>'));
         $max->setAttribute('class', 'column');
         $input = Widget::input('fields['.$this->get('sortorder').'][max]', $this->get('max'), 'month');
-        // Input type="month" is not yet supported by Firefox and Safari
-        $input->setAttribute('placeholder', 'yyyy-mm');
-        $input->setAttribute('aria-label', 'Please enter a month in the format “yyyy-mm”');
         $max->appendChild($input);
 
         $div = new XMLElement('div', null, array('class' => 'two columns'));
@@ -168,7 +159,7 @@ class FieldMonth extends Field
 
     public function commit()
     {
-        if ( !parent::commit() ) return false;
+        if (!parent::commit()) return false;
 
         return FieldManager::saveSettings($this->get('id'), [
             #'default_month' => $this->get('default_month'),
@@ -188,36 +179,44 @@ class FieldMonth extends Field
     {
         $value = isset($data['value']) ? $data['value'] : null;
 
-        $input = Widget::input("fields{$fieldnamePrefix}[{$this->get('element_name')}]{$fieldnamePostfix}", $value, 'month', [
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+
+        $input = Widget::input("fields{$fieldnamePrefix}[{$fieldName}]{$fieldnamePostfix}", $value, 'month', [
             'step' => $this->get('step') ?: 1
         ]);
-        // Input type="month" is not yet supported by Firefox and Safari
-        $input->setAttribute('placeholder', 'yyyy-mm');
-        $input->setAttribute('aria-label', 'Please enter a month in the format “yyyy-mm”');
-        if ( $value === null and $this->get('default_month') === 'on' ) {
+        if ($value === null and $this->get('default_month') === 'on') {
             $input->setAttribute('value', date('Y-m'));
         }
-        else if ( $value === null and $this->get('custom_month') !== null ) {
+        elseif ($value === null and $this->get('custom_month') !== null) {
             $input->setAttribute('value', $this->get('custom_month'));
         }
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $input->setAttribute('min', $this->get('min'));
         }
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $input->setAttribute('max', $this->get('max'));
         }
 
         $label = Widget::label($this->get('label'));
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
-        $label->appendChild($input);
 
-        if ( $flagWithError != null ) {
+        $input->setAttribute('aria-describedby', $fieldName . '-' . $fieldId . '-hint');
+
+        $hint = new XMLElement('small', __('Enter a month (format: yyyy-mm, e.g. 2026-04)'));
+        $hint->setAttribute('class', 'help field-hint');
+        $hint->setAttribute('id', $fieldName . '-' . $fieldId . '-hint');
+
+        $label->appendChild($input);
+        $label->appendChild($hint);
+
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -231,15 +230,15 @@ class FieldMonth extends Field
         $element = new XMLElement($this->get('element_name'), $value);
 
         // Return additional attributes 'min', 'max' and 'step'
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $element->setAttribute('min', $this->get('min'));
         }
 
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $element->setAttribute('max', $this->get('max'));
         }
 
-        if ( $this->get('step') !== null ) {
+        if ($this->get('step') !== null) {
             $element->setAttribute('step', $this->get('step'));
         }
 
@@ -248,11 +247,16 @@ class FieldMonth extends Field
 
     public function getExampleFormMarkup()
     {
-        $labelText = $this->get('label') . "\n<!-- Input type=\"month\" is not yet supported by Firefox and Safari. Use placeholder and aria-label to help users enter a valid value. -->";
-        $label = new XMLElement('label', $labelText);
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+
+        $div = new XMLElement('div', __("\n<!-- input[type=\"month\"] may fall back to a text field in some browsers. A format hint is included to ensure valid input. -->"), array('class' => 'form-field'));
+
+        $label = Widget::Label($this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
@@ -260,29 +264,35 @@ class FieldMonth extends Field
         $input = Widget::input('fields['.$this->get('element_name').']', null, 'month', [
             'step' => $this->get('step') ?: 1
         ]);
-        // Input type="month" is not yet supported by Firefox and Safari
-        $input->setAttribute('placeholder', 'yyyy-mm');
-        $input->setAttribute('aria-label', 'Please enter a month in the format “yyyy-mm”');
-        if ( $this->get('custom_month') !== null ) {
+        $input->setAttribute('id', $fieldName . '-' . $fieldId);
+        if ($this->get('custom_month') !== null) {
             $input->setAttribute('value', $this->get('custom_month'));
         }
-        if ( $this->get('default_month') === 'on' ) {
-            $input->setAttribute('value', '{concat(/data/params/this-year, \'-\', /data/params/this-month)}');
+        if ($this->get('default_month') === 'on') {
+            $input->setAttribute('value', '{concat(/data/params/this-year, &apos;-&apos;, /data/params/this-month)}');
         }
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $input->setAttribute('min', $this->get('min'));
         }
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $input->setAttribute('max', $this->get('max'));
         }
 
-        $label->appendChild($input);
+        $input->setAttribute('aria-describedby', $fieldName . '-' . $fieldId . '-hint');
 
-        return $label;
+        $hint = new XMLElement('small', __('Enter a month (format: yyyy-mm, e.g. 2026-04)'));
+        $hint->setAttribute('class', 'field-hint');
+        $hint->setAttribute('id', $fieldName . '-' . $fieldId . '-hint');
+
+        $div->appendChild($label);
+        $div->appendChild($input);
+        $div->appendChild($hint);
+
+        return $div;
     }
 
     public function checkPostFieldData($data, &$message, $entry_id = null)
@@ -301,32 +311,32 @@ class FieldMonth extends Field
         $message = null;
 
 
-        if ( $this->get('required') === 'yes' && strlen($data) === 0 ) {
+        if ($this->get('required') === 'yes' && strlen($data) === 0) {
             $message = $messages['required'];
             return self::__MISSING_FIELDS__;
         }
 
-        if ( strlen($data) > 0 && !preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $data) ) {
+        if (strlen($data) > 0 && !preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $data)) {
             $message = $messages['invalid'];
             return self::__INVALID_FIELDS__;
         }
 
-        if ( preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $data) ) {
-            if ( strlen($data) > 0 && $data < $min ) {
+        if (preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $data)) {
+            if (strlen($data) > 0 && $data < $min) {
                 $message = $messages['min'];
                 return self::__INVALID_FIELDS__;
             }
 
-            if ( strlen($data) > 0 && $data > $max ) {
+            if (strlen($data) > 0 && $data > $max) {
                 $message = $messages['max'];
                 return self::__INVALID_FIELDS__;
             }
 
-            if ( $step !== 'any' && $step > 1 ) {
+            if ($step !== 'any' && $step > 1) {
                 $tmpData = static::getSortableMonthValue($data);
                 $tmpMin = static::getSortableMonthValue($min);
                 $relative =  $tmpData - $tmpMin;
-                if ( fmod($relative, $step) !== 0.0 ) {
+                if (fmod($relative, $step) !== 0.0) {
 
                     $message = $messages['step'];
                     return self::__INVALID_FIELDS__;
@@ -341,7 +351,7 @@ class FieldMonth extends Field
     {
         $status = self::__OK__;
 
-        if ( strlen(trim($data)) == 0 ) return array();
+        if (strlen(trim($data)) == 0) return array();
 
         $result = array(
             'value' => $data
@@ -367,9 +377,9 @@ class FieldMonth extends Field
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $data;
-        } else if ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -407,7 +417,7 @@ class FieldMonth extends Field
         $modes = (object)$this->getExportModes();
 
         // Export unformatted:
-        if ( $mode === $modes->getUnformatted || $mode === $modes->getPostdata ) {
+        if ($mode === $modes->getUnformatted || $mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? $data['value']
                 : null;
@@ -499,16 +509,16 @@ class FieldMonth extends Field
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) return;
+        if (!is_array($records) || empty($records)) return;
 
         $groups = array($this->get('element_name') => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
 
             $value = $data['value'];
 
-            if ( !isset($groups[$this->get('element_name')][$value]) ) {
+            if (!isset($groups[$this->get('element_name')][$value])) {
                 $groups[$this->get('element_name')][$value] = array(
                     'attr' => array('value' => $value),
                     'records' => array(),

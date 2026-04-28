@@ -121,7 +121,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
     {
         $file_location = $this->getFilePath($data['file']);
 
-        if ( is_file($file_location) ) {
+        if (is_file($file_location)) {
             General::deleteFile($file_location);
         }
 
@@ -134,13 +134,13 @@ class FieldUpload extends Field implements ExportableField, ImportableField
     {
         $meta = array();
 
-        if ( !file_exists($file) || !is_readable($file) ) {
+        if (!file_exists($file) || !is_readable($file)) {
             return $meta;
         }
 
         $meta['creation'] = DateTimeObj::get('c', filemtime($file));
 
-        if ( General::in_iarray($type, fieldUpload::$imageMimeTypes) && $array = @getimagesize($file) ) {
+        if (General::in_iarray($type, fieldUpload::$imageMimeTypes) && $array = @getimagesize($file)) {
             $meta['width'] = $array[0];
             $meta['height'] = $array[1];
         }
@@ -182,8 +182,8 @@ class FieldUpload extends Field implements ExportableField, ImportableField
         $options = array();
         $options[] = array('/workspace', false, '/workspace');
 
-        if ( !empty($directories) && is_array($directories) ) {
-            foreach ( $directories as $d ) {
+        if (!empty($directories) && is_array($directories)) {
+            foreach ($directories as $d) {
                 $d = '/' . trim($d, '/');
 
                 if (!in_array($d, $ignore)) {
@@ -194,7 +194,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
 
         $label->appendChild(Widget::Select('fields['.$this->get('sortorder').'][destination]', $options));
 
-        if ( isset($errors['destination']) ) {
+        if (isset($errors['destination'])) {
             $wrapper->appendChild(Widget::Error($label, $errors['destination']));
         } else {
             $wrapper->appendChild($label);
@@ -209,11 +209,11 @@ class FieldUpload extends Field implements ExportableField, ImportableField
 
     public function checkFields(array &$errors, $checkForDuplicates = true)
     {
-        if ( is_dir(DOCROOT . $this->get('destination') . '/') === false ) {
+        if (is_dir(DOCROOT . $this->get('destination') . '/') === false) {
             $errors['destination'] = __('The destination directory, %s, does not exist.', array(
                 '<code>' . $this->get('destination') . '</code>'
             ));
-        } elseif ( is_writable(DOCROOT . $this->get('destination') . '/') === false ) {
+        } elseif (is_writable(DOCROOT . $this->get('destination') . '/') === false) {
             $errors['destination'] = __('The destination directory is not writable.')
                 . ' '
                 . __('Please check permissions on %s.', array(
@@ -226,13 +226,13 @@ class FieldUpload extends Field implements ExportableField, ImportableField
 
     public function commit()
     {
-        if ( !parent::commit() ) {
+        if (!parent::commit()) {
             return false;
         }
 
         $id = $this->get('id');
 
-        if ( $id === false ) {
+        if ($id === false) {
             return false;
         }
 
@@ -253,11 +253,11 @@ class FieldUpload extends Field implements ExportableField, ImportableField
 
     public function displayPublishPanel(XMLElement &$wrapper, $data = null, $flagWithError = null, $fieldnamePrefix = null, $fieldnamePostfix = null, $entry_id = null)
     {
-        if ( is_dir(DOCROOT . $this->get('destination') . '/') === false ) {
+        if (is_dir(DOCROOT . $this->get('destination') . '/') === false) {
             $flagWithError = __('The destination directory, %s, does not exist.', array(
                 '<code>' . $this->get('destination') . '</code>'
             ));
-        } elseif ( $flagWithError && is_writable(DOCROOT . $this->get('destination') . '/') === false ) {
+        } elseif ($flagWithError && is_writable(DOCROOT . $this->get('destination') . '/') === false) {
             $flagWithError = __('Destination folder is not writable.')
                 . ' '
                 . __('Please check permissions on %s.', array(
@@ -268,16 +268,16 @@ class FieldUpload extends Field implements ExportableField, ImportableField
         $label = Widget::Label($this->get('label'));
         $label->setAttribute('class', 'file');
 
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
 
         $span = new XMLElement('span', null, array('class' => 'frame'));
 
-        if ( isset($data['file']) ) {
+        if (isset($data['file'])) {
             $filename = $this->get('destination') . '/' . basename($data['file']);
             $file = $this->getFilePath($data['file']);
-            if ( file_exists($file) === false || !is_readable($file) ) {
+            if (file_exists($file) === false || !is_readable($file)) {
                 $flagWithError = __('The file uploaded is no longer available. Please check that it exists, and is readable.');
             }
 
@@ -287,14 +287,14 @@ class FieldUpload extends Field implements ExportableField, ImportableField
         }
 
         $input = Widget::Input('fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix, $filename, ($filename ? 'hidden' : 'file'));
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
         $span->appendChild($input);
         $label->appendChild($span);
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -303,10 +303,10 @@ class FieldUpload extends Field implements ExportableField, ImportableField
 
     public function validateFilename($file, &$message)
     {
-        if ( $this->get('validator') != null ) {
+        if ($this->get('validator') != null) {
             $rule = $this->get('validator');
 
-            if ( General::validateString($file, $rule) === false ) {
+            if (General::validateString($file, $rule) === false) {
                 $message = __('File chosen in ‘%s’ does not match allowable file types for that field.', array(
                     $this->get('label')
                 ));
@@ -319,7 +319,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
         else {
             $blacklist = Symphony::Configuration()->get('upload_blacklist', 'admin');
 
-            if ( !empty($blacklist) && General::validateString($file, $blacklist) ) {
+            if (!empty($blacklist) && General::validateString($file, $blacklist)) {
                 $message = __('File chosen in ‘%s’ is blacklisted for that field.', array(
                     $this->get('label')
                 ));
@@ -347,7 +347,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
                 && $data['error'] == UPLOAD_ERR_NO_FILE
             )
         ) {
-            if ( $this->get('required') === 'yes' ) {
+            if ($this->get('required') === 'yes') {
                 $message = __('‘%s’ is a required field.', array($this->get('label')));
 
                 return self::__MISSING_FIELDS__;
@@ -357,9 +357,9 @@ class FieldUpload extends Field implements ExportableField, ImportableField
         }
 
         // Its not an array, so just retain the current data and return
-        if ( is_array($data) === false ) {
+        if (is_array($data) === false) {
             $file = $this->getFilePath(basename($data));
-            if ( file_exists($file) === false || !is_readable($file) ) {
+            if (file_exists($file) === false || !is_readable($file)) {
                 $message = __('The file uploaded is no longer available. Please check that it exists, and is readable.');
 
                 return self::__INVALID_FIELDS__;
@@ -370,13 +370,13 @@ class FieldUpload extends Field implements ExportableField, ImportableField
             return $this->validateFilename($file, $message);
         }
 
-        if ( is_dir(DOCROOT . $this->get('destination') . '/') === false ) {
+        if (is_dir(DOCROOT . $this->get('destination') . '/') === false) {
             $message = __('The destination directory, %s, does not exist.', array(
                 '<code>' . $this->get('destination') . '</code>'
             ));
 
             return self::__ERROR__;
-        } elseif ( is_writable(DOCROOT . $this->get('destination') . '/') === false ) {
+        } elseif (is_writable(DOCROOT . $this->get('destination') . '/') === false) {
             $message = __('Destination folder is not writable.')
                 . ' '
                 . __('Please check permissions on %s.', array(
@@ -386,7 +386,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
             return self::__ERROR__;
         }
 
-        if ( $data['error'] != UPLOAD_ERR_NO_FILE && $data['error'] != UPLOAD_ERR_OK ) {
+        if ($data['error'] != UPLOAD_ERR_NO_FILE && $data['error'] != UPLOAD_ERR_OK) {
             switch ($data['error']) {
                 case UPLOAD_ERR_INI_SIZE:
                     $message = __('File chosen in ‘%1$s’ exceeds the maximum allowed upload size of %2$s specified by your host.', array($this->get('label'), (is_numeric(ini_get('upload_max_filesize')) ? General::formatFilesize(ini_get('upload_max_filesize')) : ini_get('upload_max_filesize'))));
@@ -420,7 +420,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
     {
         $status = self::__OK__;
 
-        if ( $data === null ) {
+        if ($data === null) {
             return array(
                 'file' =>       null,
                 'mimetype' =>   null,
@@ -430,7 +430,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
         }
 
         // Its not an array, so just retain the current data and return:
-        if ( is_array($data) === false ) {
+        if (is_array($data) === false) {
             $file = $this->getFilePath(basename($data));
 
             $result = array(
@@ -441,25 +441,25 @@ class FieldUpload extends Field implements ExportableField, ImportableField
             );
 
             // Grab the existing entry data to preserve the MIME type and size information
-            if ( isset($entry_id) ) {
+            if (isset($entry_id)) {
                 $row = $this->getCurrentValues($entry_id);
 
-                if ( empty($row) === false ) {
+                if (empty($row) === false) {
                     $result = $row;
                 }
             }
 
             // Found the file, add any missing meta information:
-            if ( file_exists($file) && is_readable($file) ) {
-                if ( empty($result['mimetype']) ) {
+            if (file_exists($file) && is_readable($file)) {
+                if (empty($result['mimetype'])) {
                     $result['mimetype'] = General::getMimeType($file);
                 }
 
-                if ( empty($result['size']) ) {
+                if (empty($result['size'])) {
                     $result['size'] = filesize($file);
                 }
 
-                if ( empty($result['meta']) ) {
+                if (empty($result['meta'])) {
                     $result['meta'] = serialize(static::getMetaInfo($file, $result['mimetype']));
                 }
 
@@ -472,12 +472,12 @@ class FieldUpload extends Field implements ExportableField, ImportableField
             return $result;
         }
 
-        if ( $simulate && is_null($entry_id) ) {
+        if ($simulate && is_null($entry_id)) {
             return $data;
         }
 
         // Check to see if the entry already has a file associated with it:
-        if ( is_null($entry_id) === false ) {
+        if (is_null($entry_id) === false) {
             $row = $this->getCurrentValues($entry_id);
 
             $existing_file = isset($row['file']) ? $this->getFilePath($row['file']) : null;
@@ -493,11 +493,11 @@ class FieldUpload extends Field implements ExportableField, ImportableField
         }
 
         // Do not continue on upload error:
-        if ( $data['error'] == UPLOAD_ERR_NO_FILE || $data['error'] != UPLOAD_ERR_OK ) {
+        if ($data['error'] == UPLOAD_ERR_NO_FILE || $data['error'] != UPLOAD_ERR_OK) {
             return false;
         }
 
-        if ( !isset($data['name']) ) {
+        if (!isset($data['name'])) {
             return array(
                 'file' =>       null,
                 'mimetype' =>   null,
@@ -516,7 +516,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
         // If a file already exists, then rename the file being uploaded by
         // adding `_1` to the filename. If `_1` already exists, the logic
         // will keep adding 1 until a filename is available (#672)
-        if ( file_exists($abs_path . '/' . $data['name']) ) {
+        if (file_exists($abs_path . '/' . $data['name'])) {
             $extension = General::getExtension($data['name']);
             $new_file = substr($abs_path . '/' . $data['name'], 0, -1 - strlen($extension));
             $count = 1;
@@ -540,7 +540,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
             Symphony::Configuration()->get('write_mode', 'file')
         );
 
-        if ( $uploaded === false ) {
+        if ($uploaded === false) {
             $message = __(
                 __('There was an error while trying to upload the file %1$s to the target directory %2$s.'),
                 array(
@@ -595,7 +595,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
     public function appendFormattedElement(XMLElement &$wrapper, $data, $encode = false, $mode = null, $entry_id = null)
     {
         // It is possible an array of null data will be passed in. Check for this.
-        if ( !is_array($data) || !isset($data['file']) || is_null($data['file']) ) {
+        if (!is_array($data) || !isset($data['file']) || is_null($data['file'])) {
             return;
         }
 
@@ -615,7 +615,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
 
         $m = unserialize($data['meta']);
 
-        if ( is_array($m) && !empty($m) ) {
+        if (is_array($m) && !empty($m)) {
             $item->appendChild(new XMLElement('meta', null, $m));
         }
 
@@ -624,11 +624,11 @@ class FieldUpload extends Field implements ExportableField, ImportableField
 
     public function prepareTableValue($data, XMLElement $link = null, $entry_id = null)
     {
-        if ( isset($data['file']) === false || !$file = $data['file'] ) {
+        if (isset($data['file']) === false || !$file = $data['file']) {
             return parent::prepareTableValue(null, $link, $entry_id);
         }
 
-        if ( $link ) {
+        if ($link) {
             $link->setValue(basename($file));
             $link->setAttribute('data-path', $this->get('destination'));
 
@@ -643,7 +643,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
     
     public function prepareTextValue($data, $entry_id = null)
     {
-        if ( isset($data['file']) ) {
+        if (isset($data['file'])) {
             return $data['file'];
         }
         return null;
@@ -675,9 +675,9 @@ class FieldUpload extends Field implements ExportableField, ImportableField
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $data;
-        } elseif ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -719,25 +719,25 @@ class FieldUpload extends Field implements ExportableField, ImportableField
 
         // No file, or the file that the entry is meant to have no
         // longer exists.
-        if ( !isset($data['file']) || !is_file($filepath) ) {
+        if (!isset($data['file']) || !is_file($filepath)) {
             return null;
         }
 
-        if ( $mode === $modes->getFilename ) {
+        if ($mode === $modes->getFilename) {
             return $data['file'];
         }
 
-        if ( $mode === $modes->getObject ) {
+        if ($mode === $modes->getObject) {
             $object = (object)$data;
 
-            if ( isset($object->meta) ) {
+            if (isset($object->meta)) {
                 $object->meta = unserialize($object->meta);
             }
 
             return $object;
         }
 
-        if ( $mode === $modes->getPostdata ) {
+        if ($mode === $modes->getPostdata) {
             return $data['file'];
         }
     }
@@ -750,21 +750,21 @@ class FieldUpload extends Field implements ExportableField, ImportableField
     {
         $field_id = $this->get('id');
 
-        if ( preg_match('/^mimetype:/', $data[0]) ) {
+        if (preg_match('/^mimetype:/', $data[0])) {
             $data[0] = str_replace('mimetype:', '', $data[0]);
             $column = 'mimetype';
-        } elseif ( preg_match('/^size:/', $data[0]) ) {
+        } elseif (preg_match('/^size:/', $data[0])) {
             $data[0] = str_replace('size:', '', $data[0]);
             $column = 'size';
         } else {
             $column = 'file';
         }
 
-        if ( self::isFilterRegex($data[0]) ) {
+        if (self::isFilterRegex($data[0])) {
             $this->buildRegexSQL($data[0], array($column), $joins, $where);
-        } elseif ( self::isFilterSQL($data[0]) ) {
+        } elseif (self::isFilterSQL($data[0])) {
             $this->buildFilterSQL($data[0], array($column), $joins, $where);
-        } elseif ( $andOperation ) {
+        } elseif ($andOperation) {
             foreach ($data as $value) {
                 $this->_key++;
                 $value = $this->cleanValue($value);
@@ -778,11 +778,11 @@ class FieldUpload extends Field implements ExportableField, ImportableField
                 ";
             }
         } else {
-            if ( !is_array($data) ) {
+            if (!is_array($data)) {
                 $data = array($data);
             }
 
-            foreach ( $data as &$value ) {
+            foreach ($data as &$value) {
                 $value = $this->cleanValue($value);
             }
 
@@ -807,7 +807,7 @@ class FieldUpload extends Field implements ExportableField, ImportableField
 
     public function buildSortingSQL(&$joins, &$where, &$sort, $order = 'ASC')
     {
-        if ( $this->isRandomOrder($order) ) {
+        if ($this->isRandomOrder($order)) {
             $sort = 'ORDER BY RAND()';
         } else {
             $sort = sprintf(
@@ -835,14 +835,27 @@ class FieldUpload extends Field implements ExportableField, ImportableField
 
     public function getExampleFormMarkup()
     {
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
         $label = Widget::Label($this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
+        if ($this->get('required') === 'yes') {
+            $mark = new XMLElement('span', '*');
+            $mark->setAttribute('aria-hidden', 'true');
+            $mark->setAttribute('class', 'required-mark');
+            $label->appendChild($mark);
+        }
         $input = Widget::Input('fields['.$this->get('element_name').']', null, 'file');
-        if ( $this->get('required') === 'yes' ) {
+        $input->setAttribute('id', $fieldName . '-' . $fieldId);
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
 
-        return $label;
+        return $div;
     }
 }

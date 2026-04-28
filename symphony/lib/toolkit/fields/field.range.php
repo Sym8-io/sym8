@@ -129,7 +129,7 @@ class FieldRange extends Field implements ExportableField, ImportableField
 
     public function commit()
     {
-        if ( !parent::commit() ) return false;
+        if (!parent::commit()) return false;
 
         return FieldManager::saveSettings($this->get('id'), [
             'min' => $this->get('min'),
@@ -147,30 +147,29 @@ class FieldRange extends Field implements ExportableField, ImportableField
         $value = isset($data['value']) ? $data['value'] : null;
 
         $input = Widget::input("fields{$fieldnamePrefix}[{$this->get('element_name')}]{$fieldnamePostfix}", $value, 'range');
-        if ( $this->get('required') === 'yes' ) {
-            $input->setAttribute('required', 'required');
-        }
+        // `range` inputs always have a value and cannot be empty.
+        // The `required` attribute is therefore not applicable.
 
         // Return additional attributes 'min', 'max' and 'step'
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $input->setAttribute('min', $this->get('min'));
         }
 
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $input->setAttribute('max', $this->get('max'));
         }
 
-        if ( $this->get('step') !== null ) {
+        if ($this->get('step') !== null) {
             $input->setAttribute('step', $this->get('step'));
         }
 
         $label = Widget::label($this->get('label'));
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
         $label->appendChild($input);
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -184,15 +183,15 @@ class FieldRange extends Field implements ExportableField, ImportableField
         $element = new XMLElement($this->get('element_name'), $value);
 
         // Return additional attributes 'min', 'max' and 'step'
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $element->setAttribute('min', $this->get('min'));
         }
 
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $element->setAttribute('max', $this->get('max'));
         }
 
-        if ( $this->get('step') !== null ) {
+        if ($this->get('step') !== null) {
             $element->setAttribute('step', $this->get('step'));
         }
 
@@ -201,35 +200,41 @@ class FieldRange extends Field implements ExportableField, ImportableField
 
     public function getExampleFormMarkup()
     {
-        $label = new XMLElement('label', $this->get('label'));
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
+        $label = Widget::Label($this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
 
-        $input = Widget::input('fields['.$this->get('element_name').']', null, 'range');
-        if ( $this->get('required') === 'yes' ) {
-            $input->setAttribute('required', 'required');
-        }
+        $input = Widget::input('fields[' . $fieldName . ']', null, 'range');
+        $input->setAttribute('id', $fieldName . '-' . $fieldId);
+        // `range` inputs always have a value and cannot be empty.
+        // The `required` attribute is therefore not applicable.
 
         // Return additional attributes 'min', 'max' and 'step'
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $input->setAttribute('min', $this->get('min'));
         }
 
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $input->setAttribute('max', $this->get('max'));
         }
 
-        if ( $this->get('step') !== null ) {
+        if ($this->get('step') !== null) {
             $input->setAttribute('step', $this->get('step'));
         }
 
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
 
-        return $label;
+        return $div;
     }
 
     public function checkPostFieldData($data, &$message, $entry_id = null)
@@ -247,28 +252,28 @@ class FieldRange extends Field implements ExportableField, ImportableField
         );
         $message = NULL;
 
-        if ( $this->get('required') == 'yes' && strlen($data) === 0 ) {
+        if ($this->get('required') == 'yes' && strlen($data) === 0) {
             $message = $messages['required'];
             return self::__MISSING_FIELDS__;
         }
 
-        if ( strlen($data) > 0 && !is_numeric($data) ) {
+        if (strlen($data) > 0 && !is_numeric($data)) {
             $message = $messages['invalid'];
             return self::__INVALID_FIELDS__;
         }
 
-        if ( is_numeric($data) ) {
-            if ( is_numeric($min) && $data < $min ) {
+        if (is_numeric($data)) {
+            if (is_numeric($min) && $data < $min) {
                 $message = $messages['min'];
                 return self::__INVALID_FIELDS__;
             }
 
-            if ( is_numeric($max) && $data > $max ) {
+            if (is_numeric($max) && $data > $max) {
                 $message = $messages['max'];
                 return self::__INVALID_FIELDS__;
             }
 
-            if ( is_numeric($step) && $step > 0 ) {
+            if (is_numeric($step) && $step > 0) {
                 $relative = $data - $min;
                 if (fmod($relative, $step) !== 0.0) {
                     $message = $messages['step'];
@@ -284,7 +289,7 @@ class FieldRange extends Field implements ExportableField, ImportableField
     {
         $status = self::__OK__;
 
-        if ( strlen(trim($data)) == 0 ) return array();
+        if (strlen(trim($data)) == 0) return array();
 
         $result = array(
             'value' => $data
@@ -310,9 +315,9 @@ class FieldRange extends Field implements ExportableField, ImportableField
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $data;
-        } else if ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -350,7 +355,7 @@ class FieldRange extends Field implements ExportableField, ImportableField
         $modes = (object)$this->getExportModes();
 
         // Export unformatted:
-        if ( $mode === $modes->getUnformatted || $mode === $modes->getPostdata ) {
+        if ($mode === $modes->getUnformatted || $mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? $data['value']
                 : null;
@@ -410,7 +415,7 @@ class FieldRange extends Field implements ExportableField, ImportableField
         $expression = " `t$field_id`.`value` ";
 
         // X to Y support
-        if ( preg_match('/^(-?(?:\d+(?:\.\d+)?|\.\d+)) to (-?(?:\d+(?:\.\d+)?|\.\d+))$/i', $data[0], $match) ) {
+        if (preg_match('/^(-?(?:\d+(?:\.\d+)?|\.\d+)) to (-?(?:\d+(?:\.\d+)?|\.\d+))$/i', $data[0], $match)) {
 
             $joins .= " LEFT JOIN `tbl_entries_data_$field_id` AS `t$field_id` ON (`e`.`id` = `t$field_id`.entry_id) ";
             $where .= " AND CAST(`t$field_id`.`value` AS FLOAT) BETWEEN {$match[1]} AND {$match[2]} ";
@@ -419,7 +424,7 @@ class FieldRange extends Field implements ExportableField, ImportableField
         }
 
         // Equal to or less/greater than X
-        else if ( preg_match('/^(equal to or )?(less|greater) than\s*(-?(?:\d+(?:\.\d+)?|\.\d+))$/i', $data[0], $match) ) {
+        elseif (preg_match('/^(equal to or )?(less|greater) than\s*(-?(?:\d+(?:\.\d+)?|\.\d+))$/i', $data[0], $match)) {
 
             switch($match[2]) {
                 case 'less':
@@ -431,7 +436,7 @@ class FieldRange extends Field implements ExportableField, ImportableField
                     break;
             }
 
-            if ( $match[1] ) {
+            if ($match[1]) {
                 $expression .= '=';
             }
 
@@ -443,7 +448,7 @@ class FieldRange extends Field implements ExportableField, ImportableField
         }
 
         // Look for <=/< or >=/> symbols
-        else if ( preg_match('/^(=?[<>]=?)\s*(-?(?:\d+(?:\.\d+)?|\.\d+))$/i', $data[0], $match) ) {
+        elseif (preg_match('/^(=?[<>]=?)\s*(-?(?:\d+(?:\.\d+)?|\.\d+))$/i', $data[0], $match)) {
 
             $joins .= " LEFT JOIN `tbl_entries_data_$field_id` AS `t$field_id` ON (`e`.`id` = `t$field_id`.entry_id) ";
             $where .= sprintf(
@@ -466,16 +471,16 @@ class FieldRange extends Field implements ExportableField, ImportableField
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) return;
+        if (!is_array($records) || empty($records)) return;
 
         $groups = array($this->get('element_name') => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
 
             $value = $data['value'];
 
-            if ( !isset($groups[$this->get('element_name')][$value]) ) {
+            if (!isset($groups[$this->get('element_name')][$value])) {
                 $groups[$this->get('element_name')][$value] = array(
                     'attr' => array('value' => $value),
                     'records' => array(),

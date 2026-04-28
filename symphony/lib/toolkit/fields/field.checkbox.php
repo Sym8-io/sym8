@@ -102,7 +102,7 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
 
     public function findDefaults(array &$settings)
     {
-        if ( !isset($settings['default_state']) ) {
+        if (!isset($settings['default_state'])) {
             $settings['default_state'] = 'off';
         }
     }
@@ -116,7 +116,7 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
         $label->setAttribute('class', 'column');
         $input = Widget::Input('fields['.$this->get('sortorder').'][default_state]', 'on', 'checkbox');
 
-        if ( $this->get('default_state') == 'on' ) {
+        if ($this->get('default_state') == 'on') {
             $input->setAttribute('checked', 'checked');
         }
 
@@ -129,13 +129,13 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
 
     public function commit()
     {
-        if ( !parent::commit() ) {
+        if (!parent::commit()) {
             return false;
         }
 
         $id = $this->get('id');
 
-        if ( $id === false ) {
+        if ($id === false) {
             return false;
         }
 
@@ -152,11 +152,11 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
 
     public function displayPublishPanel(XMLElement &$wrapper, $data = null, $flagWithError = null, $fieldnamePrefix = null, $fieldnamePostfix = null, $entry_id = null)
     {
-        if ( !$data ) {
+        if (!$data) {
             // TODO: Don't rely on $_POST
-            if ( isset($_POST) && !empty($_POST) ) {
+            if (isset($_POST) && !empty($_POST)) {
                 $value = 'no';
-            } elseif ( $this->get('default_state') == 'on' ) {
+            } elseif ($this->get('default_state') == 'on') {
                 $value = 'yes';
             } else {
                 $value = 'no';
@@ -167,18 +167,18 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
 
         $label = Widget::Label();
 
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
 
         $input = Widget::Input('fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix, 'yes', 'checkbox', ($value === 'yes' ? array('checked' => 'checked') : null));
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
         $label->setValue($input->generate(false) . ' ' . $this->get('label'));
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -195,7 +195,7 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
         // then the field has 'no value' in the context of being required. RE: #1569
         $has_no_value = ($has_no_value === false) ? !in_array(strtolower($data), array('on', 'yes')) : true;
 
-        if ( $this->get('required') === 'yes' && $has_no_value ) {
+        if ($this->get('required') === 'yes' && $has_no_value) {
             $message = __('‘%s’ is a required field.', array($this->get('label')));
 
             return self::__MISSING_FIELDS__;
@@ -252,9 +252,9 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
         $modes = (object)$this->getImportModes();
         $value = $this->processRawFieldData($data, $status, $message, true, $entry_id);
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $value['value'];
-        } elseif ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $value;
         }
 
@@ -293,7 +293,7 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
         $modes = (object)$this->getExportModes();
 
         // Export unformatted:
-        if ( $mode === $modes->getPostdata ) {
+        if ($mode === $modes->getPostdata) {
             return (
                 isset($data['value'])
                 && $data['value'] === 'yes'
@@ -302,7 +302,7 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
             );
 
             // Export formatted:
-        } elseif ( $mode === $modes->getValue ) {
+        } elseif ($mode === $modes->getValue) {
             return (
                 isset($data['value'])
                 && $data['value'] === 'yes'
@@ -311,7 +311,7 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
             );
 
             // Export boolean:
-        } elseif ( $mode === $modes->getBoolean ) {
+        } elseif ($mode === $modes->getBoolean) {
             return (
                 isset($data['value'])
                 && $data['value'] === 'yes'
@@ -329,12 +329,12 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
     {
         $existing_options = array('yes', 'no');
 
-        if ( is_array($existing_options) && !empty($existing_options) ) {
+        if (is_array($existing_options) && !empty($existing_options)) {
             $optionlist = new XMLElement('ul');
             $optionlist->setAttribute('class', 'tags');
             $optionlist->setAttribute('data-interactive', 'data-interactive');
 
-            foreach ( $existing_options as $option ) {
+            foreach ($existing_options as $option) {
                 $optionlist->appendChild(new XMLElement('li', $option));
             }
 
@@ -347,8 +347,8 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
         $field_id = $this->get('id');
         $default_state = ($this->get('default_state') == "on") ? 'yes' : 'no';
 
-        if ( $andOperation ) {
-            foreach ( $data as $value ) {
+        if ($andOperation) {
+            foreach ($data as $value) {
                 $this->_key++;
                 $value = $this->cleanValue($value);
                 $joins .= "
@@ -357,7 +357,7 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
                         ON (e.id = t{$field_id}_{$this->_key}.entry_id)
                 ";
 
-                if ( $default_state == $value ) {
+                if ($default_state == $value) {
                     $where .= "
                         AND (
                             t{$field_id}_{$this->_key}.value = '{$value}'
@@ -372,11 +372,11 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
                 }
             }
         } else {
-            if ( !is_array($data) ) {
+            if (!is_array($data)) {
                 $data = array($data);
             }
 
-            foreach ( $data as &$value ) {
+            foreach ($data as &$value) {
                 $value = $this->cleanValue($value);
             }
 
@@ -388,7 +388,7 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
                     ON (e.id = t{$field_id}_{$this->_key}.entry_id)
             ";
 
-            if ( strpos($data, $default_state) !== false ) {
+            if (strpos($data, $default_state) !== false) {
                 $where .= "
                     AND (
                         t{$field_id}_{$this->_key}.value IN ('{$data}')
@@ -412,7 +412,7 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
 
     public function buildSortingSQL(&$joins, &$where, &$sort, $order = 'ASC')
     {
-        if ( $this->isRandomOrder($order) ) {
+        if ($this->isRandomOrder($order)) {
             $sort = 'ORDER BY RAND()';
         } else {
             $sort = sprintf(
@@ -440,18 +440,18 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) {
+        if (!is_array($records) || empty($records)) {
             return;
         }
 
         $groups = array($this->get('element_name') => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
 
             $value = $data['value'];
 
-            if ( !isset($groups[$this->get('element_name')][$value]) ) {
+            if (!isset($groups[$this->get('element_name')][$value])) {
                 $groups[$this->get('element_name')][$value] = array(
                     'attr' => array('value' => $value),
                     'records' => array(),
@@ -471,23 +471,25 @@ class FieldCheckbox extends Field implements ExportableField, ImportableField
 
     public function getExampleFormMarkup()
     {
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
         $label = new XMLElement('label');
-
         $input = Widget::Input('fields['.$this->get('element_name').']', 'yes', 'checkbox', ($this->get('default_state') == 'on' ? array('checked' => 'checked') : null));
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
         $label->appendChild($input);
 
         $labelText = new XMLElement('span', $this->get('label'));
+        $label->appendChild($labelText);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
-            $labelText->appendChild($mark);
+            $label->appendChild($mark);
         }
-        $label->appendChild($labelText);
 
-        return $label;
+        $div->appendChild($label);
+
+        return $div;
     }
 }
