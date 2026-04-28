@@ -176,9 +176,9 @@ class FieldDate extends Field implements ExportableField, ImportableField
             $parts = self::isEqualTo($parts, $direction, $equal_to);
 
             // Year/Month/Day/Time
-        } elseif ( preg_match('/^\d{1,4}[-\/]\d{1,2}[-\/]\d{1,2}\s\d{1,2}:\d{2}/', $string, $matches) ) {
+        } elseif (preg_match('/^\d{1,4}[-\/]\d{1,2}[-\/]\d{1,2}\s\d{1,2}:\d{2}/', $string, $matches)) {
             // Handles the case of `to` filters
-            if ( $equal_to || is_null($direction) ) {
+            if ($equal_to || is_null($direction)) {
                 $parts['start'] = $parts['end'] = DateTimeObj::get('Y-m-d H:i:s', $string);
             } else {
                 $parts['start'] = DateTimeObj::get('Y-m-d H:i:s', $string . ' - 1 second');
@@ -186,7 +186,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
             }
 
             // Year/Month/Day
-        } elseif ( preg_match('/^\d{1,4}[-\/]\d{1,2}[-\/]\d{1,2}$/', $string, $matches) ) {
+        } elseif (preg_match('/^\d{1,4}[-\/]\d{1,2}[-\/]\d{1,2}$/', $string, $matches)) {
             $year_month_day = current($matches);
 
             $parts['start'] = "$year_month_day 00:00:00";
@@ -195,7 +195,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
             $parts = self::isEqualTo($parts, $direction, $equal_to);
 
             // Year/Month
-        } elseif ( preg_match('/^\d{1,4}[-\/]\d{1,2}$/', $string, $matches) ) {
+        } elseif (preg_match('/^\d{1,4}[-\/]\d{1,2}$/', $string, $matches)) {
             $year_month = current($matches);
 
             $parts['start'] = "$year_month-01 00:00:00";
@@ -207,7 +207,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
         } else {
             // Handles the case of `to` filters
 
-            if ( $equal_to || is_null($direction) ) {
+            if ($equal_to || is_null($direction)) {
                 $parts['start'] = $parts['end'] = DateTimeObj::get('Y-m-d H:i:s', $string);
             } else {
                 $parts['start'] = DateTimeObj::get('Y-m-d H:i:s', $string . ' - 1 second');
@@ -235,11 +235,11 @@ class FieldDate extends Field implements ExportableField, ImportableField
      */
     public static function isEqualTo(array $parts, $direction, $equal_to = false)
     {
-        if ( !$equal_to ) {
+        if (!$equal_to) {
             return $parts;
         }
 
-        if ( $direction == 'later' ) {
+        if ($direction == 'later') {
             $parts['end'] = $parts['start'];
         } else {
             $parts['start'] = $parts['end'];
@@ -253,11 +253,11 @@ class FieldDate extends Field implements ExportableField, ImportableField
         $string = self::cleanFilterString($string);
 
         // Relative check, earlier or later
-        if ( preg_match('/^(equal to or )?(earlier|later) than (.*)$/i', $string, $match) ) {
+        if (preg_match('/^(equal to or )?(earlier|later) than (.*)$/i', $string, $match)) {
             $string = $match[3];
 
             // Validate date
-            if ( !DateTimeObj::validate($string) ) {
+            if (!DateTimeObj::validate($string)) {
                 return self::ERROR;
             }
 
@@ -289,7 +289,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
             || !preg_match('/\s+to\s+/i', $string)
         ) {
             // Validate
-            if ( !DateTimeObj::validate($string) ) {
+            if (!DateTimeObj::validate($string)) {
                 return self::ERROR;
             }
 
@@ -297,14 +297,14 @@ class FieldDate extends Field implements ExportableField, ImportableField
             $string = $parts['start'] . ' to ' . $parts['end'];
 
             // Match date ranges
-        } elseif ( preg_match('/\s+to\s+/i', $string) ) {
-            if ( !$parts = preg_split('/\s+to\s+/', $string, 2, PREG_SPLIT_NO_EMPTY) ) {
+        } elseif (preg_match('/\s+to\s+/i', $string)) {
+            if (!$parts = preg_split('/\s+to\s+/', $string, 2, PREG_SPLIT_NO_EMPTY)) {
                 return self::ERROR;
             }
 
-            foreach ( $parts as $i => &$part ) {
+            foreach ($parts as $i => &$part) {
                 // Validate
-                if ( !DateTimeObj::validate($part) ) {
+                if (!DateTimeObj::validate($part)) {
                     return self::ERROR;
                 }
 
@@ -315,7 +315,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
         }
 
         // Parse the full date range and return an array
-        if ( !$parts = preg_split('/\s+to\s+/i', $string, 2, PREG_SPLIT_NO_EMPTY) ) {
+        if (!$parts = preg_split('/\s+to\s+/i', $string, 2, PREG_SPLIT_NO_EMPTY)) {
             return self::ERROR;
         }
 
@@ -324,7 +324,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
         list($start, $end) = $parts;
 
         // Validate
-        if ( !DateTimeObj::validate($start) || !DateTimeObj::validate($end) ) {
+        if (!DateTimeObj::validate($start) || !DateTimeObj::validate($end)) {
             return self::ERROR;
         }
 
@@ -344,12 +344,12 @@ class FieldDate extends Field implements ExportableField, ImportableField
     {
         $field_id = $this->get('id');
 
-        if ( empty($data) ) {
+        if (empty($data)) {
             return;
         }
 
-        if ( $andOperation ) {
-            foreach ( $data as $date ) {
+        if ($andOperation) {
+            foreach ($data as $date) {
                 // Prevent the DateTimeObj creating a range that isn't supported by MySQL.
                 $start = ($date['start'] === self::$min_date) ? self::$min_date : DateTimeObj::getGMT('Y-m-d H:i:s', $date['start']);
                 $end = ($date['end'] === self::$max_date) ? self::$max_date : DateTimeObj::getGMT('Y-m-d H:i:s', $date['end']);
@@ -362,7 +362,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
         } else {
             $tmp = array();
 
-            foreach ( $data as $date ) {
+            foreach ($data as $date) {
                 // Prevent the DateTimeObj creating a range that isn't supported by MySQL.
                 $start = ($date['start'] === self::$min_date) ? self::$min_date : DateTimeObj::getGMT('Y-m-d H:i:s', $date['start']);
                 $end = ($date['end'] === self::$max_date) ? self::$max_date : DateTimeObj::getGMT('Y-m-d H:i:s', $date['end']);
@@ -401,7 +401,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
 
     public function findDefaults(array &$settings)
     {
-        if ( !isset($settings['pre_populate']) ) {
+        if (!isset($settings['pre_populate'])) {
             $settings['pre_populate'] = $this->get('pre_populate');
         }
     }
@@ -431,13 +431,13 @@ class FieldDate extends Field implements ExportableField, ImportableField
 
     public function commit()
     {
-        if ( !parent::commit() ) {
+        if (!parent::commit()) {
             return false;
         }
 
         $id = $this->get('id');
 
-        if ( $id === false ) {
+        if ($id === false) {
             return false;
         }
 
@@ -461,26 +461,26 @@ class FieldDate extends Field implements ExportableField, ImportableField
         $time = $this->get('time');
 
         // New entry
-        if ( empty($data) && is_null($flagWithError) && !is_null($this->get('pre_populate')) ) {
+        if (empty($data) && is_null($flagWithError) && !is_null($this->get('pre_populate'))) {
             $prepopulate = $this->get('pre_populate');
 
             $date = self::parseDate($prepopulate);
             $date = $date['start'];
             #$value = $this->formatDate($date);
-            if ( $time === 'yes' ) {
+            if ($time === 'yes') {
                 $value = DateTimeObj::format($date, 'Y-m-d\TH:i');
             } else {
                 $value = DateTimeObj::format($date, 'Y-m-d');
             }
 
             // Error entry, display original data
-        } elseif ( !is_null($flagWithError) ) {
+        } elseif (!is_null($flagWithError)) {
             $value = $_POST['fields'][$name];
 
             // Empty entry
-        } elseif ( isset($data['value']) ) {
+        } elseif (isset($data['value'])) {
             #$value = $this->formatDate($data['value']);
-            if ( $time === 'yes' ) {
+            if ($time === 'yes') {
                 $value = DateTimeObj::format($data['value'], 'Y-m-d\TH:i');
             } else {
                 $value = DateTimeObj::format($data['value'], 'Y-m-d');
@@ -489,18 +489,18 @@ class FieldDate extends Field implements ExportableField, ImportableField
 
         $label = Widget::Label($this->get('label'));
 
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
 
         $type = 'date';
-        if ( $time === 'yes' ) {
+        if ($time === 'yes') {
             $type = 'datetime-local';
         }
 
         // Input
         $input = Widget::Input("fields{$fieldnamePrefix}[{$name}]", $value, $type);
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
@@ -508,7 +508,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
         $label->setAttribute('class', 'date');
 
         // Calendar
-        if ( $this->get('calendar') === 'yes' ) {
+        if ($this->get('calendar') === 'yes') {
             $wrapper->setAttribute('data-interactive', 'data-interactive');
 
             $ul = new XMLElement('ul');
@@ -524,7 +524,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
         }
 
         // Wrap label in error
-        if ( !is_null($flagWithError) ) {
+        if (!is_null($flagWithError)) {
             $label = Widget::Error($label, $flagWithError);
         }
         $wrapper->appendChild($label);
@@ -535,15 +535,15 @@ class FieldDate extends Field implements ExportableField, ImportableField
         $message = null;
 
         // If this field is required
-        if ( $this->get('required') === 'yes' && strlen(trim($data)) == 0 ) {
+        if ($this->get('required') === 'yes' && strlen(trim($data)) == 0) {
             $message = __('‘%s’ is a required field.', array($this->get('label')));
             return self::__MISSING_FIELDS__;
-        } elseif ( empty($data) ) {
+        } elseif (empty($data)) {
             return self::__OK__;
         }
 
         // Handle invalid dates
-        if ( !DateTimeObj::validate($data) ) {
+        if (!DateTimeObj::validate($data)) {
             $message = __('The date specified in ‘%s’ is invalid.', array($this->get('label')));
             return self::__INVALID_FIELDS__;
         }
@@ -557,20 +557,20 @@ class FieldDate extends Field implements ExportableField, ImportableField
         $timestamp = null;
 
         // Prepopulate date
-        if ( is_null($data) || $data == '' ) {
-            if ( $this->get('pre_populate') !='' ) {
+        if (is_null($data) || $data == '') {
+            if ($this->get('pre_populate') !='') {
                 $date = self::parseDate($this->get('pre_populate'));
                 $date = $date['start'];
                 $timestamp = $this->formatDate($date);
             }
 
             // Convert given date to timestamp
-        } elseif ( $status == self::__OK__ && DateTimeObj::validate($data) ) {
+        } elseif ($status == self::__OK__ && DateTimeObj::validate($data)) {
             $timestamp = DateTimeObj::get('U', $data);
         }
 
         // Valid date
-        if ( !is_null($timestamp) ) {
+        if (!is_null($timestamp)) {
             return array(
                 'value' => DateTimeObj::get('c', $timestamp),
                 'date' => DateTimeObj::getGMT('Y-m-d H:i:s', $timestamp)
@@ -591,10 +591,10 @@ class FieldDate extends Field implements ExportableField, ImportableField
 
     public function appendFormattedElement(XMLElement &$wrapper, $data, $encode = false, $mode = null, $entry_id = null)
     {
-        if ( isset($data['value']) ) {
+        if (isset($data['value'])) {
 
             // Get date
-            if ( is_array($data['value']) ) {
+            if (is_array($data['value'])) {
                 $date = current($data['value']);
             } else {
                 $date = $data['value'];
@@ -608,7 +608,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
     {
         $value = '';
 
-        if ( isset($data['value']) ) {
+        if (isset($data['value'])) {
             $value = $this->formatDate($data['value']);
         }
 
@@ -638,29 +638,29 @@ class FieldDate extends Field implements ExportableField, ImportableField
         $modes = (object)$this->getImportModes();
 
         // Prepopulate date:
-        if ( $data === null || $data === '' ) {
-            if ( !is_null($this->get('pre_populate')) ) {
+        if ($data === null || $data === '') {
+            if (!is_null($this->get('pre_populate'))) {
                 $timestamp = self::parseDate($this->get('pre_populate'));
                 $timestamp = $timestamp['start'];
             }
 
             // DateTime to timestamp:
-        } elseif ( $data instanceof DateTime ) {
+        } elseif ($data instanceof DateTime) {
             $timestamp = $data->getTimestamp();
 
             // Convert given date to timestamp:
-        } elseif ( DateTimeObj::validate($data) ) {
+        } elseif (DateTimeObj::validate($data)) {
             $timestamp = DateTimeObj::get('U', $data);
         }
 
         // Valid date found:
-        if ( isset($timestamp) ) {
+        if (isset($timestamp)) {
             $value = DateTimeObj::get('c', $timestamp);
         }
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $value;
-        } elseif ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -698,14 +698,14 @@ class FieldDate extends Field implements ExportableField, ImportableField
     {
         $modes = (object)$this->getExportModes();
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $this->formatDate(
 
                 isset($data['value']) ? $data['value'] : null
             );
         }
 
-        if ( $mode === $modes->getObject ) {
+        if ($mode === $modes->getObject) {
             $timezone = Symphony::Configuration()->get('timezone', 'region');
 
             $date = new DateTime(
@@ -715,7 +715,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
             $date->setTimezone(new DateTimeZone($timezone));
 
             return $date;
-        } elseif ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? $data['value']
                 : null;
@@ -730,31 +730,31 @@ class FieldDate extends Field implements ExportableField, ImportableField
 
     public function buildDSRetrievalSQL($data, &$joins, &$where, $andOperation = false)
     {
-        if ( self::isFilterRegex($data[0]) ) {
+        if (self::isFilterRegex($data[0])) {
             $this->buildRegexSQL($data[0], array('value'), $joins, $where);
-        } elseif ( self::isFilterSQL($data[0]) ) {
+        } elseif (self::isFilterSQL($data[0])) {
             $this->buildFilterSQL($data[0], array('value'), $joins, $where);
         } else {
             $parsed = array();
 
             // For the filter provided, loop over each piece
-            foreach ( $data as $string ) {
+            foreach ($data as $string) {
                 $type = self::parseFilter($string);
 
-                if ( $type == self::ERROR ) {
+                if ($type == self::ERROR) {
                     return false;
                 }
 
                 $parsed[$type] = $parsed[$type] ?? array();
 
-                if ( !is_array($parsed[$type]) ) {
+                if (!is_array($parsed[$type])) {
                     $parsed[$type] = array();
                 }
 
                 $parsed[$type][] = $string;
             }
 
-            foreach ( $parsed as $value ) {
+            foreach ($parsed as $value) {
                 $this->buildRangeFilterSQL($value, $joins, $where, $andOperation);
             }
         }
@@ -768,7 +768,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
 
     public function buildSortingSQL(&$joins, &$where, &$sort, $order = 'ASC')
     {
-        if ( $this->isRandomOrder($order) ) {
+        if ($this->isRandomOrder($order)) {
             $sort = 'ORDER BY RAND()';
         } else {
             $sort = sprintf(
@@ -796,13 +796,13 @@ class FieldDate extends Field implements ExportableField, ImportableField
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) {
+        if (!is_array($records) || empty($records)) {
             return;
         }
 
         $groups = array('year' => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
 
             $timestamp = DateTimeObj::get('U', $data['value']);
@@ -811,7 +811,7 @@ class FieldDate extends Field implements ExportableField, ImportableField
             $year = $info['year'];
             $month = ($info['mon'] < 10 ? '0' . $info['mon'] : $info['mon']);
 
-            if ( !isset($groups['year'][$year]) ) {
+            if (!isset($groups['year'][$year])) {
                 $groups['year'][$year] = array(
                     'attr' => array('value' => $year),
                     'records' => array(),
@@ -819,11 +819,11 @@ class FieldDate extends Field implements ExportableField, ImportableField
                 );
             }
 
-            if ( !isset($groups['year'][$year]['groups']['month']) ) {
+            if (!isset($groups['year'][$year]['groups']['month'])) {
                 $groups['year'][$year]['groups']['month'] = array();
             }
 
-            if ( !isset($groups['year'][$year]['groups']['month'][$month]) ) {
+            if (!isset($groups['year'][$year]['groups']['month'][$month])) {
                 $groups['year'][$year]['groups']['month'][$month] = array(
                     'attr' => array('value' => $month),
                     'records' => array(),
@@ -843,32 +843,39 @@ class FieldDate extends Field implements ExportableField, ImportableField
 
     public function getExampleFormMarkup()
     {
-        $label = new XMLElement('label', $this->get('label'));
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
+        $label = Widget::Label($this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
 
         $type = 'date';
-        if ( $this->get('time') === 'yes' ) {
+        if ($this->get('time') === 'yes') {
             $type = 'datetime-local';
         }
         $input = Widget::Input('fields['.$this->get('element_name').']', null, $type);
-        if ( $this->get('required') === 'yes' ) {
+        $input->setAttribute('id', $fieldName . '-' . $fieldId);
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
-        if ( $type === 'datetime-local' && $this->get('pre_populate') === 'now' ) {
-            $input->setAttribute('value', '{concat(/data/params/today, \'T\', /data/params/current-time)}');
+        if ($type === 'datetime-local' && $this->get('pre_populate') === 'now') {
+            $input->setAttribute('value', '{concat(/data/params/today, &apos;T&apos;, /data/params/current-time)}');
         }
-        elseif ( $this->get('pre_populate') === 'now' ) {
+        elseif ($this->get('pre_populate') === 'now') {
             $input->setAttribute('value', '{/data/params/today}');
         }
 
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
 
-        return $label;
+        return $div;
     }
 
 }

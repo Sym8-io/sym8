@@ -34,7 +34,7 @@ class FieldWeek extends Field
         return 0;
     }
 
-    protected static function getWeekIndex(string $weekValue): int|float
+    protected static function getWeekIndex(string $weekValue): int
     {
         if (preg_match('/^(\d{4})-W(\d{2})$/', $weekValue, $matches)) {
             $year = (int)$matches[1];
@@ -112,7 +112,7 @@ class FieldWeek extends Field
         $default = new XMLElement('label', __('Set current week as value'));
         $default->setAttribute('class', 'column');
         $input = Widget::Input('fields['.$this->get('sortorder').'][default_week]', 'on', 'checkbox');
-        if ( $this->get('default_week') === 'on' ) {
+        if  ($this->get('default_week') === 'on') {
             $input->setAttribute('checked', 'checked');
         }
         $default->appendChild($input);
@@ -121,9 +121,6 @@ class FieldWeek extends Field
         $custom = new XMLElement('label', __('Custom week <i>optional</i>'));
         $custom->setAttribute('class', 'column');
         $input = Widget::input('fields['.$this->get('sortorder').'][custom_week]', $this->get('custom_week'), 'week');
-        // Input type="week" is not yet supported by Firefox and Safari
-        $input->setAttribute('placeholder', 'yyyy-Www');
-        $input->setAttribute('aria-label', 'Please enter a week in the format “yyyy-Www”');
         $custom->appendChild($input);
 
         $div = new XMLElement('div', null, array('class' => 'two columns'));
@@ -135,18 +132,12 @@ class FieldWeek extends Field
         $min = new XMLElement('label', __('Earliest year and week to accept <i>optional</i>'));
         $min->setAttribute('class', 'column');
         $input = Widget::input('fields['.$this->get('sortorder').'][min]', $this->get('min'), 'week');
-        // Input type="week" is not yet supported by Firefox and Safari
-        $input->setAttribute('placeholder', 'yyyy-Www');
-        $input->setAttribute('aria-label', 'Please enter a week in the format “yyyy-Www”');
         $min->appendChild($input);
 
         // Max
         $max = new XMLElement('label', __('Latest year and week <i>optional</i>'));
         $max->setAttribute('class', 'column');
         $input = Widget::input('fields['.$this->get('sortorder').'][max]', $this->get('max'), 'week');
-        // Input type="week" is not yet supported by Firefox and Safari
-        $input->setAttribute('placeholder', 'yyyy-Www');
-        $input->setAttribute('aria-label', 'Please enter a week in the format “yyyy-Www”');
         $max->appendChild($input);
 
         $div = new XMLElement('div', null, array('class' => 'two columns'));
@@ -183,7 +174,7 @@ class FieldWeek extends Field
 
     public function commit()
     {
-        if ( !parent::commit() ) return false;
+        if (!parent::commit()) return false;
 
         return FieldManager::saveSettings($this->get('id'), [
             'default_week' => $this->get('default_week') === 'on' ? 'on' : 'off',
@@ -202,40 +193,46 @@ class FieldWeek extends Field
     {
         $value = isset($data['value']) ? $data['value'] : null;
 
-        $input = Widget::input("fields{$fieldnamePrefix}[{$this->get('element_name')}]{$fieldnamePostfix}", $value, 'week', [
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+
+        $input = Widget::input("fields{$fieldnamePrefix}[{$fieldName}]{$fieldnamePostfix}", $value, 'week', [
             'step' => $this->get('step') ?: 1
         ]);
-        // Input type="week" is not yet supported by Firefox and Safari
-        $input->setAttribute('placeholder', 'yyyy-Www');
-        $input->setAttribute('aria-label', 'Please enter a week in the format “yyyy-Www”');
-        if ( isset($data['value']) ) {
+        if (isset($data['value'])) {
             $input->setAttribute('value', $data['value']);
-        }
-        else if ( $value === null && $this->get('default_week') === 'on' ) {
+        } elseif ($value === null && $this->get('default_week') === 'on') {
             $input->setAttribute('value', date('Y-\WW'));
-        }
-        else if ( $value === null && $this->get('custom_week') !== null ) {
+        } elseif ($value === null && $this->get('custom_week') !== null) {
             $input->setAttribute('value', $this->get('custom_week'));
         }
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $input->setAttribute('min', $this->get('min'));
         }
 
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $input->setAttribute('max', $this->get('max'));
         }
 
         $label = Widget::label($this->get('label'));
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
-        $label->appendChild($input);
 
-        if ( $flagWithError != null ) {
+        $input->setAttribute('aria-describedby', $fieldName . '-' . $fieldId . '-hint');
+
+        $hint = new XMLElement('small', __('Enter a week (format: yyyy-Www, e.g. 2026-W17)'));
+        $hint->setAttribute('class', 'help field-hint');
+        $hint->setAttribute('id', $fieldName . '-' . $fieldId . '-hint');
+
+        $label->appendChild($input);
+        $label->appendChild($hint);
+
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -249,15 +246,15 @@ class FieldWeek extends Field
         $element = new XMLElement($this->get('element_name'), $value);
 
         // Return additional attributes 'min', 'max' and 'step'
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $element->setAttribute('min', $this->get('min'));
         }
 
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $element->setAttribute('max', $this->get('max'));
         }
 
-        if ( $this->get('step') !== null ) {
+        if ($this->get('step') !== null) {
             $element->setAttribute('step', $this->get('step'));
         }
 
@@ -266,44 +263,53 @@ class FieldWeek extends Field
 
     public function getExampleFormMarkup()
     {
-        $labelText = $this->get('label') . "\n<!-- Input type=\"week\" is not yet supported by Firefox and Safari. Use placeholder and aria-label to help users enter a valid value. -->";
-        $label = new XMLElement('label');
-        $label->setValue($labelText . ' ');
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
 
+        $div = new XMLElement('div', __("\n<!-- input[type=\"week\"] may fall back to a text field in some browsers. A format hint is included to ensure valid input. -->"), array('class' => 'form-field'));
+
+        $label = Widget::Label($this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
 
-        $input = Widget::input('fields['.$this->get('element_name').']', null, 'week', array(
+        $input = Widget::input('fields['. $fieldName .']', null, 'week', array(
             'step' => $this->get('step') ?: 1
         ));
-        // Input type="week" is not yet supported by Firefox and Safari
-        $input->setAttribute('placeholder', 'yyyy-Www');
-        $input->setAttribute('aria-label', 'Please enter a week in the format “yyyy-Www”');
-        if ( $this->get('custom_week') !== null ) {
+        $input->setAttribute('id', $fieldName . '-' . $fieldId);
+        if ($this->get('custom_week') !== null) {
             $input->setAttribute('value', $this->get('custom_week'));
         }
-        if ( $this->get('default_week') === 'on' ) {
-            $input->setAttribute('value', '{concat(/data/params/this-year, \'-W\', /data/params/this-week-number)}');
+        if ($this->get('default_week') === 'on') {
+            $input->setAttribute('value', "{concat(/data/params/this-year, &apos;-W&apos;, /data/params/this-week-number)}");
         }
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $input->setAttribute('min', $this->get('min'));
         }
 
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $input->setAttribute('max', $this->get('max'));
         }
 
-        $label->appendChild($input);
+        $input->setAttribute('aria-describedby', $fieldName . '-' . $fieldId . '-hint');
 
-        return $label;
+        $hint = new XMLElement('small', __('Enter a week (format: yyyy-Www, e.g. 2026-W17)'));
+        $hint->setAttribute('class', 'field-hint');
+        $hint->setAttribute('id', $fieldName . '-' . $fieldId . '-hint');
+
+        $div->appendChild($label);
+        $div->appendChild($input);
+        $div->appendChild($hint);
+
+        return $div;
     }
 
     public function checkPostFieldData($data, &$message, $entry_id = null)
@@ -322,23 +328,23 @@ class FieldWeek extends Field
         );
         $message = null;
 
-        if ( $this->get('required') === 'yes' && strlen($data) === 0 ) {
+        if ($this->get('required') === 'yes' && strlen($data) === 0) {
             $message = $messages['required'];
             return self::__MISSING_FIELDS__;
         }
 
-        if ( strlen($data) > 0 && !preg_match('/^\d{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$/', $data) ) {
+        if (strlen($data) > 0 && !preg_match('/^\d{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$/', $data)) {
             $message = $messages['invalid'];
             return self::__INVALID_FIELDS__;
         }
 
-        if ( preg_match('/^\d{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$/', $data) ) {
-            if ( $min !== null && $data < $min ) {
+        if (preg_match('/^\d{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$/', $data)) {
+            if ($min !== null && $data < $min) {
                 $message = $messages['min'];
                 return self::__INVALID_FIELDS__;
             }
 
-            if ( $data > $max ) {
+            if ($data > $max) {
                 $message = $messages['max'];
                 return self::__INVALID_FIELDS__;
             }
@@ -347,14 +353,14 @@ class FieldWeek extends Field
                 $minTmp = '1970-W01'; // Default is first week of 1970 ("1970-W01").
 
                 $dataWeek = static::getWeekIndex($data);
-                if ( $min === null ) {
+                if ($min === null) {
                     $minWeek = static::getWeekIndex($minTmp);
                 } else {
                     $minWeek = static::getWeekIndex($min);
                 }
                 $relative = $dataWeek - $minWeek;
                 if (fmod($relative, $step) !== 0.0) {
-                    if ( $min === null ) {
+                    if ($min === null) {
                         $message = $messages['step_relative'];
                     } else {
                         $message = $messages['step_absolute'];
@@ -372,7 +378,7 @@ class FieldWeek extends Field
     {
         $status = self::__OK__;
 
-        if ( strlen(trim($data)) == 0 ) return array();
+        if (strlen(trim($data)) == 0) return array();
 
         $result = array(
             'value' => $data
@@ -399,9 +405,9 @@ class FieldWeek extends Field
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $data;
-        } else if ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -439,7 +445,7 @@ class FieldWeek extends Field
         $modes = (object)$this->getExportModes();
 
         // Export unformatted:
-        if ( $mode === $modes->getUnformatted || $mode === $modes->getPostdata ) {
+        if ($mode === $modes->getUnformatted || $mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? $data['value']
                 : null;
@@ -531,16 +537,16 @@ class FieldWeek extends Field
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) return;
+        if (!is_array($records) || empty($records)) return;
 
         $groups = array($this->get('element_name') => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
 
             $value = $data['value'];
 
-            if ( !isset($groups[$this->get('element_name')][$value]) ) {
+            if (!isset($groups[$this->get('element_name')][$value])) {
                 $groups[$this->get('element_name')][$value] = array(
                     'attr' => array('value' => $value),
                     'records' => array(),

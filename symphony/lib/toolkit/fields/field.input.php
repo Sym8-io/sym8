@@ -102,10 +102,10 @@ class FieldInput extends Field implements ExportableField, ImportableField
     {
         parent::setFromPOST($settings);
 
-        if ( $this->get('validator') === '' ) {
+        if ($this->get('validator') === '') {
             $this->remove('validator');
         }
-        if ( $this->get('placeholder') === '' ) {
+        if ($this->get('placeholder') === '') {
             $this->remove('placeholder');
         }
     }
@@ -179,10 +179,10 @@ class FieldInput extends Field implements ExportableField, ImportableField
         $type = self::$typeMap[$validator] ?? 'text';
 
         $input = Widget::Input('fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix, (strlen($value) != 0 ? $value : null), $type);
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
-        if ( $this->get('placeholder') !== null ) {
+        if ($this->get('placeholder') !== null) {
             $input->setAttribute('placeholder', $this->get('placeholder'));
         }
 
@@ -289,10 +289,15 @@ class FieldInput extends Field implements ExportableField, ImportableField
 
     public function getExampleFormMarkup()
     {
-        $label = new XMLElement('label', $this->get('label'));
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
+        $label = Widget::Label($this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
@@ -301,16 +306,18 @@ class FieldInput extends Field implements ExportableField, ImportableField
         $type = self::$typeMap[$validator] ?? 'text';
 
         $input = Widget::input('fields['.$this->get('element_name').']', null, $type);
-        if ( $this->get('required') === 'yes' ) {
+        $input->setAttribute('id', $fieldName . '-' . $fieldId);
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
-        if ( $this->get('placeholder') !== null ) {
+        if ($this->get('placeholder') !== null) {
             $input->setAttribute('placeholder', $this->get('placeholder'));
         }
 
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
 
-        return $label;
+        return $div;
     }
 
     /*-------------------------------------------------------------------------

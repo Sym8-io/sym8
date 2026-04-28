@@ -37,7 +37,7 @@ class FieldAuthor extends Field implements ExportableField
         $authors = AuthorManager::fetch();
 
         $states = array();
-        foreach ( $authors as $a ) {
+        foreach ($authors as $a) {
             $states[$a->get('id')] = $a->getFullName();
         }
 
@@ -100,7 +100,7 @@ class FieldAuthor extends Field implements ExportableField
 
     public function set($field, $value)
     {
-        if ( $field === 'author_types' && !is_array($value) ) {
+        if ($field === 'author_types' && !is_array($value)) {
             $value = explode(',', $value);
         }
 
@@ -127,11 +127,11 @@ class FieldAuthor extends Field implements ExportableField
 
     public function findDefaults(array &$settings)
     {
-        if ( !isset($settings['allow_multiple_selection']) ) {
+        if (!isset($settings['allow_multiple_selection'])) {
             $settings['allow_multiple_selection'] = 'no';
         }
 
-        if ( !isset($settings['author_types']) ) {
+        if (!isset($settings['author_types'])) {
             $settings['author_types'] = array('developer', 'manager', 'author');
         }
     }
@@ -154,7 +154,7 @@ class FieldAuthor extends Field implements ExportableField
                 ))
         );
 
-        if ( isset($errors['author_types']) ) {
+        if (isset($errors['author_types'])) {
             $wrapper->appendChild(Widget::Error($label, $errors['author_types']));
         } else {
             $wrapper->appendChild($label);
@@ -180,7 +180,7 @@ class FieldAuthor extends Field implements ExportableField
 
         $types = $this->get('author_types');
 
-        if ( empty($types) ) {
+        if (empty($types)) {
             $errors['author_types'] = __('This is a required field.');
         }
 
@@ -189,13 +189,13 @@ class FieldAuthor extends Field implements ExportableField
 
     public function commit()
     {
-        if ( !parent::commit() ) {
+        if (!parent::commit()) {
             return false;
         }
 
         $id = $this->get('id');
 
-        if ( $id === false ) {
+        if ($id === false) {
             return false;
         }
 
@@ -204,7 +204,7 @@ class FieldAuthor extends Field implements ExportableField
         $fields['allow_multiple_selection'] = ($this->get('allow_multiple_selection') ? $this->get('allow_multiple_selection') : 'no');
         $fields['default_to_current_user'] = ($this->get('default_to_current_user') ? $this->get('default_to_current_user') : 'no');
 
-        if ( $this->get('author_types') != '' ) {
+        if ($this->get('author_types') != '') {
             $fields['author_types'] = implode(',', $this->get('author_types'));
         }
 
@@ -219,24 +219,24 @@ class FieldAuthor extends Field implements ExportableField
     {
         $value = isset($data['author_id']) ? $data['author_id'] : null;
 
-        if ( $this->get('default_to_current_user') === 'yes' && empty($data) && empty($_POST) ) {
+        if ($this->get('default_to_current_user') === 'yes' && empty($data) && empty($_POST)) {
             $value = array(Symphony::Author()->get('id'));
         }
 
-        if ( !is_array($value) ) {
+        if (!is_array($value)) {
             $value = array($value);
         }
 
         $options = array();
 
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             #$options[] = array(null, false, null);
         }
 
         // Custom where to only show Authors based off the Author Types setting
         $types = $this->get('author_types');
 
-        if ( !empty($types) ) {
+        if (!empty($types)) {
             $types = implode('","', $this->get('author_types'));
             $where = 'user_type IN ("' . $types . '")';
         }
@@ -244,8 +244,8 @@ class FieldAuthor extends Field implements ExportableField
         $authors = AuthorManager::fetch('id', 'ASC', null, null, $where);
         $found = false;
 
-        foreach ( $authors as $a ) {
-            if ( in_array($a->get('id'), $value) ) {
+        foreach ($authors as $a) {
+            if (in_array($a->get('id'), $value)) {
                 $found = true;
             }
 
@@ -254,10 +254,10 @@ class FieldAuthor extends Field implements ExportableField
 
         // Ensure the selected Author is included in the options (incase
         // the settings change after the original entry was created)
-        if ( !$found && !is_null($value) ) {
+        if (!$found && !is_null($value)) {
             $authors = AuthorManager::fetchByID($value);
 
-            foreach ( $authors as $a ) {
+            foreach ($authors as $a) {
                 if (!isset($a)) continue;
                 $options[] = array($a->get('id'), in_array($a->get('id'), $value), $a->getFullName());
             }
@@ -265,24 +265,24 @@ class FieldAuthor extends Field implements ExportableField
 
         $fieldname = 'fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix;
 
-        if ( $this->get('allow_multiple_selection') === 'yes' ) {
+        if ($this->get('allow_multiple_selection') === 'yes') {
             $fieldname .= '[]';
         }
 
         $label = Widget::Label($this->get('label'));
 
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
 
         // Create the select
         $select = new XMLElement('select', null, ['name' => $fieldname]);
 
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $select->setAttribute('required', 'required');
         }
 
-        if ( $this->get('allow_multiple_selection') === 'yes' ) {
+        if ($this->get('allow_multiple_selection') === 'yes') {
             $size = count($options) + 1;
             if ($size > 10) {
                 $size = 10;
@@ -297,16 +297,16 @@ class FieldAuthor extends Field implements ExportableField
         if ($this->get('required') === 'yes') {
             $dummy->setAttribute('disabled', 'disabled');
         }
-        if ( $value[0] === null ) {
+        if ($value[0] === null) {
             $dummy->setAttribute('selected', 'selected');
         }
         $select->appendChild($dummy);
 
         // After the dummy all other options
-        foreach ( $options as $opt ) {
+        foreach ($options as $opt) {
             $option = new XMLElement('option', $opt[2]); // Author name
             $option->setAttribute('value', $opt[0]); // Value
-            if ( $opt[1] === true ) {
+            if ($opt[1] === true) {
                 $option->setAttribute('selected', 'selected');
             }
             $select->appendChild($option);
@@ -315,7 +315,7 @@ class FieldAuthor extends Field implements ExportableField
         #$select = Widget::Select($fieldname, $options, ($this->get('allow_multiple_selection') === 'yes' ? array('multiple' => 'multiple') : null));
         $label->appendChild($select);
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -326,17 +326,17 @@ class FieldAuthor extends Field implements ExportableField
     {
         $status = self::__OK__;
 
-        if ( !is_array($data) && !empty($data) ) {
+        if (!is_array($data) && !empty($data)) {
             return array('author_id' => $data);
         }
 
-        if ( empty($data) ) {
+        if (empty($data)) {
             return null;
         }
 
         $result = array();
 
-        foreach ( $data as $id ) {
+        foreach ($data as $id) {
             $result['author_id'][] = $id;
         }
 
@@ -351,15 +351,15 @@ class FieldAuthor extends Field implements ExportableField
     {
         $data['author_id'] = $data['author_id'] ?? null;
 
-        if ( !is_array($data['author_id']) ) {
+        if (!is_array($data['author_id'])) {
             $data['author_id'] = array($data['author_id']);
         }
 
         $list = new XMLElement($this->get('element_name'));
         $authors = AuthorManager::fetchByID($data['author_id']);
 
-        foreach ( $authors as $author ) {
-            if ( is_null($author) ) {
+        foreach ($authors as $author) {
+            if (is_null($author)) {
                 continue;
             }
 
@@ -428,14 +428,14 @@ class FieldAuthor extends Field implements ExportableField
         $modes = (object)$this->getExportModes();
 
         // Make sure we have an array to work with:
-        if ( isset($data['author_id']) && is_array($data['author_id']) === false ) {
+        if (isset($data['author_id']) && is_array($data['author_id']) === false) {
             $data['author_id'] = array(
                 $data['author_id']
             );
         }
 
         // Return the author IDs:
-        if ( $mode === $modes->listAuthor || $mode === $modes->getPostdata ) {
+        if ($mode === $modes->listAuthor || $mode === $modes->getPostdata) {
             return isset($data['author_id'])
                 ? $data['author_id']
                 : array();
@@ -447,16 +447,16 @@ class FieldAuthor extends Field implements ExportableField
             : array();
         $items = array();
 
-        foreach ( $authors as $author ) {
-            if ( is_null($author) ) {
+        foreach ($authors as $author) {
+            if (is_null($author)) {
                 continue;
             }
 
-            if ( $mode === $modes->listAuthorObject ) {
+            if ($mode === $modes->listAuthorObject) {
                 $items[] = $author;
-            } elseif ( $mode === $modes->listValue ) {
+            } elseif ($mode === $modes->listValue) {
                 $items[] = $author->getFullName();
-            } elseif ( $mode === $modes->listAuthorToValue ) {
+            } elseif ($mode === $modes->listAuthorToValue) {
                 $items[$data['author_id']] = $author->getFullName();
             }
         }
@@ -472,10 +472,10 @@ class FieldAuthor extends Field implements ExportableField
     {
         $field_id = $this->get('id');
 
-        if ( self::isFilterRegex($data[0]) ) {
+        if (self::isFilterRegex($data[0])) {
             $this->_key++;
 
-            if ( preg_match('/^regexp:/i', $data[0]) ) {
+            if (preg_match('/^regexp:/i', $data[0])) {
                 $pattern = preg_replace('/^regexp:\s*/i', null, $this->cleanValue($data[0]));
                 $regex = 'REGEXP';
             } else {
@@ -483,7 +483,7 @@ class FieldAuthor extends Field implements ExportableField
                 $regex = 'NOT REGEXP';
             }
 
-            if ( strlen($pattern) == 0 ) {
+            if (strlen($pattern) == 0) {
                 return;
             }
 
@@ -505,14 +505,14 @@ class FieldAuthor extends Field implements ExportableField
                     ) {$regex} '{$pattern}'
                 )
             ";
-        } elseif ( self::isFilterSQL($data[0]) ) {
+        } elseif (self::isFilterSQL($data[0])) {
             $this->buildFilterSQL($data[0], array('username', 'first_name', 'last_name'), $joins, $where);
-        } elseif ( $andOperation ) {
-            foreach ( $data as $value ) {
+        } elseif ($andOperation) {
+            foreach ($data as $value) {
                 $this->_key++;
                 $value = $this->cleanValue($value);
 
-                if ( self::__parseFilter($value) == "author_id" ) {
+                if (self::__parseFilter($value) == "author_id") {
                     $where .= "
                         AND t{$field_id}_{$this->_key}.author_id = '{$value}'
                     ";
@@ -542,11 +542,11 @@ class FieldAuthor extends Field implements ExportableField
                 }
             }
         } else {
-            if ( !is_array($data) ) {
+            if (!is_array($data)) {
                 $data = array($data);
             }
 
-            foreach ( $data as &$value ) {
+            foreach ($data as &$value) {
                 $value = $this->cleanValue($value);
             }
 
@@ -582,7 +582,7 @@ class FieldAuthor extends Field implements ExportableField
 
     public function buildSortingSQL(&$joins, &$where, &$sort, $order = 'ASC')
     {
-        if ( $this->isRandomOrder($order) ) {
+        if ($this->isRandomOrder($order)) {
             $sort = 'ORDER BY RAND()';
         } else {
             $joins .= "
@@ -595,7 +595,7 @@ class FieldAuthor extends Field implements ExportableField
 
     public function buildSortingSelectSQL($sort, $order = 'ASC')
     {
-        if ( $this->isRandomOrder($order) ) {
+        if ($this->isRandomOrder($order)) {
             return null;
         }
         return '`a`.`first_name`, `a`.`last_name`';
@@ -607,38 +607,42 @@ class FieldAuthor extends Field implements ExportableField
 
     public function getExampleFormMarkup()
     {
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+        $attrName = 'fields[' . $fieldName . ']';
         $authors = AuthorManager::fetch();
         $options = array();
 
-        foreach ( $authors as $a ) {
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
+        foreach ($authors as $a) {
             $options[] = array($a->get('id'), null, $a->getFullName());
         }
 
-        $fieldname = 'fields['.$this->get('element_name').']';
-
-        if ( $this->get('allow_multiple_selection') === 'yes' ) {
-            $fieldname .= '[]';
+        if ($this->get('allow_multiple_selection') === 'yes') {
+            $attrName .= '[]';
         }
 
-        $labelText = $this->get('label') . "\n<!-- Please note: The values are a static example. To obtain the values dynamically, use a data source and access it in your template. -->";
+        $labelText = $this->get('label') . __("\n<!-- Please note: The values are a static example. To obtain the values dynamically, use a data source and access it in your template. -->");
         $label = new XMLElement('label');
         $label->setValue($labelText . ' ');
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
 
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
 
         // Create the select
-        $select = new XMLElement('select', null, ['name' => $fieldname]);
+        $select = new XMLElement('select', null, array('name' => $attrName));
+        $select->setAttribute('id', $fieldName . '-' . $fieldId);
 
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $select->setAttribute('required', 'required');
         }
 
-        if ( $this->get('allow_multiple_selection') === 'yes' ) {
+        if ($this->get('allow_multiple_selection') === 'yes') {
             $size = count($options) + 1;
             if ($size > 10) {
                 $size = 10;
@@ -661,16 +665,16 @@ class FieldAuthor extends Field implements ExportableField
         foreach ($options as $opt) {
             $option = new XMLElement('option', $opt[2]); // Display text
             $option->setAttribute('value', $opt[0]);     // Value
-            if ( $opt[1] === true ) {
+            if ($opt[1] === true) {
                 $option->setAttribute('selected', 'selected');
             }
             $select->appendChild($option);
         }
 
-        #$select = Widget::Select($fieldname, $options, $attr);
-        $label->appendChild($select);
+        $div->appendChild($label);
+        $div->appendChild($select);
 
-        return $label;
+        return $div;
     }
 
     /*-------------------------------------------------------------------------
@@ -679,20 +683,20 @@ class FieldAuthor extends Field implements ExportableField
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) {
+        if (!is_array($records) || empty($records)) {
             return;
         }
 
         $groups = array($this->get('element_name') => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
             $author_id = !isset($data['author_id']) ? 0 : $data['author_id'];
 
-            if ( !isset($groups[$this->get('element_name')][$author_id]) ) {
+            if (!isset($groups[$this->get('element_name')][$author_id])) {
                 $author = AuthorManager::fetchByID($author_id);
                 // If there is an author, use those values, otherwise just blank it.
-                if ( $author instanceof Author ) {
+                if ($author instanceof Author) {
                     $username = $author->get('username');
                     $full_name = $author->getFullName();
                 } else {

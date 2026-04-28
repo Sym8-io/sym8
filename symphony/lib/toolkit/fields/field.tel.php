@@ -150,7 +150,7 @@ class FieldTel extends Field
 
     public function commit()
     {
-        if ( !parent::commit() ) return false;
+        if (!parent::commit()) return false;
 
         return FieldManager::saveSettings($this->get('id'), [
             'minlength' => $this->get('minlength'),
@@ -169,29 +169,29 @@ class FieldTel extends Field
         $value = isset($data['value']) ? $data['value'] : null;
 
         $input = Widget::input("fields{$fieldnamePrefix}[{$this->get('element_name')}]{$fieldnamePostfix}", $value, 'tel');
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
-        if ( $this->get('minlength') !== null ) {
+        if ($this->get('minlength') !== null) {
             $input->setAttribute('minlength', $this->get('minlength'));
         }
-        if ( $this->get('maxlength') !== null ) {
+        if ($this->get('maxlength') !== null) {
             $input->setAttribute('maxlength', $this->get('maxlength'));
         }
-        if ( $this->get('placeholder') !== null ) {
+        if ($this->get('placeholder') !== null) {
             $input->setAttribute('placeholder', $this->get('placeholder'));
         }
-        if ( $this->get('pattern') !== null ) {
+        if ($this->get('pattern') !== null) {
             $input->setAttribute('pattern', $this->get('pattern'));
         }
 
         $label = Widget::label($this->get('label'));
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
         $label->appendChild($input);
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -205,19 +205,19 @@ class FieldTel extends Field
         $element = new XMLElement($this->get('element_name'), $value);
 
         // Return additional attributes 'minlength', 'maxlength' 'placeholder' and 'pattern'
-        if ( $this->get('minlength') !== null ) {
+        if ($this->get('minlength') !== null) {
             $element->setAttribute('minlength', $this->get('minlength'));
         }
 
-        if ( $this->get('maxlength') !== null ) {
+        if ($this->get('maxlength') !== null) {
             $element->setAttribute('maxlength', $this->get('maxlength'));
         }
 
-        if ( $this->get('placeholder') !== null ) {
+        if ($this->get('placeholder') !== null) {
             $element->setAttribute('placeholder', $this->get('placeholder'));
         }
 
-        if ( $this->get('pattern') !== null ) {
+        if ($this->get('pattern') !== null) {
             $element->setAttribute('pattern', $this->get('pattern'));
         }
 
@@ -226,46 +226,54 @@ class FieldTel extends Field
 
     public function getExampleFormMarkup()
     {
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+
         $hint = '';
-        if ( $this->get('pattern') !== null ) {
-            $hint = "\n" . '<!-- Note: The double curly brackets in the attribute `pattern` are not an error but necessary because XSLT interprets `{...}` as an expression -->';
+        if ($this->get('pattern') !== null) {
+            $hint = "\n" . __('<!-- Note: The double curly brackets in the attribute `pattern` are not an error but necessary because XSLT interprets `{...}` as an expression -->');
         }
 
-        $label = new XMLElement('label', $this->get('label')  . $hint);
+        $div = new XMLElement('div', $hint, array('class' => 'form-field'));
+
+        $label = Widget::Label($this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
 
         $input = Widget::input('fields['.$this->get('element_name').']', null, 'tel');
+        $input->setAttribute('id', $fieldName . '-' . $fieldId);
 
         // Return additional attributes 'minlength', 'maxlength' 'placeholder' and 'pattern'
-        if ( $this->get('minlength') !== null ) {
+        if ($this->get('minlength') !== null) {
             $input->setAttribute('minlength', $this->get('minlength'));
         }
 
-        if ( $this->get('maxlength') !== null ) {
+        if ($this->get('maxlength') !== null) {
             $input->setAttribute('maxlength', $this->get('maxlength'));
         }
 
-        if ( $this->get('placeholder') !== null ) {
+        if ($this->get('placeholder') !== null) {
             $input->setAttribute('placeholder', $this->get('placeholder'));
         }
 
-        if ( $this->get('pattern') !== null ) {
+        if ($this->get('pattern') !== null) {
             $input->setAttribute('pattern', str_replace( array( '{', '}' ), array( '{{', '}}' ), $this->get('pattern')));
             $input->setAttribute('inputmode', 'tel');
         }
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
         $input->setAttribute('autocomplete', 'tel');
 
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
 
-        return $label;
+        return $div;
     }
 
     public function checkPostFieldData($data, &$message, $entry_id = null)
@@ -286,7 +294,7 @@ class FieldTel extends Field
         $message = null;
 
 
-        if ( $this->get('required') === 'yes' && strlen(trim($data)) === 0 ) {
+        if ($this->get('required') === 'yes' && strlen(trim($data)) === 0) {
             $message = $messages['required'];
             return self::__MISSING_FIELDS__;
         }
@@ -333,7 +341,7 @@ class FieldTel extends Field
     {
         $status = self::__OK__;
 
-        if ( strlen(trim($data)) == 0 ) return array();
+        if (strlen(trim($data)) == 0) return array();
 
         $result = array(
             'value' => $data
@@ -359,9 +367,9 @@ class FieldTel extends Field
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $data;
-        } else if ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -399,7 +407,7 @@ class FieldTel extends Field
         $modes = (object)$this->getExportModes();
 
         // Export unformatted:
-        if ( $mode === $modes->getUnformatted || $mode === $modes->getPostdata ) {
+        if ($mode === $modes->getUnformatted || $mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? $data['value']
                 : null;
@@ -414,16 +422,16 @@ class FieldTel extends Field
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) return;
+        if (!is_array($records) || empty($records)) return;
 
         $groups = array($this->get('element_name') => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
 
             $value = $data['value'];
 
-            if ( !isset($groups[$this->get('element_name')][$value]) ) {
+            if (!isset($groups[$this->get('element_name')][$value])) {
                 $groups[$this->get('element_name')][$value] = array(
                     'attr' => array('value' => $value),
                     'records' => array(),

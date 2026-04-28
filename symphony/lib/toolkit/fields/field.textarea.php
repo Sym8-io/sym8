@@ -60,17 +60,17 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
     {
         $result = '';
 
-        if ( $this->get('formatter') ) {
+        if ($this->get('formatter')) {
             $formatter = TextformatterManager::create($this->get('formatter'));
             $result = $formatter->run($data);
         }
 
-        if ( $validate === true ) {
-            if ( !General::validateXML($result, $errors, false, new XsltProcess) ) {
+        if ($validate === true) {
+            if (!General::validateXML($result, $errors, false, new XsltProcess)) {
                 $result = html_entity_decode($result, ENT_QUOTES, 'UTF-8');
                 $result = $this->__replaceAmpersands($result);
 
-                if ( !General::validateXML($result, $errors, false, new XsltProcess) ) {
+                if (!General::validateXML($result, $errors, false, new XsltProcess)) {
                     return false;
                 }
             }
@@ -90,7 +90,7 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
 
     public function findDefaults(array &$settings)
     {
-        if ( !isset($settings['size']) ) {
+        if (!isset($settings['size'])) {
             $settings['size'] = 15;
         }
     }
@@ -116,19 +116,19 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
 
     public function commit()
     {
-        if ( !parent::commit() ) {
+        if (!parent::commit()) {
             return false;
         }
 
         $id = $this->get('id');
 
-        if ( $id === false ) {
+        if ($id === false) {
             return false;
         }
 
         $fields = array();
 
-        if ( $this->get('formatter') != 'none' ) {
+        if ($this->get('formatter') != 'none') {
             $fields['formatter'] = $this->get('formatter');
         }
 
@@ -145,17 +145,17 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
     {
         $label = Widget::Label($this->get('label'));
 
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
 
         $value = isset($data['value']) ? $data['value'] : null;
         $textarea = Widget::Textarea('fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix, (int)$this->get('size'), 50, (strlen($value) != 0 ? General::sanitizeDouble($value) : null));
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $textarea->setAttribute('required', 'required');
         }
 
-        if ( $this->get('formatter') != 'none' ) {
+        if ($this->get('formatter') != 'none') {
             $textarea->setAttribute('class', $this->get('formatter'));
         }
 
@@ -177,7 +177,7 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
 
         $label->appendChild($textarea);
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -188,12 +188,12 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
     {
         $message = null;
 
-        if ( $this->get('required') === 'yes' && strlen(trim($data)) == 0 ) {
+        if ($this->get('required') === 'yes' && strlen(trim($data)) == 0) {
             $message = __('‘%s’ is a required field.', array($this->get('label')));
             return self::__MISSING_FIELDS__;
         }
 
-        if ( $this->__applyFormatting($data, true, $errors) === false ) {
+        if ($this->__applyFormatting($data, true, $errors) === false) {
             $message = __('‘%s’ contains invalid XML.', array($this->get('label'))) . ' ' . __('The following error was returned:') . ' <code>' . $errors[0]['message'] . '</code>';
             return self::__INVALID_FIELDS__;
         }
@@ -205,7 +205,7 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
     {
         $status = self::__OK__;
 
-        if ( strlen(trim($data)) == 0 ) {
+        if (strlen(trim($data)) == 0) {
             return array();
         }
 
@@ -215,7 +215,7 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
 
         $result['value_formatted'] = $this->__applyFormatting($data, true, $errors);
 
-        if ( $result['value_formatted'] === false ) {
+        if ($result['value_formatted'] === false) {
             // Run the formatter again, but this time do not validate. We will sanitize the output
             $result['value_formatted'] = General::sanitize($this->__applyFormatting($data));
         }
@@ -229,7 +229,7 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
 
     public function fetchIncludableElements()
     {
-        if ( $this->get('formatter') ) {
+        if ($this->get('formatter')) {
             return array(
                 $this->get('element_name') . ': formatted',
                 $this->get('element_name') . ': unformatted'
@@ -245,11 +245,11 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
     {
         $attributes = array();
 
-        if ( !is_null($mode) ) {
+        if (!is_null($mode)) {
             $attributes['mode'] = $mode;
         }
 
-        if ( $mode == 'formatted' ) {
+        if ($mode == 'formatted') {
             if ($this->get('formatter') && isset($data['value_formatted'])) {
                 $value = $data['value_formatted'];
             } else {
@@ -263,7 +263,7 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
                     $attributes
                 )
             );
-        } elseif ( $mode == null || $mode == 'unformatted' ) {
+        } elseif ($mode == null || $mode == 'unformatted') {
             $data['value'] = $data['value'] ?? null;
             $value = !empty($data['value'])
                 ? sprintf('<![CDATA[%s]]>', str_replace(']]>', ']]]]><![CDATA[>', $data['value']))
@@ -292,9 +292,9 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $data;
-        } elseif ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -334,24 +334,24 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
         $modes = (object)$this->getExportModes();
 
         // Export handles:
-        if ( $mode === $modes->getHandle ) {
-            if ( isset($data['handle']) ) {
+        if ($mode === $modes->getHandle) {
+            if (isset($data['handle'])) {
                 return $data['handle'];
-            } elseif ( isset($data['value']) ) {
+            } elseif (isset($data['value'])) {
                 return Lang::createHandle($data['value']);
             }
 
             // Export unformatted:
-        } elseif ( $mode === $modes->getUnformatted || $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getUnformatted || $mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? $data['value']
                 : null;
 
             // Export formatted:
-        } elseif ( $mode === $modes->getFormatted ) {
-            if ( isset($data['value_formatted']) ) {
+        } elseif ($mode === $modes->getFormatted) {
+            if (isset($data['value_formatted'])) {
                 return $data['value_formatted'];
-            } elseif ( isset($data['value']) ) {
+            } elseif (isset($data['value'])) {
                 return General::sanitize($data['value']);
             }
         }
@@ -367,9 +367,9 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
     {
         $field_id = $this->get('id');
 
-        if ( self::isFilterRegex($data[0]) ) {
+        if (self::isFilterRegex($data[0])) {
             $this->buildRegexSQL($data[0], array('value'), $joins, $where);
-        } elseif ( self::isFilterSQL($data[0]) ) {
+        } elseif (self::isFilterSQL($data[0])) {
             $this->buildFilterSQL($data[0], array('value'), $joins, $where);
         } else {
             if (is_array($data)) {
@@ -397,20 +397,27 @@ class fieldTextarea extends Field implements ExportableField, ImportableField
 
     public function getExampleFormMarkup()
     {
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
         $label = Widget::Label($this->get('label'));
-        if ( $this->get('required') === 'yes' ) {
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
+        if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
-        $textarea = Widget::Textarea('fields['.$this->get('element_name').']', (int)$this->get('size'), 50);
-        if ( $this->get('required') === 'yes' ) {
+        $textarea = Widget::Textarea('fields[' . $fieldName . ']', (int)$this->get('size'), 50);
+        $textarea->setAttribute('id', $fieldName . '-' . $fieldId);
+        if ($this->get('required') === 'yes') {
             $textarea->setAttribute('required', 'required');
         }
 
-        $label->appendChild($textarea);
+        $div->appendChild($label);
+        $div->appendChild($textarea);
 
-        return $label;
+        return $div;
     }
 }

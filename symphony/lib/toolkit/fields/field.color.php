@@ -96,7 +96,7 @@ class FieldColor extends Field implements ExportableField, ImportableField
 
     public function commit()
     {
-        if ( !parent::commit() ) return false;
+        if (!parent::commit()) return false;
 
         return FieldManager::saveSettings($this->get('id'), [
             'default' => $this->get('default'),
@@ -114,17 +114,16 @@ class FieldColor extends Field implements ExportableField, ImportableField
         $input = Widget::input("fields{$fieldnamePrefix}[{$this->get('element_name')}]{$fieldnamePostfix}", $value, 'color', [
             'value' => $value ?? $this->get('default')
         ]);
-        if ( $this->get('required') === 'yes' ) {
-            $input->setAttribute('required', 'required');
-        }
+        // `color` inputs always have a value (default #000000) and cannot be empty.
+        // The `required` attribute is therefore not applicable.
 
         $label = Widget::label($this->get('label'));
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
         $label->appendChild($input);
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -140,12 +139,12 @@ class FieldColor extends Field implements ExportableField, ImportableField
         );
         $message = null;
 
-        if ( $this->get('required') === 'yes' && strlen($data) === 0 ) {
+        if ($this->get('required') === 'yes' && strlen($data) === 0) {
             $message = $messages['required'];
             return self::__MISSING_FIELDS__;
         }
 
-        if ( strlen($data) > 0 && !preg_match('/^#[0-9a-fA-F]{6}$/', $data) ) {
+        if (strlen($data) > 0 && !preg_match('/^#[0-9a-fA-F]{6}$/', $data)) {
             $message = $messages['invalid'];
             return self::__INVALID_FIELDS__;
         }
@@ -164,7 +163,7 @@ class FieldColor extends Field implements ExportableField, ImportableField
         $element = new XMLElement($this->get('element_name'), $value);
 
         // Return additional attribute 'default'
-        if ( $this->get('default') !== null ) {
+        if ($this->get('default') !== null) {
             $element->setAttribute('default', $this->get('default'));
         }
 
@@ -183,10 +182,15 @@ class FieldColor extends Field implements ExportableField, ImportableField
 
     public function getExampleFormMarkup()
     {
-        $label = new XMLElement('label', $this->get('label'));
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
+        $label = Widget::Label($this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
@@ -194,13 +198,14 @@ class FieldColor extends Field implements ExportableField, ImportableField
         $input = Widget::input('fields['.$this->get('element_name').']', null, 'color', [
             'value' => $this->get('default')
         ]);
-        if ( $this->get('required') === 'yes' ) {
-            $input->setAttribute('required', 'required');
-        }
+        $input->setAttribute('id', $fieldName . '-' . $fieldId);
+        // `color` inputs always have a value (default #000000) and cannot be empty.
+        // The `required` attribute is therefore not applicable.
 
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
 
-        return $label;
+        return $div;
     }
 
     /*-------------------------------------------------------------------------
@@ -220,9 +225,9 @@ class FieldColor extends Field implements ExportableField, ImportableField
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $data;
-        } else if ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -261,7 +266,7 @@ class FieldColor extends Field implements ExportableField, ImportableField
         $modes = (object)$this->getExportModes();
 
         // Export unformatted:
-        if ( $mode === $modes->getUnformatted || $mode === $modes->getPostdata ) {
+        if ($mode === $modes->getUnformatted || $mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? $data['value']
                 : null;
@@ -276,16 +281,16 @@ class FieldColor extends Field implements ExportableField, ImportableField
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) return;
+        if (!is_array($records) || empty($records)) return;
 
         $groups = array($this->get('element_name') => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
 
             $value = $data['value'];
 
-            if ( !isset($groups[$this->get('element_name')][$value]) ) {
+            if (!isset($groups[$this->get('element_name')][$value])) {
                 $groups[$this->get('element_name')][$value] = array(
                     'attr' => array('value' => $value),
                     'records' => array(),

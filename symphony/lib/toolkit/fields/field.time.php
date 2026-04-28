@@ -108,7 +108,7 @@ class FieldTime extends Field
         $default = new XMLElement('label', __('Set current time as value'));
         $default->setAttribute('class', 'column');
         $input = Widget::Input('fields['.$this->get('sortorder').'][default_time]', 'on', 'checkbox');
-        if ( $this->get('default_time') === 'on' ) {
+        if ($this->get('default_time') === 'on') {
             $input->setAttribute('checked', 'checked');
         }
         $default->appendChild($input);
@@ -180,7 +180,7 @@ class FieldTime extends Field
 
     public function commit()
     {
-        if ( !parent::commit() ) return false;
+        if (!parent::commit()) return false;
 
         return FieldManager::saveSettings($this->get('id'), [
             'default_time' => $this->get('default_time') === 'on' ? 'on' : 'off',
@@ -200,36 +200,36 @@ class FieldTime extends Field
         $value = isset($data['value']) ? $data['value'] : null;
 
         $input = Widget::input("fields{$fieldnamePrefix}[{$this->get('element_name')}]{$fieldnamePostfix}", $value, 'time');
-        if ( $value === null and $this->get('default_time') === 'on' ) {
+        if ($value === null and $this->get('default_time') === 'on') {
             $input->setAttribute('value', date('H:i'));
         }
-        else if ( $value === null and $this->get('custom_time') !== null ) {
+        elseif ($value === null and $this->get('custom_time') !== null) {
             $input->setAttribute('value', $this->get('custom_time'));
         }
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
 
         // Return additional attributes 'min', 'max' and 'step'
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $input->setAttribute('min', $this->get('min'));
         }
 
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $input->setAttribute('max', $this->get('max'));
         }
 
-        if ( $this->get('step') !== '60' ){
+        if ($this->get('step') !== '60'){
             $input->setAttribute('step', $this->get('step'));
         }
 
         $label = Widget::label($this->get('label'));
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
         $label->appendChild($input);
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -243,15 +243,15 @@ class FieldTime extends Field
         $element = new XMLElement($this->get('element_name'), $value);
 
         // Return additional attributes 'min', 'max' and 'step'
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $element->setAttribute('min', $this->get('min'));
         }
 
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $element->setAttribute('max', $this->get('max'));
         }
 
-        if ( $this->get('step') !== null ) {
+        if ($this->get('step') !== null) {
             $element->setAttribute('step', $this->get('step'));
         }
 
@@ -260,38 +260,44 @@ class FieldTime extends Field
 
     public function getExampleFormMarkup()
     {
-        $label = new XMLElement('label', $this->get('label'));
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
 
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
+        $label = Widget::Label($this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
 
-        $input = Widget::input('fields['.$this->get('element_name').']', null, 'time');
-        if ( $this->get('custom_time') !== null ) {
+        $input = Widget::input('fields[' . $fieldName . ']', null, 'time');
+        $input->setAttribute('id', $fieldName . '-' . $fieldId);
+        if ($this->get('custom_time') !== null) {
             $input->setAttribute('value', $this->get('custom_time'));
         }
-        if ( $this->get('default_time') === 'on' ) {
+        if ($this->get('default_time') === 'on') {
             $input->setAttribute('value', '{/data/params/current-time}');
         }
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $input->setAttribute('required', 'required');
         }
-        if ( $this->get('step') !== '60' ) {
+        if ($this->get('step') !== '60') {
             $input->setAttribute('step', $this->get('step'));
         }
-        if ( $this->get('min') !== null ) {
+        if ($this->get('min') !== null) {
             $input->setAttribute('min', $this->get('min'));
         }
-        if ( $this->get('max') !== null ) {
+        if ($this->get('max') !== null) {
             $input->setAttribute('max', $this->get('max'));
         }
 
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
 
-        return $label;
+        return $div;
     }
 
     public function checkPostFieldData($data, &$message, $entry_id = null)
@@ -312,12 +318,12 @@ class FieldTime extends Field
         );
         $message = null;
 
-        if ( $this->get('required') === 'yes' && strlen($data) === 0 ) {
+        if ($this->get('required') === 'yes' && strlen($data) === 0) {
             $message =$messages['required'];
             return self::__MISSING_FIELDS__;
         }
 
-        if ( strlen($data) > 0 && !preg_match('/^(\d{2}):(\d{2})(?::(\d{2}))?$/', $data) ) {
+        if (strlen($data) > 0 && !preg_match('/^(\d{2}):(\d{2})(?::(\d{2}))?$/', $data)) {
             $message = $messages['invalid'];
             return self::__INVALID_FIELDS__;
         }
@@ -327,27 +333,27 @@ class FieldTime extends Field
             $minute = (int)$matches[2];
             $second = isset($matches[3]) ? (int)$matches[3] : 0;
 
-            if ( $hour >= 24 ) {
+            if ($hour >= 24) {
                 $message = $messages['hours'];
                 return self::__INVALID_FIELDS__;
             }
-            elseif ( $minute >= 60 ) {
+            elseif ($minute >= 60) {
                 $message = $messages['minutes'];
                 return self::__INVALID_FIELDS__;
             }
-            elseif ( $second >= 60) {
+            elseif ($second >= 60) {
                 $message = $messages['seconds'];
                 return self::__INVALID_FIELDS__;
             }
         }
 
-        if ( preg_match('/^(\d{2}):(\d{2})(?::(\d{2}))?$/', $data) ) {
-            if ( $min !== null && $data < $min ) {
+        if (preg_match('/^(\d{2}):(\d{2})(?::(\d{2}))?$/', $data)) {
+            if ($min !== null && $data < $min) {
                 $message = $messages['min'];
                 return self::__INVALID_FIELDS__;
             }
 
-            if ( $max !== null && $data > $max ) {
+            if ($max !== null && $data > $max) {
                 $message = $messages['max'];
                 return self::__INVALID_FIELDS__;
             }
@@ -371,7 +377,7 @@ class FieldTime extends Field
     {
         $status = self::__OK__;
 
-        if ( strlen(trim($data)) == 0 ) return array();
+        if (strlen(trim($data)) == 0) return array();
 
         $result = array(
             'value' => $data
@@ -398,9 +404,9 @@ class FieldTime extends Field
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( $mode === $modes->getValue ) {
+        if ($mode === $modes->getValue) {
             return $data;
-        } else if ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -438,7 +444,7 @@ class FieldTime extends Field
         $modes = (object)$this->getExportModes();
 
         // Export unformatted:
-        if ( $mode === $modes->getUnformatted || $mode === $modes->getPostdata ) {
+        if ($mode === $modes->getUnformatted || $mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? $data['value']
                 : null;
@@ -530,16 +536,16 @@ class FieldTime extends Field
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) return;
+        if (!is_array($records) || empty($records)) return;
 
         $groups = array($this->get('element_name') => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
 
             $value = $data['value'];
 
-            if ( !isset($groups[$this->get('element_name')][$value]) ) {
+            if (!isset($groups[$this->get('element_name')][$value])) {
                 $groups[$this->get('element_name')][$value] = array(
                     'attr' => array('value' => $value),
                     'records' => array(),

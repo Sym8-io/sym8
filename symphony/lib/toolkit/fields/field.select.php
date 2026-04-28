@@ -36,19 +36,19 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
     {
         $values = preg_split('/,\s*/i', $this->get('static_options'), -1, PREG_SPLIT_NO_EMPTY);
 
-        if ( $this->get('dynamic_options') != '' ) {
+        if ($this->get('dynamic_options') != '') {
             $this->findAndAddDynamicOptions($values);
         }
 
         $values = array_map('trim', $values);
         // Fixes issues on PHP5.3. RE: #1773 ^BA
-        if ( empty($values) ) {
+        if (empty($values)) {
             return $values;
         }
 
         $states = array_combine($values, $values);
 
-        if ( $this->get('sort_options') === 'yes' ) {
+        if ($this->get('sort_options') === 'yes') {
             natsort($states);
         }
 
@@ -126,19 +126,19 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
 
     public function findAndAddDynamicOptions(&$values)
     {
-        if ( !is_array($values) ) {
+        if (!is_array($values)) {
             $values = array();
         }
 
         $results = false;
 
         // Fixes #1802
-        if ( !Symphony::Database()->tableExists('tbl_entries_data_' . $this->get('dynamic_options')) ) {
+        if (!Symphony::Database()->tableExists('tbl_entries_data_' . $this->get('dynamic_options'))) {
             return;
         }
 
         // Ensure that the table has a 'value' column
-        if ( (boolean)Symphony::Database()->fetchVar('Field', 0, sprintf(
+        if ((boolean)Symphony::Database()->fetchVar('Field', 0, sprintf(
             "SHOW COLUMNS FROM `tbl_entries_data_%d` LIKE '%s'",
             $this->get('dynamic_options'),
             'value'
@@ -152,7 +152,7 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
         }
 
         // In the case of a Upload field, use 'file' instead of 'value'
-        if ( ($results == false) && (boolean)Symphony::Database()->fetchVar('Field', 0, sprintf(
+        if (($results == false) && (boolean)Symphony::Database()->fetchVar('Field', 0, sprintf(
             "SHOW COLUMNS FROM `tbl_entries_data_%d` LIKE '%s'",
             $this->get('dynamic_options'),
             'file'
@@ -165,8 +165,8 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
             ));
         }
 
-        if ( $results ) {
-            if ( $this->get('sort_options') == 'no' ) {
+        if ($results) {
+            if ($this->get('sort_options') == 'no') {
                 natsort($results);
             }
 
@@ -180,15 +180,15 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
 
     public function findDefaults(array &$settings)
     {
-        if ( !isset($settings['allow_multiple_selection']) ) {
+        if (!isset($settings['allow_multiple_selection'])) {
             $settings['allow_multiple_selection'] = 'no';
         }
 
-        if ( !isset($settings['show_association']) ) {
+        if (!isset($settings['show_association'])) {
             $settings['show_association'] = 'no';
         }
 
-        if ( !isset($settings['sort_options']) ) {
+        if (!isset($settings['sort_options'])) {
             $settings['sort_options'] = 'no';
         }
     }
@@ -217,7 +217,7 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
             array('', false, __('None'))
         );
 
-        if ( $this->get('dynamic_options') ) {
+        if ($this->get('dynamic_options')) {
             $options[] = array($this->get('dynamic_options'));
         }
 
@@ -227,7 +227,7 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
             ))
         );
 
-        if ( isset($errors['dynamic_options']) ) {
+        if (isset($errors['dynamic_options'])) {
             $div->appendChild(Widget::Error($label, $errors['dynamic_options']));
         } else {
             $div->appendChild($label);
@@ -258,11 +258,11 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
 
     public function checkFields(array &$errors, $checkForDuplicates = true)
     {
-        if ( !is_array($errors) ) {
+        if (!is_array($errors)) {
             $errors = array();
         }
 
-        if ( $this->get('static_options') == '' && ($this->get('dynamic_options') == '' || $this->get('dynamic_options') == 'none') ) {
+        if ($this->get('static_options') == '' && ($this->get('dynamic_options') == '' || $this->get('dynamic_options') == 'none')) {
             $errors['dynamic_options'] = __('At least one source must be specified, dynamic or static.');
         }
 
@@ -271,30 +271,30 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
 
     public function commit()
     {
-        if ( !Field::commit() ) {
+        if (!Field::commit()) {
             return false;
         }
 
         $id = $this->get('id');
 
-        if ( $id === false ) {
+        if ($id === false) {
             return false;
         }
 
         $fields = array();
 
-        if ( $this->get('static_options') != '' ) {
+        if ($this->get('static_options') != '') {
             $fields['static_options'] = $this->get('static_options');
         }
 
-        if ( $this->get('dynamic_options') != '' ) {
+        if ($this->get('dynamic_options') != '') {
             $fields['dynamic_options'] = $this->get('dynamic_options');
         }
 
         $fields['allow_multiple_selection'] = ($this->get('allow_multiple_selection') ? $this->get('allow_multiple_selection') : 'no');
         $fields['sort_options'] = $this->get('sort_options') === 'yes' ? 'yes' : 'no';
 
-        if ( !FieldManager::saveSettings($id, $fields) ) {
+        if (!FieldManager::saveSettings($id, $fields)) {
             return false;
         }
 
@@ -303,7 +303,7 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
         // Dynamic Options isn't an array like in Select Box Link
         $field_id = $this->get('dynamic_options');
 
-        if ( !is_null($field_id) && is_numeric($field_id) ) {
+        if (!is_null($field_id) && is_numeric($field_id)) {
             SectionManager::createSectionAssociation(null, $id, (int)$field_id, $this->get('show_association') === 'yes' ? true : false, $this->get('association_ui'), $this->get('association_editor'));
         }
 
@@ -319,39 +319,39 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
         $states = $this->getToggleStates();
         $value = isset($data['value']) ? $data['value'] : null;
 
-        if ( !is_array($value) ) {
+        if (!is_array($value)) {
             $value = array($value);
         }
 
         $options = array();
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
            # $options[] = array(null, false, null);
         }
 
-        foreach ( $states as $handle => $v ) {
+        foreach ($states as $handle => $v) {
             $options[] = array(General::sanitize($v), in_array($v, $value), General::sanitize($v));
         }
 
         $fieldname = 'fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix;
 
-        if ( $this->get('allow_multiple_selection') === 'yes' ) {
+        if ($this->get('allow_multiple_selection') === 'yes') {
             $fieldname .= '[]';
         }
 
         $label = Widget::Label($this->get('label'));
 
-        if ( $this->get('required') !== 'yes' ) {
+        if ($this->get('required') !== 'yes') {
             $label->appendChild(new XMLElement('i', __('Optional')));
         }
 
         // Create the select
         $select = new XMLElement('select', null, ['name' => $fieldname]);
 
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $select->setAttribute('required', 'required');
         }
 
-        if ( $this->get('allow_multiple_selection') === 'yes' ) {
+        if ($this->get('allow_multiple_selection') === 'yes') {
             $size = count($options) + 1;
             if ($size > 10) {
                 $size = 10;
@@ -367,7 +367,7 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
         if ($this->get('required') === 'yes') {
             $dummy->setAttribute('disabled', 'disabled');
         }
-        if ( $value[0] === null ) {
+        if ($value[0] === null) {
             $dummy->setAttribute('selected', 'selected');
         }
         $select->appendChild($dummy);
@@ -376,7 +376,7 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
         foreach ($options as $opt) {
             $option = new XMLElement('option', $opt[2]); // Display text
             $option->setAttribute('value', $opt[0]);     // Value
-            if ( $opt[1] === true ) {
+            if ($opt[1] === true) {
                 $option->setAttribute('selected', 'selected');
             }
             $select->appendChild($option);
@@ -385,7 +385,7 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
         #$select = Widget::Select($fieldname, $options, ($this->get('allow_multiple_selection') === 'yes' ? array('multiple' => 'multiple', 'size' => count($options)) : null));
         $label->appendChild($select);
 
-        if ( $flagWithError != null ) {
+        if ($flagWithError != null) {
             $wrapper->appendChild(Widget::Error($label, $flagWithError));
         } else {
             $wrapper->appendChild($label);
@@ -401,14 +401,14 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
     {
         $status = self::__OK__;
 
-        if ( !is_array($data) ) {
+        if (!is_array($data)) {
             return array(
                 'value' => $data,
                 'handle' => Lang::createHandle($data)
             );
         }
 
-        if ( empty($data) ) {
+        if (empty($data)) {
             return null;
         }
 
@@ -417,7 +417,7 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
             'handle' => array()
         );
 
-        foreach ( $data as $value ) {
+        foreach ($data as $value) {
             $result['value'][] = $value;
             $result['handle'][] = Lang::createHandle($value);
         }
@@ -445,17 +445,17 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
         $message = $status = null;
         $modes = (object)$this->getImportModes();
 
-        if ( !is_array($data) ) {
+        if (!is_array($data)) {
             $data = array($data);
         }
 
-        if ( $mode === $modes->getValue ) {
-            if ( $this->get('allow_multiple_selection') === 'no' ) {
+        if ($mode === $modes->getValue) {
+            if ($this->get('allow_multiple_selection') === 'no') {
                 $data = array(implode('', $data));
             }
 
             return $data;
-        } elseif ( $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->getPostdata) {
             return $this->processRawFieldData($data, $status, $message, true, $entry_id);
         }
 
@@ -498,32 +498,32 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
     {
         $modes = (object)$this->getExportModes();
 
-        if ( isset($data['handle']) && is_array($data['handle']) === false ) {
+        if (isset($data['handle']) && is_array($data['handle']) === false) {
             $data['handle'] = array(
                 $data['handle']
             );
         }
 
-        if ( isset($data['value']) && is_array($data['value']) === false ) {
+        if (isset($data['value']) && is_array($data['value']) === false) {
             $data['value'] = array(
                 $data['value']
             );
         }
 
         // Handle => Value pairs:
-        if ( $mode === $modes->listHandleToValue ) {
+        if ($mode === $modes->listHandleToValue) {
             return isset($data['handle'], $data['value'])
                 ? array_combine($data['handle'], $data['value'])
                 : array();
 
             // Array of handles:
-        } elseif ( $mode === $modes->listHandle ) {
+        } elseif ($mode === $modes->listHandle) {
             return isset($data['handle'])
                 ? $data['handle']
                 : array();
 
             // Array of values:
-        } elseif ( $mode === $modes->listValue || $mode === $modes->getPostdata ) {
+        } elseif ($mode === $modes->listValue || $mode === $modes->getPostdata) {
             return isset($data['value'])
                 ? $data['value']
                 : array();
@@ -538,12 +538,12 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
     {
         $existing_options = $this->getToggleStates();
 
-        if ( is_array($existing_options) && !empty($existing_options) ) {
+        if (is_array($existing_options) && !empty($existing_options)) {
             $optionlist = new XMLElement('ul');
             $optionlist->setAttribute('class', 'tags');
             $optionlist->setAttribute('data-interactive', 'data-interactive');
 
-            foreach ( $existing_options as $option ) {
+            foreach ($existing_options as $option) {
                 $optionlist->appendChild(
                     new XMLElement('li', General::sanitize($option))
                 );
@@ -559,22 +559,22 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
 
     public function groupRecords($records)
     {
-        if ( !is_array($records) || empty($records) ) {
+        if (!is_array($records) || empty($records)) {
             return;
         }
 
         $groups = array($this->get('element_name') => array());
 
-        foreach ( $records as $r ) {
+        foreach ($records as $r) {
             $data = $r->getData($this->get('id'));
 
-            if ( !isset($data['value']) ) continue;
+            if (!isset($data['value'])) continue;
 
-            if ( is_array($data['value']) ) {
-                foreach ( $data['value'] as $key => $v ) {
+            if (is_array($data['value'])) {
+                foreach ($data['value'] as $key => $v) {
                     $value = General::sanitize($v);
 
-                    if ( !isset($groups[$this->get('element_name')][$data['handle'][$key]]) ) {
+                    if (!isset($groups[$this->get('element_name')][$data['handle'][$key]])) {
                         $groups[$this->get('element_name')][$data['handle'][$key]] = array(
                             'attr' => array('handle' => $data['handle'][$key], 'value' => $value),
                             'records' => array(),
@@ -588,7 +588,7 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
             else {
                 $value = General::sanitize($data['value']);
 
-                if ( !isset($groups[$this->get('element_name')][$data['handle']]) ) {
+                if (!isset($groups[$this->get('element_name')][$data['handle']])) {
                     $groups[$this->get('element_name')][$data['handle']] = array(
                         'attr' => array('handle' => $data['handle'], 'value' => $value),
                         'records' => array(),
@@ -613,32 +613,37 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
 
         $options = array();
 
-        foreach ( $states as $handle => $v ) {
+        foreach ($states as $handle => $v) {
             $options[] = array($v, null, $v);
         }
 
-        $fieldname = 'fields['.$this->get('element_name').']';
+        $fieldId = $this->get('id');
+        $fieldName = $this->get('element_name');
+        $attrName = 'fields[' . $fieldName . ']';
 
-        if ( $this->get('allow_multiple_selection') === 'yes' ) {
-            $fieldname .= '[]';
+        if ($this->get('allow_multiple_selection') === 'yes') {
+            $attrName .= '[]';
         }
 
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
         $label = Widget::Label($this->get('label'));
+        $label->setAttribute('for', $fieldName . '-' . $fieldId);
         if ($this->get('required') === 'yes') {
             $mark = new XMLElement('span', '*');
-            $mark->setAttribute('aria-label', 'Required field');
+            $mark->setAttribute('aria-hidden', 'true');
             $mark->setAttribute('class', 'required-mark');
             $label->appendChild($mark);
         }
 
         // Create the select
-        $select = new XMLElement('select', null, ['name' => $fieldname]);
+        $select = new XMLElement('select', null, array('name' => $attrName));
+        $select->setAttribute('id', $fieldName . '-' . $fieldId);
 
-        if ( $this->get('required') === 'yes' ) {
+        if ($this->get('required') === 'yes') {
             $select->setAttribute('required', 'required');
         }
 
-        if ( $this->get('allow_multiple_selection') === 'yes' ) {
+        if ($this->get('allow_multiple_selection') === 'yes') {
             $size = count($options) + 1;
             if ($size > 10) {
                 $size = 10;
@@ -662,15 +667,15 @@ class FieldSelect extends FieldTagList implements ExportableField, ImportableFie
         foreach ($options as $opt) {
             $option = new XMLElement('option', $opt[2]); // Display text
             $option->setAttribute('value', $opt[0]);     // Value
-            if ( $opt[1] === true ) {
+            if ($opt[1] === true) {
                 $option->setAttribute('selected', 'selected');
             }
             $select->appendChild($option);
         }
 
-        #$select = Widget::Select($fieldname, $options, ($this->get('allow_multiple_selection') === 'yes' ? array('multiple' => 'multiple', 'size' => count($options)) : null));
-        $label->appendChild($select);
+        $div->appendChild($label);
+        $div->appendChild($select);
 
-        return $label;
+        return $div;
     }
 }
