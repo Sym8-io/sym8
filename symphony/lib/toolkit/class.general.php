@@ -166,7 +166,9 @@ class General
                 return false;
             }
 
-            xml_parser_free($_parser);
+            if (PHP_VERSION_ID < 80000) {
+                xml_parser_free($_parser);
+            }
         }
 
         return true;

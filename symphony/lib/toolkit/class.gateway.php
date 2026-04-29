@@ -347,7 +347,11 @@ class Gateway
             $this->_info_last['curl_error'] = curl_errno($ch);
 
             // Close the connection
-            curl_close($ch);
+            if (PHP_VERSION_ID >= 80000) {
+                unset($ch);
+            } else {
+                curl_close($ch);
+            }
 
             return $result;
         }
