@@ -680,13 +680,13 @@ class FrontendPage extends XSLTPage
 
         // Make sure the user has permission to access this page
         if (!$this->is_logged_in && in_array('admin', $row['type'])) {
-            $row = PageManager::fetchPageByType('403');
+            $row = PageManager::fetchPageByType('401');
 
             if (empty($row)) {
                 Frontend::instance()->throwCustomError(
                     __('Please login to view this page.') . ' <a href="' . SYMPHONY_URL . '/login/">' . __('Take me to the login page') . '</a>.',
-                    __('Forbidden'),
-                    Page::HTTP_STATUS_FORBIDDEN
+                    __('Unauthorized'),
+                    Page::HTTP_STATUS_UNAUTHORIZED
                 );
             }
 
