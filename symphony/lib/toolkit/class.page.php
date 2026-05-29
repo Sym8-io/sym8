@@ -74,6 +74,16 @@ abstract class Page
     const HTTP_STATUS_NOT_FOUND = 404;
 
     /**
+     * Refers to the HTTP status code, 429 Too Many Requests
+     *
+     * Used for temporary rate limiting and brute force protection.
+     *
+     * @since Sym8 2.85.1
+     * @var integer
+     */
+    const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
+
+    /**
      * Refers to the HTTP status code, 500 Internal Server Error
      *
      * @since Symphony 2.3.2
@@ -99,6 +109,7 @@ abstract class Page
         self::HTTP_STATUS_UNAUTHORIZED => 'Unauthorized',
         self::HTTP_STATUS_FORBIDDEN => 'Forbidden',
         self::HTTP_STATUS_NOT_FOUND => 'Not Found',
+        self::HTTP_STATUS_TOO_MANY_REQUESTS => 'Too Many Requests',
         // 500
         self::HTTP_STATUS_ERROR => 'Internal Server Error',
     );
