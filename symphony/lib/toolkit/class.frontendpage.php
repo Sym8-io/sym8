@@ -221,11 +221,27 @@ class FrontendPage extends XSLTPage
                     $this->addHeaderToPage('Content-Type', 'text/html; charset=utf-8');
                 }
 
+                $errorTypes = array(
+                    '400' => self::HTTP_STATUS_BAD_REQUEST,
+                    '401' => self::HTTP_STATUS_UNAUTHORIZED,
+                    '403' => self::HTTP_STATUS_FORBIDDEN,
+                    '404' => self::HTTP_STATUS_NOT_FOUND,
+                    '429' => self::HTTP_STATUS_TOO_MANY_REQUESTS,
+                );
+
+                foreach ($errorTypes as $type => $status) {
+                    if (in_array($type, $this->_pageData['type'])) {
+                        $this->setHttpStatus($status);
+                        break;
+                    }
+                }
+
+                /*
                 if (in_array('404', $this->_pageData['type'])) {
                     $this->setHttpStatus(self::HTTP_STATUS_NOT_FOUND);
                 } elseif (in_array('403', $this->_pageData['type'])) {
                     $this->setHttpStatus(self::HTTP_STATUS_FORBIDDEN);
-                }
+                }*/
             }
 
             // Lock down the frontend first so that extensions can easily remove these
