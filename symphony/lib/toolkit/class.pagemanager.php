@@ -160,7 +160,7 @@ class PageManager
      * @return boolean
      *  true when the page files have been created successfully, false otherwise.
      */
-    public static function createPageFiles($new_path, $new_handle, $old_path = null, $old_handle = null)
+    public static function createPageFiles($new_path, $new_handle, $old_path = null, $old_handle = null, array $types)
     {
         $new = PageManager::resolvePageFileLocation($new_path, $new_handle);
         $old = PageManager::resolvePageFileLocation($old_path, $old_handle);
@@ -170,9 +170,20 @@ class PageManager
             return true;
         }
 
+        $normalizedTypes = array_map('strtoupper', $types);
+        $http4xx = array('400', '401', '403', '404', '429');
+
         // Old file doesn't exist, use template:
         if (!file_exists($old)) {
-            $data = file_get_contents(self::getTemplate('blueprints.page'));
+            if (in_array('XML', $normalizedTypes, true)) {
+                $data = file_get_contents(self::getTemplate('blueprints.page-xml'));
+            } elseif (in_array('JSON', $normalizedTypes, true)) {
+                $data = file_get_contents(self::getTemplate('blueprints.page-json'));
+            } elseif (count(array_intersect($normalizedTypes, $http4xx)) > 0) {
+                $data = file_get_contents(self::getTemplate('blueprints.page-4xx'));
+            } else {
+                $data = file_get_contents(self::getTemplate('blueprints.page'));
+            }
         } else {
             $data = file_get_contents($old);
         }

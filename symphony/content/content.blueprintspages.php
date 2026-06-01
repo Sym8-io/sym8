@@ -766,7 +766,10 @@ class contentBlueprintsPages extends AdministrationPage
                     if (empty($current)) {
                         $file_created = PageManager::createPageFiles(
                             $fields['path'],
-                            $fields['handle']
+                            $fields['handle'],
+                            null,
+                            null,
+                            $types
                         );
 
                         // Existing page, potentially rename files
@@ -775,7 +778,8 @@ class contentBlueprintsPages extends AdministrationPage
                             $fields['path'],
                             $fields['handle'],
                             $current['path'],
-                            $current['handle']
+                            $current['handle'],
+                            $types
                         );
                     }
 
