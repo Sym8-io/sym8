@@ -239,15 +239,42 @@ class HTMLPage extends Page
      * @param boolean $duplicate
      *  When set to false the function will only add the script if it doesn't
      *  already exist. Defaults to true which allows duplicates.
+     * @param boolean $version
+     *  When set to true, the Symphony version will be appended.
+     * @param boolean $module
+     *  When set to true, the script will be loaded as module.
      * @return integer
      *  Returns the position that the script has been set in the `$this->_head`
      */
-    public function addScriptToHead($path, $position = null, $duplicate = true)
+    public function addScriptToHead($path, $position = null, $duplicate = true, $version = false, $module = false)
     {
         if ($duplicate === true || ($duplicate === false && $this->checkElementsInHead($path, 'src') === false)) {
+            if ($version === true) {
+                $version = Symphony::Configuration()->get('version', 'symphony');
+
+                if (!function_exists('str_contains')) {
+                    $needle = '?';
+                    if ($needle !== '' && mb_strpos($path, $needle) !== false) {
+                        $path .= '&v=' . urlencode($version);
+                    } else {
+                        $path .= '?v=' . urlencode($version);
+                    }
+                } else {
+                    $path .= (
+                        str_contains($path, '?')
+                            ? '&'
+                            : '?'
+                    ) . 'v=' . urlencode($version);
+                }
+            }
+
             $script = new XMLElement('script');
             $script->setSelfClosingTag(false);
-            $script->setAttributeArray(array('type' => 'text/javascript', 'src' => $path));
+            if ($module === true) {
+                $script->setAttributeArray(array('src' => $path, 'type' => 'module'));
+            } else {
+                $script->setAttributeArray(array('src' => $path));
+            }
 
             return $this->addElementToHead($script, $position);
         }
@@ -268,14 +295,38 @@ class HTMLPage extends Page
      * @param boolean $duplicate
      *  When set to false the function will only add the script if it doesn't
      *  already exist. Defaults to true which allows duplicates.
+     * @param boolean $version
+     *  When set to true, the Symphony version will be appended.
      * @return integer
      *  Returns the position that the stylesheet has been set in the `$this->_head`
      */
-    public function addStylesheetToHead($path, $type = 'screen', $position = null, $duplicate = true)
+    public function addStylesheetToHead($path, $type = 'screen', $position = null, $duplicate = true, $version = false)
     {
         if ($duplicate === true || ($duplicate === false && $this->checkElementsInHead($path, 'href') === false)) {
+            if ($version === true) {
+                $version = Symphony::Configuration()->get('version', 'symphony');
+
+                if (!function_exists('str_contains')) {
+                    $needle = '?';
+                    if ($needle !== '' && mb_strpos($path, $needle) !== false) {
+                        $path .= '&v=' . urlencode($version);
+                    } else {
+                        $path .= '?v=' . urlencode($version);
+                    }
+                } else {
+                    $path .= (
+                        str_contains($path, '?')
+                            ? '&'
+                            : '?'
+                    ) . 'v=' . urlencode($version);
+                }
+            }
             $link = new XMLElement('link');
-            $link->setAttributeArray(array('rel' => 'stylesheet', 'type' => 'text/css', 'media' => $type, 'href' => $path));
+            if ($type === 'screen') {
+                $link->setAttributeArray(array('rel' => 'stylesheet', 'href' => $path));
+            } else {
+                $link->setAttributeArray(array('rel' => 'stylesheet', 'href' => $path, 'media' => $type));
+            }
 
             return $this->addElementToHead($link, $position);
         }
