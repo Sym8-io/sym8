@@ -671,7 +671,7 @@ class contentBlueprintsPages extends AdministrationPage
                 $this->_errors['title'] = __('This is a required field');
             }
 
-            if (trim($fields['type']) != '' && preg_match('/(index|404|403)/i', $fields['type'])) {
+            if (trim($fields['type']) != '' && preg_match('/(index|404|403|400|401|429)/i', $fields['type'])) {
                 $types = preg_split('/\s*,\s*/', strtolower($fields['type']), -1, PREG_SPLIT_NO_EMPTY);
 
                 if (in_array('index', $types) && PageManager::hasPageTypeBeenUsed($page_id, 'index')) {
@@ -680,6 +680,12 @@ class contentBlueprintsPages extends AdministrationPage
                     $this->_errors['type'] = __('A 404 type page already exists.');
                 } elseif (in_array('403', $types) && PageManager::hasPageTypeBeenUsed($page_id, '403')) {
                     $this->_errors['type'] = __('A 403 type page already exists.');
+                } elseif (in_array('400', $types) && PageManager::hasPageTypeBeenUsed($page_id, '400')) {
+                    $this->_errors['type'] = __('A 400 type page already exists.');
+                } elseif (in_array('401', $types) && PageManager::hasPageTypeBeenUsed($page_id, '401')) {
+                    $this->_errors['type'] = __('A 401 type page already exists.');
+                } elseif (in_array('429', $types) && PageManager::hasPageTypeBeenUsed($page_id, '429')) {
+                    $this->_errors['type'] = __('A 429 type page already exists.');
                 }
             }
 
