@@ -238,6 +238,22 @@ class contentLogin extends HTMLPage
 
             // Login Attempted
             if ($action == 'login') {
+
+                /**
+                 * Check if the Anti Brute Force extension is installed
+                 * and block banned or blacklisted IP addresses before
+                 * processing the login request.
+                */
+                $statusABF = ExtensionManager::listInstalledHandles();
+                if (
+                    is_array($statusABF)
+                    && in_array('anti_brute_force', $statusABF, true)
+                ) {
+                    require_once EXTENSIONS . '/anti_brute_force/lib/class.ABF.php';
+
+                    ABF::instance()->doBanCheck();
+                }
+
                 if (empty($_POST['username']) || empty($_POST['password']) || !Administration::instance()->login($_POST['username'], $_POST['password'])) {
                     /**
                      * A failed login attempt into the Symphony backend
