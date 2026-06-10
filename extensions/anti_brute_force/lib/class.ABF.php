@@ -176,12 +176,18 @@ class ABF implements Singleton
 
                 // check if blacklisted
                 if ($this->isBlackListed()) {
+                    // discard form data
+                    $_POST = array();
+
                     // block access
                     $this->throwBlackListedException();
                 }
 
                 // check if banned
                 if ($this->isCurrentlyBanned()) {
+                    // discard form data
+                    $_POST = array();
+
                     // block access
                     $this->throwBannedException();
                 }
@@ -291,12 +297,17 @@ class ABF implements Singleton
             . '<br/><br/>' .
             __('You can ask your administrator to unlock your account or wait %s minutes.', array($length));
 
-        if ($useUnbanViaEmail == 'on') {
+        if ($useUnbanViaEmail === 'on') {
             $msg .= ('<br/><br/>' . __('Alternatively, you can <a href="%s">un-ban your IP by email</a>.', array(SYMPHONY_URL . self::UNBAND_LINK)));
         }
 
+        // Backward compatibility with Sym8 ≤ 2.85.1 and Symphony ≤ 2.7.10
+        $status = defined('Page::HTTP_STATUS_TOO_MANY_REQUESTS')
+                    ? Page::HTTP_STATUS_TOO_MANY_REQUESTS
+                    : Page::HTTP_STATUS_FORBIDDEN;
+
         // banned - throw exception
-        throw new SymphonyErrorPage($msg, __('Banned IP address'));
+        throw new SymphonyErrorPage($msg, __('Banned IP address'), 'generic', array(), $status);
     }
 
     /**
@@ -391,7 +402,8 @@ class ABF implements Singleton
         $ret = false;
 
         // do not re-register existing entries
-        if ($results != null && count($results) > 0) {
+        #if ($results !== null && count($results) > 0) {
+        if ($results !== null && $results === true) {
             if ($isGray) {
                 $ret = $this->incrementGrayList($ip);
             }
@@ -492,7 +504,7 @@ class ABF implements Singleton
             __('Ask your administrator to unlock your IP.');
 
         // banned - throw exception
-        throw new SymphonyErrorPage($msg, __('Black listed IP address'));
+        throw new SymphonyErrorPage($msg, __('Black listed IP address'), 'generic', array(), Page::HTTP_STATUS_FORBIDDEN);
     }
 
 

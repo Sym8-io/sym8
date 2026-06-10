@@ -45,8 +45,11 @@ $dictionary = array(
     'Define here when and how IP are blocked' =>
     'Определите когда и как блокировать IP адреса',
 
-    'Email sent. Follow the instruction in it.' =>
-    'Письмо отправлено. Следуйте дальнейшим инструкциям.',
+    'Check your inbox. ' =>
+    null,
+
+    'We have sent you an email. Follow the instruction in it.' =>
+    'Мы отправили вам электронное письмо. Следуйте инструкциям, указанным в нем.',
 
     'Enter your email address to be sent a remote unban link with further instructions.' =>
     'Укажите ваш email для отправки сообщения с ссылкой и инструкцией для дальнейшей разблокировки.',

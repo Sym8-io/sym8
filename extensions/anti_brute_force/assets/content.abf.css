@@ -1,47 +1,47 @@
 /**
- * Anti Brute Force
- */
+* Anti Brute Force
+*/
 
 .actions.no-pad {
-	padding-top: 0;
+  padding-top: 0;
 }
 
 .actions.no-pad button:last-child {
-	margin-right: 0;
+  margin-right: 0;
 }
 
 .actions button.active {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 table + fieldset.insert {
-	display: block;
-	margin: 1em 0 1em 1.9rem !important;
-	border-bottom: 1px solid #E4E4DE;
-	padding-bottom: 0;
+  display: block;
+  margin: 1em 0 1em 1.9rem !important;
+  border-bottom: 1px solid #E4E4DE;
+  padding-bottom: 0;
 }
 
 fieldset.insert legend {
-	margin-left: 1rem;
+  margin-left: 1rem;
 }
 
 fieldset.insert label {
-	width: auto;
-	display: inline-block;
+  width: auto;
+  display: inline-block;
 }
 
 fieldset.insert label .input-ip {
-	width: 150px;
-	margin-top: 0;
-	vertical-align: top;
+  width: 150px;
+  margin-top: 0;
+  vertical-align: top;
 }
 
 fieldset.insert label .input-submit {
-	margin-top: 0;
-	vertical-align: top;
+  margin-top: 0;
+  vertical-align: top;
 }
 
 fieldset.insert  .actions{
-	float: right;
-	padding-top: 0px;
+  float: right;
+  padding-top: 0px;
 }
