@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension id="breadcrumb" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+  <name>Breadcrumb</name>
+  <description>A datasource that provides XML representing the parent hierarchy. Useful for building breadcrumb navigation.</description>
+  <repo type="github">https://github.com/Sym8-io/breadcrumb</repo>
+  <types>
+    <type>Data Sources</type>
+  </types>
+  <authors>
+    <author>
+      <name github="Sym8-io">Sym8</name>
+    </author>
+  </authors>
+  <dependencies>
+    <!-- None -->
+  </dependencies>
+  <releases>
+    <release version="1.3" data="2026-05-29" min="2.7.x">
+      - Fix: Declaration of datasourceBreadcrumb::grab() should be compatible with Datasource::grab()
+      - PSR-12 formatting
+      - Extension is now part of Sym8
+    </release>
+    <release version="1.2" date="2012-05-02" min="2.3.x">
+      - Compatible with Symphony 2.3
+      - Using new PageManager
+    </release>
+    <release version="1.1" date="2011-07-03" min="2.2">
+      - Compatible with the Multilingual Field and Language Redirect extensions
+    </release>
+    <release version="1.0" date="2009-01-02" max="2.2">
+      - First release
+    </release>
+  </releases>
+</extension>
