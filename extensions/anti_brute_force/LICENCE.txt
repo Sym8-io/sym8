@@ -4,6 +4,7 @@ follows:
 
 ----- begin license block -----
 
+Copyright since 2026 Sym8
 Copyright 2012-2019 Deux Huit Huit inc.
 Copyright 2011 Solutions Nitriques inc.
 

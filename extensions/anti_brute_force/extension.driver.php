@@ -93,7 +93,7 @@ class extension_anti_brute_force extends Extension
      */
     public function fetchNavigation()
     {
-        return  array(
+        return array(
             array(
                 'location' => __(self::EXT_NAME),
                 'name' => __(self::EXT_NAME),
@@ -219,11 +219,17 @@ class extension_anti_brute_force extends Extension
      */
     private function mustCheck($oPage)
     {
-        return (!($oPage instanceof contentExtensionAnti_brute_forceLogin)) ||
-            ($oPage instanceof contentExtensionAnti_brute_forceLogin &&
-            $unBanViaEmail != 'No' &&
-            $unBanViaEmail != false &&
-            $unBanViaEmail != 'off');
+        $unBanViaEmail = Symphony::Configuration()->get('auto-unban', 'anti-brute-force');
+
+        $isLoginPage = ($oPage instanceof contentExtensionAnti_brute_forceLogin);
+        $unbanEnabled = !in_array($unBanViaEmail, ['No', 'off', false], true);
+
+        // Important: Never permanently block the login page
+        if ($isLoginPage && $unbanEnabled) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -332,8 +338,6 @@ class extension_anti_brute_force extends Extension
         // adds the field set to the wrapper
         $context['wrapper']->appendChild($fieldset);
     }
-
-
 
     /**
      *

@@ -1,161 +1,167 @@
 <?php
 
-    $about = array(
-        'name' => 'Français',
-        'author' => array(
-            'name' => 'Deux Huit Huit',
-            'email' => 'open-source (at) deuxhuithuit.com',
-            'website' => 'http://www.deuxhuithuit.com/'
-        ),
-        'release-date' => '2012-11-15',
-    );
+$about = array(
+    'name' => 'Français',
+    'author' => array(
+        'name' => 'Deux Huit Huit',
+        'email' => 'open-source (at) deuxhuithuit.com',
+        'website' => 'http://www.deuxhuithuit.com/'
+    ),
+    'release-date' => '2012-11-15',
+);
 
-    /**
-     * Save and return
-     */
-    $dictionary = array(
+/**
+* Save and return
+*/
+$dictionary = array(
 
-        'Anti Brute Force' =>
-        'Protection "Brute Force"',
+    'Anti Brute Force' =>
+    'Protection "Brute Force"',
 
-        'Secure your backend login page against brute force attacks' =>
-        'Sécurisez la page de connection contre les attaques "brute force"',
+    'Secure your backend login page against brute force attacks' =>
+    'Sécurisez la page de connection contre les attaques "brute force"',
 
-        'Define here when and how IP are blocked' =>
-        'Comment et pour combien de temps les IP sont bloquées',
+    'Define here when and how IP are blocked' =>
+    'Comment et pour combien de temps les IP sont bloquées',
 
-        'Fail count limit' =>
-        'Limite d\'erreurs',
+    'Fail count limit' =>
+    'Limite d\'erreurs',
 
-        'Blocked length <em>in minutes</em>' =>
-        'Durée d\'expulsion <em>minutes</em>',
+    'Blocked length <em>in minutes</em>' =>
+    'Durée d\'expulsion <em>minutes</em>',
 
-        '"%s" is not a valid positive integer' =>
-        '"%s" n\'est pas un entier positif',
+    '"%s" is not a valid positive integer' =>
+    '"%s" n\'est pas un entier positif',
 
-        'Your IP address is currently banned, due to typing too many wrong usernames/passwords.' =>
-        'Votre adresse IP est bannie pour avoir essayer trop de mauvais noms d\'usager et/ou mot de passes',
+    'Your IP address is currently banned, due to typing too many wrong usernames/passwords.' =>
+    'Votre adresse IP est bannie pour avoir essayer trop de mauvais noms d\'usager et/ou mot de passes',
 
-        'You can ask your administrator to unlock your account or wait %s minutes.' =>
-        'Demandez à votre administrateur de débloquer votre compte ou attendez %s minutes',
+    'You can ask your administrator to unlock your account or wait %s minutes.' =>
+    'Demandez à votre administrateur de débloquer votre compte ou attendez %s minutes',
 
-        'Banned IP address' =>
-        'Adresse IP bannie',
+    'Banned IP address' =>
+    'Adresse IP bannie',
 
-        'Banned IPs' =>
-        'Adresses IP bannies',
+    'Banned IPs' =>
+    'Adresses IP bannies',
 
-        'IP Address' =>
-        'Adresse IP',
+    'IP Address' =>
+    'Adresse IP',
 
-        'Raw IP value' =>
-        'Valeur IP lue',
+    'Raw IP value' =>
+    'Valeur IP lue',
 
-        'Last Attempt' =>
-        'Dernière tentative',
+    'Last Attempt' =>
+    'Dernière tentative',
 
-        'Failed Count' =>
-        'Nombre d\'échec',
+    'Failed Count' =>
+    'Nombre d\'échec',
 
-        'User Agent (browser)'=>
-        'User Agent (fureteur)',
+    'User Agent (browser)'=>
+    'User Agent (fureteur)',
 
-        'Username' =>
-        'Nom d\'usager',
+    'Username' =>
+    'Nom d\'usager',
 
-        'Failures remove successfuly' =>
-        'Échecs supprimés',
+    'Failures remove successfuly' =>
+    'Échecs supprimés',
 
-        'Source' =>
-        'Source',
+    'Source' =>
+    'Source',
 
-        'Enter your email address to be sent a remote unban link with further instructions.' =>
-        'Veuillez entrer votre adresse courriel pour recevoir un lien et des instruction pour vous ré-autoriser.',
+    'Check your inbox. ' =>
+    null,
 
-        'Email Address' =>
-        'Courriel',
+    'We have sent you an email. Follow the instruction in it.' =>
+    'Nous vous avons envoyé un e-mail. Veuillez suivre les instructions qui y figurent.',
 
-        'Users can unban their IP via email' =>
-        'Les utilisateurs peuvent se débannir via courriel',
+    'Enter your email address to be sent a remote unban link with further instructions.' =>
+    'Veuillez entrer votre adresse courriel pour recevoir un lien et des instruction pour vous ré-autoriser.',
 
-        'Alternatively, you can <a href="%s">un-ban your IP by email</a>.' =>
-        'De plus, vous pouvez vous <a href="%s">débannir par courriel</a>.',
+    'Email Address' =>
+    'Courriel',
 
-        'Please follow this link to unban your IP: ' =>
-        'Veuillez suivre ce lien pour vous débannir: ',
+    'Users can unban their IP via email' =>
+    'Les utilisateurs peuvent se débannir via courriel',
 
-        'If you do not remember your password, follow the "forgot password" link on the login page.' =>
-        'Si vous ne vous souvenez plus de votre mot de passe, veuillez suivre le lien "mot de passe oublié" sur la page d\'identification.',
+    'Alternatively, you can <a href="%s">un-ban your IP by email</a>.' =>
+    'De plus, vous pouvez vous <a href="%s">débannir par courriel</a>.',
 
-        'Gray list threshold' =>
-        'Limit de la liste grise',
+    'Please follow this link to unban your IP: ' =>
+    'Veuillez suivre ce lien pour vous débannir: ',
 
-        'Gray list duration <em>in days</em>' =>
-        'Durée de validité de la liste grise <em>en jour</em>',
+    'If you do not remember your password, follow the "forgot password" link on the login page.' =>
+    'Si vous ne vous souvenez plus de votre mot de passe, veuillez suivre le lien "mot de passe oublié" sur la page d\'identification.',
 
-        'Your IP address is currently <strong>black listed</strong>, due to too many bans.' =>
-        'Votre adresse IP est présentement <strong>sur la liste noire</strong>, dû à trop d\'erreurs.',
+    'Gray list threshold' =>
+    'Limit de la liste grise',
 
-        'Ask your administrator to unlock your IP.' =>
-        'Demandez à votre administrateur de débloquer votre adresse IP.',
+    'Gray list duration <em>in days</em>' =>
+    'Durée de validité de la liste grise <em>en jour</em>',
 
-        'Black listed IP address' =>
-        'Adresse IP sur la liste noire',
+    'Your IP address is currently <strong>black listed</strong>, due to too many bans.' =>
+    'Votre adresse IP est présentement <strong>sur la liste noire</strong>, dû à trop d\'erreurs.',
 
-        'Date Created' =>
-        'Date d\'ajout',
+    'Ask your administrator to unlock your IP.' =>
+    'Demandez à votre administrateur de débloquer votre adresse IP.',
 
-        'Entries remove successfuly' =>
-        'Entrées supprimées avec succès',
+    'Black listed IP address' =>
+    'Adresse IP sur la liste noire',
 
-        'Change' =>
-        'Changer',
+    'Date Created' =>
+    'Date d\'ajout',
 
-        'Black list' =>
-        'Liste noire',
+    'Entries remove successfuly' =>
+    'Entrées supprimées avec succès',
 
-        'Gray list' =>
-        'Liste grise',
+    'Change' =>
+    'Changer',
 
-        'White list' =>
-        'Liste blanche',
+    'Black list' =>
+    'Liste noire',
 
-        'Add' =>
-        'Ajouter',
+    'Gray list' =>
+    'Liste grise',
 
-        'IP added successfuly' =>
-        'Adresse IP ajoutée avec succès',
+    'White list' =>
+    'Liste blanche',
 
-        'Black Listed IPs' =>
-        'Liste noire d\'IP',
+    'Add' =>
+    'Ajouter',
 
-        'Gray Listed IPs' =>
-        'Liste grise d\'IP',
+    'IP added successfuly' =>
+    'Adresse IP ajoutée avec succès',
 
-        'White Listed IPs' =>
-        'Liste blanche d\'IP',
+    'Black Listed IPs' =>
+    'Liste noire d\'IP',
 
-        "%s is not installed properly and does not protect Symphony until this is fixed. Ensure latest version is installed." =>
-        "%s n'est pas installé correctement et ne protège Symphony si ceci n'est pas réglé. Assurez-vous d'avoir la dernière version d'installer.",
+    'Gray Listed IPs' =>
+    'Liste grise d\'IP',
 
-        'Unban via email' =>
-        'Déblocage par courriel',
+    'White Listed IPs' =>
+    'Liste blanche d\'IP',
 
-        'There are currently' =>
-        'Il y a présentement',
+    "%s is not installed properly and does not protect Symphony until this is fixed. Ensure latest version is installed." =>
+    "%s n'est pas installé correctement et ne protège Symphony si ceci n'est pas réglé. Assurez-vous d'avoir la dernière version d'installer.",
 
-        '%d blocked IPs.' =>
-        '%d adresses IP bloquées',
+    'Unban via email' =>
+    'Déblocage par courriel',
 
-        'Restrict access from authors' =>
-        'Restreindre l\'acces des auteurs',
+    'There are currently' =>
+    'Il y a présentement',
 
-        'Error: The given IP address, `%s`, is not valid' =>
-        "Erreur: L'adresse IP fournie, `%s`, n'est pas valide",
+    '%d blocked IPs.' =>
+    '%d adresses IP bloquées',
 
-        'Default Email Gateway is not configured. Unban via email may not work.' =>
-        "La passerelle de courriel par défaut n'est pas configurée. Les utilisateurs ne pourront pas de débannir par courriel.",
+    'Restrict access from authors' =>
+    'Restreindre l\'acces des auteurs',
 
-        'Go to the Preferences page to fix this.' =>
-        "Aller a la page des Préférences pour régler ceci"
-    );
+    'Error: The given IP address, `%s`, is not valid' =>
+    "Erreur: L'adresse IP fournie, `%s`, n'est pas valide",
+
+    'Default Email Gateway is not configured. Unban via email may not work.' =>
+    "La passerelle de courriel par défaut n'est pas configurée. Les utilisateurs ne pourront pas de débannir par courriel.",
+
+    'Go to the Preferences page to fix this.' =>
+    "Aller a la page des Préférences pour régler ceci"
+);
