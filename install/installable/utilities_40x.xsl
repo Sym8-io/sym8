@@ -17,11 +17,20 @@
     <head>
         <title>
             <xsl:choose>
+                <xsl:when test="$current-page = '400'">
+                    <xsl:text>Bad request</xsl:text>
+                </xsl:when>
+                <xsl:when test="$current-page = '401'">
+                    <xsl:text>Unauthorized</xsl:text>
+                </xsl:when>
                 <xsl:when test="$current-page = '403'">
                     <xsl:text>Access forbidden</xsl:text>
                 </xsl:when>
                 <xsl:when test="$current-page = '404'">
                     <xsl:text>Page not found</xsl:text>
+                </xsl:when>
+                <xsl:when test="$current-page = '429'">
+                    <xsl:text>Too many requests</xsl:text>
                 </xsl:when>
             </xsl:choose>
         </title>
@@ -33,21 +42,39 @@
         <p>
             <code>
                 <xsl:choose>
+                    <xsl:when test="$current-page = '400'">
+                        <xsl:text>400 – Bad request</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="$current-page = '401'">
+                        <xsl:text>401 – Unauthorized</xsl:text>
+                    </xsl:when>
                     <xsl:when test="$current-page = '403'">
                         <xsl:text>403 – Access forbidden</xsl:text>
                     </xsl:when>
                     <xsl:when test="$current-page = '404'">
                         <xsl:text>404 – Page not found</xsl:text>
                     </xsl:when>
+                    <xsl:when test="$current-page = '429'">
+                        <xsl:text>429 – Too many requests</xsl:text>
+                    </xsl:when>
                 </xsl:choose>
             </code>
         </p>
         <xsl:choose>
+            <xsl:when test="$current-page = '400'">
+                <p><code>The request could not be processed due to invalid or malformed input.</code></p>
+            </xsl:when>
+            <xsl:when test="$current-page = '401'">
+                <p><code>Authentication is required to access the requested resource.</code></p>
+            </xsl:when>
             <xsl:when test="$current-page = '403'">
                 <p><code>You don't have permission to access the requested resource.</code></p>
             </xsl:when>
             <xsl:when test="$current-page = '404'">
                 <p><code>Sorry, the requested page could not be found.</code></p>
+            </xsl:when>
+            <xsl:when test="$current-page = '429'">
+                <p><code>Too many requests were received. Please try again later.</code></p>
             </xsl:when>
         </xsl:choose>
         <p><code><a href="{$root}/">homepage</a></code></p>
