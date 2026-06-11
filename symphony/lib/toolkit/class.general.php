@@ -341,7 +341,7 @@ class General
         // by tiloschroeder
         // Allow only ASCII characters—the safest method, without checking PHP versions or using loops.
         // Works reliably in PHP 7.1–8.5
-        $string = preg_replace('/[^a-zA-Z0-9\-]+/', '', $string);
+        $string = preg_replace('/[^a-zA-Z0-9\-\_]+/', '', $string);
 
         // Trim to word limit
         if ($max_length > 0) {
