@@ -1035,20 +1035,16 @@ class ExtensionManager implements FileResource
                     '<code>' . $name . '</code>',
                     '<code>' . str_replace(DOCROOT . '/', '', $path) . '</code>'
                 ));
-                try {
-                    Symphony::Engine()->throwCustomError(
+                throw new SymphonyErrorPage(
                         $errMsg,
                         __('Symphony Extension Missing Error'),
-                        Page::HTTP_STATUS_ERROR,
                         'missing_extension',
                         array(
                             'name' => $name,
                             'path' => $path
-                        )
-                    );
-                } catch (Exception $ex) {
-                    throw new Exception($errMsg, 0, $ex);
-                }
+                        ),
+                        Page::HTTP_STATUS_ERROR
+                );
             }
 
             if (!class_exists($classname)) {
