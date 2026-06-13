@@ -1,0 +1,214 @@
+/*!
+ * Sym8
+ * https://sym8.io
+ * @author: tiloschroeder
+ * Copyright (c) 2026
+ * License MIT
+ */
+:root {
+  --pico-tile-background-color: #eff1f4;
+}
+[data-theme="dark"] {
+  --pico-tile-background-color: #2a3140;
+}
+.container h1 {
+  font-weight: 500;
+  text-align: center;
+}
+label {
+  cursor: pointer;
+}
+.login,
+.password-lost,
+.loggedout {
+  margin: 0 auto;
+  max-width: 480px;
+  padding-top: 5%;
+}
+.frame {
+  padding-top: calc(2 * var(--pico-block-spacing-vertical));
+}
+.inner,
+.actions {
+  background-color: var(--pico-tile-background-color);
+  padding: var(--pico-spacing);
+}
+.inner {
+  border-top-left-radius: var(--pico-border-radius);
+  border-top-right-radius: var(--pico-border-radius);
+  margin-bottom: 0;
+}
+.inner h2 {
+  font-size: 26px;
+  font-weight: 500;
+  margin-bottom: calc(1.5 * var(--pico-spacing));
+}
+.actions {
+  border-bottom-left-radius: var(--pico-border-radius);
+  border-bottom-right-radius: var(--pico-border-radius);
+}
+.actions .login-link {
+  width: 100%;
+}
+.back-to-website {
+  margin: calc(3 * var(--pico-spacing)) 0;
+}
+.back-link {
+  /*padding-inline-start: var(--pico-spacing);*/
+}
+.back-link:before {
+  content: '\2190  ';
+  text-decoration: none;
+}
+:dir(rtl) .back-link:before {
+  content: '\2192  ';
+}
+.input-group {
+  align-items: stretch;
+  border: var(--pico-border-width) solid var(--pico-form-element-border-color);
+  border-radius: var(--pico-border-radius);
+  display: flex;
+  margin-bottom: var(--pico-spacing);
+  margin-top: calc(var(--pico-spacing) / 4);
+  position: relative;
+  width: 100%;
+}
+.input-group input {
+  margin-bottom: 0;
+}
+.input-group:focus-within {
+  border-color: var(--pico-form-element-active-border-color);
+  box-shadow: 0 0 0 .0625rem var(--pico-form-element-focus-color);
+}
+.input-group:has(> input[aria-invalid="true"]) {
+  border-color: var(--pico-form-element-invalid-border-color)!important;
+}
+.input-group:has(> input[aria-invalid="false"]) {
+  border-color: var(--pico-form-element-valid-border-color)!important;
+}
+.input-group:has(> input[aria-invalid="true"]):focus-within {
+  border-color: var(--pico-form-element-invalid-active-border-color)!important;
+  box-shadow: 0 0 0 .0625rem var(--pico-form-element-invalid-focus-color)!important;
+}
+.input-group:has(> input[aria-invalid="false"]):focus-within {
+  border-color: var(--pico-form-element-valid-active-border-color)!important;
+  box-shadow: 0 0 0 .0625rem var(--pico-form-element-valid-focus-color)!important
+}
+#password {
+  border: 0;
+}
+#password[aria-invalid="true"],
+#password[aria-invalid="false"]{
+  background-position: center right 4rem;
+}
+:dir(rtl) #password[aria-invalid="true"],
+:dir(rtl) #password[aria-invalid="false"] {
+  background-position: center left 4rem;
+}
+.show-hide-password {
+  border: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  height: calc(1rem * var(--pico-line-height) + var(--pico-form-element-spacing-vertical) * 2 + var(--pico-border-width) * 2);
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+:dir(rtl) .show-hide-password {
+  border-bottom-left-radius: var(--pico-border-radius);
+  border-top-left-radius: var(--pico-border-radius);
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  left: 0;
+  right: auto;
+}
+.show-hide-password[aria-pressed="false"] .icon-show,
+.show-hide-password[aria-pressed="true"] .icon-hide {
+  display: inline;
+}
+.show-hide-password[aria-pressed="false"] .icon-hide,
+.show-hide-password[aria-pressed="true"] .icon-show {
+  display: none;
+}
+.form-field > small {
+  color: var(--pico-del-color);
+}
+.waving-hand {
+  animation: spin 2s 2 ease-in-out;
+  animation-delay: 500ms;
+  backface-visibility: hidden;
+  display: block;
+  fill: var(--pico-color);
+  height: 48px;
+  margin: 0 auto calc(var(--pico-spacing) * 2);
+  overflow: hidden;
+  width: 48px;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-38deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .waving-hand {
+    animation: none;
+  }
+}
+@media only screen and (prefers-color-scheme: dark) {
+  :root {
+    --pico-tile-background-color: #2a3140;
+  }
+  [data-theme="light"] {
+    --pico-tile-background-color: #eff1f4;
+  }
+  .form-field > small {
+    color: #de7e7b;
+  }
+  .input-group input {
+    border-color: var(--pico-form-element-background-color);
+  }
+  [data-theme="light"] .input-group input {
+    border-color: var(--pico-border-color);
+  }
+  .input-group input:focus {
+    border-color: var(--pico-form-element-focus-color);
+  }
+  .input-group input[aria-invalid="true"] {
+    border-color: var(--pico-form-element-invalid-border-color);
+  }
+}
+@media screen and (min-width: 576px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+  .actions {
+    align-items: baseline;
+    display: flex;
+    flex-direction: row-reverse;
+  }
+  .actions button,
+  .actions p {
+    flex: 1;
+  }
+}
+@media (min-width: 768px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}

@@ -15,6 +15,12 @@ class contentLogin extends HTMLPage
 
     public function __construct()
     {
+        // Redirect logged in users to Symphony backend
+        $author = Symphony::Author();
+        if ($author !== null) {
+            redirect(SYMPHONY_URL . '/');
+        }
+
         parent::__construct();
 
         $this->addHeaderToPage('Content-Type', 'text/html; charset=UTF-8');
@@ -22,32 +28,32 @@ class contentLogin extends HTMLPage
         $this->Html->setElementStyle('html');
         $this->Html->setDTD('<!DOCTYPE html>');
         $this->Html->setAttribute('lang', Lang::get());
+        $this->Html->setAttribute('dir', 'ltr');
+        // Enable for testing
+        // $this->Html->setAttribute('data-theme', 'light');
         $this->addElementToHead(new XMLElement('meta', null, array('charset' => 'UTF-8')), 0);
         $this->addElementToHead(new XMLElement('meta', null, array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=edge')), 1);
         $this->addElementToHead(new XMLElement('meta', null, array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1')), 2);
-        $this->addElementToHead(new XMLElement('meta', null, array('name' => 'robots', 'content' => 'noindex')), 3);
+        $this->addElementToHead(new XMLElement('meta', null, array('name' => 'color-scheme', 'content' => 'dark light')), 3);
+        $this->addElementToHead(new XMLElement('meta', null, array('name' => 'robots', 'content' => 'noindex')), 4);
 
-        parent::addStylesheetToHead(ASSETS_URL . '/css/symphony.min.css', 'screen', null, false);
+        parent::addStylesheetToHead(ASSETS_URL . '/css/pico.min.css', 'screen', null, false, true);
+        parent::addStylesheetToHead(ASSETS_URL . '/css/pico-login.css', 'screen', null, false, true);
+        parent::addStylesheetToHead(ASSETS_URL . '/css/pico-messages.css', 'screen', null, false, true);
 
-        // Add theme stylesheet to update login screen
-        if (file_exists(DOCROOT.'/extensions/modern_theme/assets/modern_theme.theme.css')) {
-            parent::addStylesheetToHead(URL.'/extensions/modern_theme/assets/modern_theme.theme.css');
-        }
-
-        // the page title must be set context-dependent in the function view()
-        #$this->setTitle(__('%1$s &ndash; %2$s', array(__('Login'), Symphony::Configuration()->get('sitename', 'general'))));
+        parent::addScriptToHead(ASSETS_URL . '/js/login.js', null, false, true, false);
 
         $this->Body->setAttribute('id', 'login');
 
         Symphony::Profiler()->sample('Page template created', PROFILE_LAP);
     }
 
-    public function addScriptToHead($path, $position = null, $duplicate = true)
+    public function addScriptToHead($path, $position = null, $duplicate = true, $version = true, $module = false)
     {
         // Prevent script injection by extensions
     }
 
-    public function addStylesheetToHead($path, $type = 'screen', $position = null, $duplicate = true)
+    public function addStylesheetToHead($path, $type = 'screen', $position = null, $duplicate = true, $version = true)
     {
         // Prevent stylesheet injection by extensions
     }
@@ -83,138 +89,196 @@ class contentLogin extends HTMLPage
             $this->setTitle(__('%1$s &ndash; %2$s', array(__('Login'), Symphony::Configuration()->get('sitename', 'general'))));
         }
 
-        $this->Form = Widget::Form(SYMPHONY_URL . '/login/', 'post');
-        $this->Form->setAttribute('class', 'frame');
-        $this->Form->appendChild(new XMLElement('h1', Symphony::Configuration()->get('sitename', 'general')));
+        $siteName = new XMLElement('h1', __('Symphony'));
 
-        $fieldset = new XMLElement('fieldset');
+        $this->Form = Widget::Form(SYMPHONY_URL . '/login/', 'post', 'frame');
+
+        $divInner = new XMLElement('div', null, array('class' => 'inner'));
 
         // Display retrieve password UI
         if (isset($this->_context[0]) && $this->_context[0] == 'retrieve-password') {
             $this->Form->setAttribute('action', SYMPHONY_URL.'/login/retrieve-password/');
-            $fieldset->appendChild(new XMLElement('legend', __('Password forgotten')));
+            $divInner->appendChild(new XMLElement('h2', __('Password forgotten')));
 
             // Successful reset
             if (isset($this->_email_sent) && $this->_email_sent) {
-                $fieldset->appendChild(new XMLElement('p', __('An email containing a customised login link has been sent to %s. It will expire in 2 hours.', array(
+                $divInner->appendChild(new XMLElement('p', __('Check your inbox. ') . __('An email containing a customised login link has been sent to %s. It will expire in 2 hours.', array(
                     '<code>' . $this->_email_sent_to . '</code>')
-                )));
-                $fieldset->appendChild(new XMLElement('p', Widget::Anchor(__('Login'), SYMPHONY_URL.'/login/', null)));
-                $this->Form->appendChild($fieldset);
+                ), array('class' => 'message success')));
+                $divInner->appendChild(new XMLElement('p', Widget::Anchor(__('Login'), SYMPHONY_URL.'/login/', null)));
+                $this->Form->appendChild($divInner);
 
                 // Default, get the email address for reset
             } else {
-                $fieldset->appendChild(new XMLElement('p', __('Enter your email address or username to be sent further instructions for logging in.')));
+                $divInner->appendChild(new XMLElement('p', __('Enter your email address or username to be sent further instructions for logging in.'), array('class' => 'message info')));
 
+                $div = new XMLElement('div', null, array('class' => 'form-field'));
                 $label = Widget::Label(__('Email Address or Username'));
+                $label->setAttribute('for', 'userlogin');
                 $_POST['email'] = $_POST['email'] ?? null;
-                $input = Widget::Input('email', General::sanitize($_POST['email']), 'text', array('autofocus' => 'autofocus'));
+                // Do not set the "autofocus" attribute directly.
+                // On touch devices this can cause the virtual keyboard
+                // to open automatically, resulting in a disruptive UX.
+                //
+                // Focus handling is applied via Javascript depending on
+                // the device input type (touch vs. non-touch).
+                $input = Widget::Input('email', General::sanitize($_POST['email']), 'text', array('data-autofocus' => 'true'));
+                $input->setAttribute('id', 'userlogin');
                 $input->setAttribute('required', 'required');
                 $input->setAttribute('autocapitalize', 'off');
                 $input->setAttribute('autocomplete', 'username');
-                $label->appendChild($input);
 
                 if (isset($this->_email_sent) && !$this->_email_sent) {
-                    $alert = new XMLElement('p', __('Unfortunately no account was found using this information.'));
+                    $errorId = 'error-account';
+                    $alert = new XMLElement('small', __('Unfortunately no account was found using this information.'));
+                    $alert->setAttribute('id', $errorId);
                     $alert->setAttribute('role', 'alert');
                     $input->setAttribute('aria-invalid', 'true');
-                    $label->setAttribute('class', 'invalid');
-                    $label->appendChild($alert);
-                    #$label = Widget::Error($label, __('Unfortunately no account was found using this information.'));
-                    #$label->setAttribute('role', 'alert');
+                    $input->setAttribute('aria-describedby', $errorId);
+                    $input->appendChild($alert);
                 } else {
                     // Email exception
                     if (isset($this->_email_error) && $this->_email_error) {
                         $alert = new XMlElement('p', __('This Symphony instance has not been set up for emailing, %s', array('<code>' . General::sanitize($this->_email_error) . '</code>')));
                         $alert->setAttribute('role', 'alert');
+                        $alert->setAttribute('class', 'message invalid');
                         $input->setAttribute('aria-invalid', 'false');
-                        $label->setAttribute('class', 'invalid');
-                        $label->appendChild($alert);
-                        #$label = Widget::Error($label, __('This Symphony instance has not been set up for emailing, %s', array('<code>' . General::sanitize($this->_email_error) . '</code>')));
+                        $div->appendChild($alert);
                     }
                 }
 
-                $fieldset->appendChild($label);
+                $div->appendChild($label);
+                $div->appendChild($input);
 
-                $this->Form->appendChild($fieldset);
+                $divInner->appendChild($div);
+
+                $this->Form->appendChild($divInner);
 
                 $div = new XMLElement('div', null, array('class' => 'actions'));
                 $div->appendChild(
                     new XMLElement('button', __('Send Email'), array('name' => 'action[reset]', 'type' => 'submit'))
                 );
-                $div->appendChild(
+                $p = new XMLElement('p');
+                $p->appendChild(
                     Widget::Anchor(__('Cancel'), SYMPHONY_URL.'/login/', null, 'action-link')
                 );
+                $div->appendChild($p);
                 $this->Form->appendChild($div);
             }
 
             // Normal login
         } else {
-            $fieldset->appendChild(new XMLElement('legend', __('Login')));
+            $divInner->appendChild(new XMLElement('h2', __('Login')));
 
             // Display error message
             if ($this->failedLoginAttempt) {
                 $p = new XMLElement('p', __('The login details provided are incorrect.'));
-                $p->setAttribute('class', 'invalid');
+                $p->setAttribute('class', 'message invalid');
                 $p->setAttribute('role', 'alert');
-                $fieldset->appendChild($p);
+                $divInner->appendChild($p);
             }
 
             // Username
+            $div = new XMLElement('div', null, array('class' => 'form-field'));
             $label = Widget::Label(__('Username'));
+            $label->setAttribute('for', 'username');
+
             $username = Widget::Input('username', isset($_POST['username']) ? General::sanitize($_POST['username']) : null);
+            $username->setAttribute('id', 'username');
             $username->setAttribute('required', 'required');
             $username->setAttribute('autocapitalize', 'off');
             $username->setAttribute('autocomplete', 'username');
 
             if (!$this->failedLoginAttempt) {
-                $username->setAttribute('autofocus', 'autofocus');
+                $username->setAttribute('data-autofocus', '');
             }
 
             if ($this->failedLoginAttempt) {
                 $username->setAttribute('aria-invalid', 'true');
             }
 
-            $label->appendChild($username);
+            $div->appendChild($label);
+            $div->appendChild($username);
 
             if (isset($_POST['action'], $_POST['action']['login']) && empty($_POST['username'])) {
-                $username->setAttribute('autofocus', 'autofocus');
-                $label = Widget::Error($label, __('No username was entered.'));
+                $errorId = 'empty-username';
+                // Do not set the "autofocus" attribute directly.
+                // On touch devices this can cause the virtual keyboard
+                // to open automatically, resulting in a disruptive UX.
+                //
+                // Focus handling is applied via Javascript depending on
+                // the device input type (touch vs. non-touch).
+                $username->setAttribute('data-autofocus', '');
+                $username->setAttribute('aria-describedby', $errorId);
+                $errorMsg = new XMLElement('small', __('No username was entered.'));
+                $errorMsg->setAttribute('id', $errorId);
+                $div->appendChild($errorMsg);
             }
 
-            $fieldset->appendChild($label);
+            $divInner->appendChild($div);
 
             // Password
+            $div = new XMLElement('div', null, array('class' => 'form-field'));
             $label = Widget::Label(__('Password'));
+            $label->setAttribute('for', 'password');
+
+            $div1 = new XMLElement('div', null, array('class' => 'input-group'));
             $password = Widget::Input('password', null, 'password');
+            $password->setAttribute('id', 'password');
             $password->setAttribute('required', 'required');
             $password->setAttribute('autocomplete', 'current-password');
             $password->setAttribute('spellcheck', 'false');
-            $label->appendChild($password);
+            $div1->appendChild($password);
+
+            $btn = new XMLElement('button');
+            $btn->setAttribute('aria-label', __('Show password'));
+            $btn->setAttribute('aria-pressed', 'false');
+            $btn->setAttribute('aria-controls', 'password');
+            $btn->setAttribute('data-label-show', __('Show password'));
+            $btn->setAttribute('data-label-hide', __('Hide password'));
+            $btn->setAttribute('type', 'button');
+            $btn->setAttribute('class', 'show-hide-password secondary outline');
+            $btn->setValue('<span class="icon-show">
+                <!-- visibility -->
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 24 24" focusable="false"><path d="M15.188 14.688q1.313-1.312 1.313-3.187t-1.313-3.188-3.187-1.312-3.188 1.312-1.312 3.188 1.312 3.187 3.188 1.313 3.187-1.313m-5.1-1.275q-.787-.787-.787-1.912t.787-1.913 1.913-.787 1.912.787.788 1.913-.788 1.912-1.912.788-1.913-.788m-4.737 3.55q-3-2.037-4.35-5.462 1.35-3.425 4.35-5.463T12 4.001t6.65 2.037T23 11.501q-1.35 3.425-4.35 5.462T12 19.001t-6.65-2.038m11.837-1.45q2.363-1.487 3.613-4.012-1.25-2.525-3.613-4.013T12 6.001 6.812 7.488 3.2 11.501q1.25 2.525 3.612 4.012T12 17.001t5.187-1.488"/></svg>
+            </span>
+            <span class="icon-hide" hidden>
+                <!-- visibility_off -->
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 24 24" focusable="false"><path d="m16.1 13.3-1.45-1.45q.225-1.175-.675-2.2t-2.325-.8L10.2 7.4q.425-.2.863-.3T12 7q1.875 0 3.188 1.313T16.5 11.5q0 .5-.1.938t-.3.862m3.2 3.15-1.45-1.4q.95-.725 1.688-1.588T20.8 11.5q-1.25-2.525-3.587-4.013T12 6q-.725 0-1.425.1T9.2 6.4L7.65 4.85q1.025-.425 2.1-.638T12 4q3.775 0 6.725 2.087T23 11.5q-.575 1.475-1.512 2.737T19.3 16.45m.5 6.15-4.2-4.15q-.875.275-1.762.413T12 19q-3.775 0-6.725-2.087T1 11.5q.525-1.325 1.325-2.462T4.15 7L1.4 4.2l1.4-1.4 18.4 18.4zM5.55 8.4q-.725.65-1.325 1.425T3.2 11.5q1.25 2.525 3.588 4.013T12 17q.5 0 .975-.062t.975-.138l-.9-.95q-.275.075-.525.113T12 16q-1.875 0-3.188-1.312T7.5 11.5q0-.275.037-.525t.113-.525z"/></svg>
+            </span>');
+            $div1->appendChild($btn);
+
+            $div->appendChild($label);
+            $div->appendChild($div1);
 
             if (isset($_POST['action'], $_POST['action']['login']) && empty($_POST['password'])) {
+                $errorId = 'empty-password';
                 $password->setAttribute('aria-invalid', 'true');
-                if ( !empty($_POST['username']) ) {
+                $password->setAttribute('aria-describedby', $errorId);
+                if (!empty($_POST['username'])) {
                     $password->setAttribute('autofocus', 'autofocus');
                 }
-                $label = Widget::Error($label, __('No password was entered.'));
+                $errorMsg = new XMLElement('small', __('No password was entered.'));
+                $errorMsg->setAttribute('id', $errorId);
+                $div->appendChild($errorMsg);
             } elseif ($this->failedLoginAttempt) {
                 $password->setAttribute('aria-invalid', 'true');
-                // the autofocus is already on $username
-                #$password->setAttribute('autofocus', 'autofocus');
             }
 
-            $fieldset->appendChild($label);
-            $this->Form->appendChild($fieldset);
+            $divInner->appendChild($div);
+
+            $this->Form->appendChild($divInner);
 
             // Actions
             $div = new XMLElement('div', null, array('class' => 'actions'));
             $div->appendChild(
                 new XMLElement('button', __('Login'), array('name' => 'action[login]', 'type' => 'submit'))
             );
-            $div->appendChild(
+            $p = new XMLElement('p');
+            $p->appendChild(
                 Widget::Anchor(__('Retrieve password?'), SYMPHONY_URL.'/login/retrieve-password/', null, 'action-link')
             );
+            $div->appendChild($p);
             $this->Form->appendChild($div);
 
             if (isset($this->_context['redirect'])) {
@@ -224,10 +288,22 @@ class contentLogin extends HTMLPage
             }
         }
 
+        $p = new XMLElement('p', null, array('class' => 'back-to-website'));
+        $backLink = new XMLElement('a', __("back to ") . Symphony::Configuration()->get('sitename', 'general'));
+        $backLink->setAttribute('href', URL);
+        $backLink->setAttribute('class', 'secondary back-link');
+        $p->appendChild($backLink);
+
         $main = new XMLElement('main');
+        if (isset($this->_context[0]) && $this->_context[0] == 'retrieve-password') {
+            $main->setAttribute('class', 'container password-lost');
+        } else {
+            $main->setAttribute('class', 'container login');
+        }
+        $main->appendChild($siteName);
         $main->appendChild($this->Form);
+        $main->appendChild($p);
         $this->Body->appendChild($main);
-        #$this->Body->appendChild($this->Form);
     }
 
     public function action()
