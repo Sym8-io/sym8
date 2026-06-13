@@ -1,0 +1,180 @@
+/*!
+ * Sym8
+ * https://sym8.io
+ * @author: tiloschroeder
+ * Copyright (c) 2026
+ * License MIT
+ */
+.container {
+  max-width: 840px;
+  padding-left: var(--pico-spacing);
+  padding-right: var(--pico-spacing);
+  padding-top: 5%;
+}
+h1 {
+  align-items: baseline;
+  display: flex;
+  flex-direction: row;
+  font-weight: 500;
+}
+h1 em {
+  font-size: medium;
+  margin-inline-start: var(--pico-spacing);
+}
+.form-heading {
+  font-weight: 400;
+}
+legend {
+  font-size: 1.825rem;
+}
+fieldset fieldset legend {
+  font-size: 1.4rem;
+}
+label {
+  cursor: pointer;
+}
+.fieldset-block {
+  border-bottom: 1px solid var(--pico-secondary-border);
+  margin-bottom: calc(3 * var(--pico-spacing));
+  padding: var(--pico-spacing) 0 calc(2 * var(--pico-spacing)) 0;
+}
+.fieldset-block:last-child {
+  border-bottom: 0;
+}
+.form-field {
+  margin-bottom: calc(var(--pico-spacing) / 2);
+}
+.input-group {
+  align-items: stretch;
+  border: var(--pico-border-width) solid var(--pico-form-element-border-color);
+  border-radius: var(--pico-border-radius);
+  margin-bottom: var(--pico-spacing);
+  margin-top: calc(var(--pico-spacing) / 4);
+  position: relative;
+  width: 100%;
+}
+.input-group input {
+  margin-bottom: 0;
+}
+.input-group:focus-within {
+  border-color: var(--pico-form-element-active-border-color);
+  box-shadow: 0 0 0 .0625rem var(--pico-form-element-focus-color);
+}
+.input-group:has(> input[aria-invalid=true]) {
+  border-color: var(--pico-form-element-invalid-border-color)!important;
+}
+.input-group:has(> input[aria-invalid=false]) {
+  border-color: var(--pico-form-element-valid-border-color)!important;
+}
+.input-group:has(> input[aria-invalid=true]):focus-within {
+  border-color: var(--pico-form-element-invalid-active-border-color)!important;
+  box-shadow: 0 0 0 .0625rem var(--pico-form-element-invalid-focus-color)!important;
+}
+.input-group:has(> input[aria-invalid=false]):focus-within {
+  border-color: var(--pico-form-element-valid-active-border-color)!important;
+  box-shadow: 0 0 0 .0625rem var(--pico-form-element-valid-focus-color)!important
+}
+#password,
+#database-password{
+  border: 0;
+}
+#password[aria-invalid=true],
+#password[aria-invalid=false],
+#database-password[aria-invalid=true],
+#database-password[aria-invalid=false] {
+  background-position: center right 4rem;
+}
+:dir(rtl) #password[aria-invalid=true],
+:dir(rtl) #password[aria-invalid=false],
+:dir(rtl) #database-password[aria-invalid=true],
+:dir(rtl) #database-password[aria-invlaid=false] {
+  background-position: center left 4rem;
+}
+.show-hide-password,
+.show-hide-db-password {
+  border: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  height: calc(1rem * var(--pico-line-height) + var(--pico-form-element-spacing-vertical) * 2 + var(--pico-border-width) * 2);
+  margin-bottom: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+:dir(rtl) .show-hide-password,
+:dir(rtl) .show-hide-db-password {
+  border-bottom-left-radius: var(--pico-border-radius);
+  border-top-left-radius: var(--pico-border-radius);
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  left: 0;
+  right: auto;
+}
+.show-hide-password[aria-pressed="false"] .icon-show,
+.show-hide-db-password[aria-pressed="false"] .icon-show {
+  display: inline;
+}
+.show-hide-password[aria-pressed="false"] .icon-hide,
+.show-hide-db-password[aria-pressed="false"] .icon-hide {
+  display: none;
+}
+.show-hide-password[aria-pressed="true"] .icon-show,
+.show-hide-db-password[aria-pressed="true"] .icon-show {
+  display: none;
+}
+.show-hide-password[aria-pressed="true"] .icon-hide,
+.show-hide-db-password[aria-pressed="true"] .icon-hide {
+  display: inline;
+}
+.success.actions,
+.language.actions {
+  border-top: 1px solid var(--pico-secondary-border);
+  display: flex;
+  justify-content: right;
+  margin-top: calc(3 * var(--pico-spacing));
+  padding-top: calc(3 * var(--pico-spacing));
+}
+:dir(rtl) .success.actions,
+:dir(rtl) .language.actions {
+  justify-content: left;
+}
+.success.actions input,
+.language.actions input {
+  display: flex;
+  max-width: 320px;
+}
+@media screen and (min-width: 576px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+  .two {
+    align-items: start;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .column {
+    flex: 1;
+  }
+  .two .column:first-child {
+    padding-inline-end: var(--pico-spacing);
+  }
+  .two .column:last-child {
+    padding-inline-start: var(--pico-spacing);
+  }
+}
+@media (min-width: 768px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}

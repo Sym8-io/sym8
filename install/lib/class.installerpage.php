@@ -43,11 +43,14 @@ class InstallerPage extends HTMLPage
         $this->addElementToHead(new XMLElement('meta', null, array('charset' => 'UTF-8')), 1);
         $this->addElementToHead(new XMLElement('meta', null, array('name' => 'robots', 'content' => 'noindex, nofollow')), 2);
         $this->addElementToHead(new XMLElement('meta', null, array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1')), 3);
+        $this->addElementToHead(new XMLElement('meta', null, array('name' => 'color-scheme', 'content' => 'dark light')), 4);
 
         // $this->addStylesheetToHead(APPLICATION_URL . '/assets/css/installer.min.css', 'screen', 30);
-        $this->addStylesheetToHead(APPLICATION_URL . '/assets/css/pico.min.css', 'screen', 30);
-        $this->addStylesheetToHead(APPLICATION_URL . '/assets/css/install.css?v=1.0', 'screen', 30);
-        $this->addScriptToHead(APPLICATION_URL . '/assets/js/lang-select.js?v=1.0');
+        $this->addStylesheetToHead(APPLICATION_URL . '/assets/css/pico.min.css', 'screen', null, false, true);
+        $this->addStylesheetToHead(APPLICATION_URL . '/assets/css/pico-install.css', 'screen', null, false, true);
+        $this->addStylesheetToHead(APPLICATION_URL . '/assets/css/pico-messages.css', 'screen', null, false, true);
+        $this->addScriptToHead(APPLICATION_URL . '/assets/js/lang-select.js', null, false, true, false);
+        $this->addScriptToHead(APPLICATION_URL . '/assets/js/install.js', null, false, true, false);
 
         return parent::generate($page);
     }
@@ -307,52 +310,67 @@ class InstallerPage extends HTMLPage
         $Environment = new XMLElement('fieldset', null, array('class' => 'fieldset-block'));
         $Environment->appendChild(new XMLElement('legend', __('Website Preferences')));
 
-        $label = Widget::Label(__('Name'));
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
+        $label = Widget::Label(__('Site name'));
+        $label->setAttribute('for', 'sitename');
         $input = Widget::Input('fields[general][sitename]', $fields['general']['sitename']);
+        $input->setAttribute('id', 'sitename');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['general-no-sitename'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'helper-sitename');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
 
         }
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
 
-        $this->__appendError(array('general-no-sitename'), $label);
-        $Environment->appendChild($label);
+        $this->__appendError(array('general-no-sitename'), $div, null, 'helper-sitename');
+        $Environment->appendChild($div);
 
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
         $label = Widget::Label(__('Email address (for outgoing emails)'));
+        $label->setAttribute('for', 'from-address');
         $input = Widget::Input('fields[email_sendmail][from_address]', $fields['email_sendmail']['from_address'], 'email');
+        $input->setAttribute('id', 'from-address');
         $input->setAttribute('placeholder', 'notifications@' . $domain);
         $input->setAttribute('autocapitalize', 'none');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['mail-no-from-address'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'helper-from-address');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
         $input->setAttribute('required', 'required');
-        $label->appendChild($input);
-        $this->__appendError(array('mail-no-from-address'), $label);
-        $Environment->appendChild($label);
+        $div->appendChild($label);
+        $div->appendChild($input);
+        $this->__appendError(array('mail-no-from-address'), $div, null, 'helper-from-address');
+        $Environment->appendChild($div);
 
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
         $label = Widget::Label(__('Admin Path'));
+        $label->setAttribute('for', 'admin-path');
         $input = Widget::Input('fields[symphony][admin-path]', $fields['symphony']['admin-path']);
+        $input->setAttribute('id', 'admin-path');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['no-symphony-path'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'helper-admin-path');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
 
-        $this->__appendError(array('no-symphony-path'), $label);
-        $Environment->appendChild($label);
+        $this->__appendError(array('no-symphony-path'), $div, null, 'helper-admin-path');
+        $Environment->appendChild($div);
 
         $Fieldset = new XMLElement('fieldset', null, array('class' => 'frame'));
         $Fieldset->appendChild(new XMLElement('legend', __('Date and Time')));
@@ -364,16 +382,41 @@ class InstallerPage extends HTMLPage
                 ? $fields['region']['timezone']
                 : date_default_timezone_get()
         ));
-        $Fieldset->appendChild(Widget::Label(__('Region'), Widget::Select('fields[region][timezone]', $options)));
+
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
+        $label = Widget::Label(__('Region'));
+        $label->setAttribute('for', 'region');
+        $select = Widget::Select('fields[region][timezone]', $options);
+        $select->setAttribute('id', 'region');
+        $div->appendChild($label);
+        $div->appendChild($select);
+        $Fieldset->appendChild($div);
 
         $Div = new XMLElement('div', null, array('class' => 'two columns'));
         // Date formats
         $options = DateTimeObj::getDateFormatsSelectOptions($fields['region']['date_format']);
-        $Div->appendChild(Widget::Label(__('Date Format'), Widget::Select('fields[region][date_format]', $options), 'column'));
+        $div = new XMLElement('div', null, array('class' => 'form-field column'));
+        $label = Widget::Label(__('Date Format'));
+        $label->setAttribute('for', 'date-format');
+        $select = Widget::Select('fields[region][date_format]', $options);
+        $select->setAttribute('id', 'date-format');
+        $div->appendChild($label);
+        $div->appendChild($select);
+        $Div->appendChild($div);
+        #$Div->appendChild(Widget::Label(__('Date Format'), Widget::Select('fields[region][date_format]', $options), 'column'));
 
         // Time formats
         $options = DateTimeObj::getTimeFormatsSelectOptions($fields['region']['time_format']);
-        $Div->appendChild(Widget::Label(__('Time Format'), Widget::Select('fields[region][time_format]', $options), 'column'));
+        $div = new XMLElement('div', null, array('class' => 'form-field column'));
+        $label = Widget::Label(__('Time Format'));
+        $label->setAttribute('for', 'time-format');
+        $select = Widget::Select('fields[region][time_format]', $options);
+        $select->setAttribute('id', 'time-format');
+        $div->appendChild($label);
+        $div->appendChild($select);
+        $Div->appendChild($div);
+        #$Div->appendChild(Widget::Label(__('Time Format'), Widget::Select('fields[region][time_format]', $options), 'column'));
+
         $Fieldset->appendChild($Div);
 
         $Environment->appendChild($Fieldset);
@@ -389,8 +432,11 @@ class InstallerPage extends HTMLPage
         $Database->appendChild(new XMLElement('p', __('Please provide Symphony with access to a database.')));
 
         // Database name
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
         $label = Widget::Label(__('Database Name'));
+        $label->setAttribute('for', 'database-name');
         $input = Widget::Input('fields[database][db]', $fields['database']['db']);
+        $input->setAttribute('id', 'database-name');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (
@@ -399,45 +445,73 @@ class InstallerPage extends HTMLPage
                 || isset($this->_params['errors']['database-no-dbname'])
             ) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'helper-database-name');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
+        #$label->appendChild($input);
 
-        $this->__appendError(array('database-incorrect-version', 'unknown-database', 'database-no-dbname'), $label);
-        $Database->appendChild($label);
+        $this->__appendError(array('database-incorrect-version', 'unknown-database', 'database-no-dbname'), $div, null, 'helper-database-name');
+        $Database->appendChild($div);
 
         // Database credentials
         $Div = new XMLElement('div', null, array('class' => 'two columns'));
 
-        $label = Widget::Label(__('Username'), null, 'column');
+        $div = new XMLElement('div', null, array('class' => 'form-field column'));
+        $label = Widget::Label(__('Username'));
+        $label->setAttribute('for', 'database-user');
         $input = Widget::Input('fields[database][user]', $fields['database']['user']);
+        $input->setAttribute('id', 'database-user');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['database-invalid-credentials'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'helper-database-user');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
-        $Div->appendChild($label);
+        $div->appendChild($label);
+        $div->appendChild($input);
+        #$label->appendChild($input);
+        $Div->appendChild($div);
 
-        $label = Widget::Label(__('Password'), null, 'column');
+        $div = new XMLElement('div', null, array('class' => 'form-field column'));
+        $label = Widget::Label(__('Password'));
+        $label->setAttribute('for', 'database-password');
+        $div1 = new XMLElement('div', null, array('class' => 'input-group'));
         $input = Widget::Input('fields[database][password]', $fields['database']['password'], 'password');
+        $input->setAttribute('id', 'database-password');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['database-invalid-credentials'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'helper-database-user');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
-        $Div->appendChild($label);
+        $button = new XMLElement('button', null, array('aria-label' => __('Show password'), 'aria-pressed' => 'false', 'aria-controls' => 'database-password', 'data-label-show' => __('Show password'), 'data-label-hide' => __('Hide password'), 'type' => 'button', 'class' => 'show-hide-db-password secondary outline'));
+        $button->setValue('<span class="icon-show">
+                <!-- visibility -->
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 24 24" focusable="false"><path d="M15.188 14.688q1.313-1.312 1.313-3.187t-1.313-3.188-3.187-1.312-3.188 1.312-1.312 3.188 1.312 3.187 3.188 1.313 3.187-1.313m-5.1-1.275q-.787-.787-.787-1.912t.787-1.913 1.913-.787 1.912.787.788 1.913-.788 1.912-1.912.788-1.913-.788m-4.737 3.55q-3-2.037-4.35-5.462 1.35-3.425 4.35-5.463T12 4.001t6.65 2.037T23 11.501q-1.35 3.425-4.35 5.462T12 19.001t-6.65-2.038m11.837-1.45q2.363-1.487 3.613-4.012-1.25-2.525-3.613-4.013T12 6.001 6.812 7.488 3.2 11.501q1.25 2.525 3.612 4.012T12 17.001t5.187-1.488"/></svg>
+            </span>
+            <span class="icon-hide" hidden>
+                <!-- visibility_off -->
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 24 24" focusable="false"><path d="m16.1 13.3-1.45-1.45q.225-1.175-.675-2.2t-2.325-.8L10.2 7.4q.425-.2.863-.3T12 7q1.875 0 3.188 1.313T16.5 11.5q0 .5-.1.938t-.3.862m3.2 3.15-1.45-1.4q.95-.725 1.688-1.588T20.8 11.5q-1.25-2.525-3.587-4.013T12 6q-.725 0-1.425.1T9.2 6.4L7.65 4.85q1.025-.425 2.1-.638T12 4q3.775 0 6.725 2.087T23 11.5q-.575 1.475-1.512 2.737T19.3 16.45m.5 6.15-4.2-4.15q-.875.275-1.762.413T12 19q-3.775 0-6.725-2.087T1 11.5q.525-1.325 1.325-2.462T4.15 7L1.4 4.2l1.4-1.4 18.4 18.4zM5.55 8.4q-.725.65-1.325 1.425T3.2 11.5q1.25 2.525 3.588 4.013T12 17q.5 0 .975-.062t.975-.138l-.9-.95q-.275.075-.525.113T12 16q-1.875 0-3.188-1.312T7.5 11.5q0-.275.037-.525t.113-.525z"/></svg>
+            </span>');
 
-        $this->__appendError(array('database-invalid-credentials'), $Div);
+        $div1->appendChild($input);
+        $div1->appendChild($button);
+        $div->appendChild($label);
+        $div->appendChild($div1);
+        #$label->appendChild($input);
+        $Div->appendChild($div);
+
+        $this->__appendError(array('database-invalid-credentials'), $Div, null, 'helper-database-user');
         $Database->appendChild($Div);
 
         // Advanced configuration
@@ -448,34 +522,47 @@ class InstallerPage extends HTMLPage
         // Advanced configuration: Host, Port
         $Div = new XMLElement('div', null, array('class' => 'two columns'));
 
-        $label = Widget::Label(__('Host'), null, 'column');
+        $div = new XMLElement('div', null, array('class' => 'form-field column'));
+        $label = Widget::Label(__('Host'));
+        $label->setAttribute('for', 'database-host');
         $input = Widget::Input('fields[database][host]', $fields['database']['host']);
+        $input->setAttribute('id', 'database-host');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['no-database-connection'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'helper-database-connection');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
-        $Div->appendChild($label);
+        $div->appendChild($label);
+        $div->appendChild($input);
+        #$label->appendChild($input);
+        $Div->appendChild($div);
 
         // Advanced configuration: Table Prefix
-        $label = Widget::Label(__('Table Prefix'), null, 'column');
+        $div = new XMLElement('div', null, array('class' => 'form-field column'));
+        $label = Widget::Label(__('Table Prefix'));
+        $label->setAttribute('for', 'table-prefix');
         $input = Widget::Input('fields[database][tbl_prefix]', $fields['database']['tbl_prefix']);
+        $input->setAttribute('id', 'table-prefix');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['database-table-prefix'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'helper-table-prefix');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
-        $Div->appendChild($label);
+        $div->appendChild($label);
+        $div->appendChild($input);
+        #$label->appendChild($input);
+        $Div->appendChild($div);
 
-        $this->__appendError(array('database-table-prefix', 'no-database-connection'), $Div);
+        $this->__appendError(array('database-table-prefix'), $Div, null, 'helper-table-prefix');
+        $this->__appendError(array('no-database-connection'), $Div, null, 'helper-database-connection');
         $Fieldset->appendChild($Div);
 
         // $Div->appendChild(Widget::Label(__('Port'), Widget::Input('fields[database][port]', $fields['database']['port'], 'number'), 'column'));
@@ -511,58 +598,97 @@ class InstallerPage extends HTMLPage
         $fields['user'] = $fields['user'] ?? null;
         // Username
         $fields['user']['username'] = $fields['user']['username'] ?? null;
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
         $label = Widget::Label(__('Username'));
+        $label->setAttribute('for', 'username');
         $input = Widget::Input('fields[user][username]', $fields['user']['username']);
+        $input->setAttribute('id', 'username');
         $input->setAttribute('autocapitalize', 'off');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['user-no-username'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'helper-no-username');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
+        #$label->appendChild($input);
 
-        $this->__appendError(array('user-no-username'), $label);
-        $User->appendChild($label);
+        $this->__appendError(array('user-no-username'), $div, null, 'helper-no-username');
+        $User->appendChild($div);
 
         // Password
         $fields['user']['password'] = $fields['user']['password'] ?? null;
         $fields['user']['confirm-password'] = $fields['user']['confirm-password'] ?? null;
         $Div = new XMLElement('div', null, array('class' => 'two columns'));
 
-        $label = Widget::Label(__('Password'), null, 'column');
+        $div = new XMLElement('div', null, array('class' => 'form-field column'));
+        $label = Widget::Label(__('Password'));
+        $label->setAttribute('for', 'password');
+        $div1 = new XMLElement('div', null, array('class' => 'input-group'));
         $input = Widget::Input('fields[user][password]', $fields['user']['password'], 'password');
+        $input->setAttribute('id', 'password');
         $input->setAttribute('autocomplete', 'new-password');
         $input->setAttribute('spellcheck', 'false');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['user-no-password']) || isset($this->_params['errors']['user-password-mismatch'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                if (isset($this->_params['errors']['user-no-password'])) {
+                    $input->setAttribute('aria-describedby', 'user-no-password');
+                } elseif (isset($this->_params['errors']['user-password-mismatch'])) {
+                    $input->setAttribute('aria-describedby', 'user-password-mismatch');
+                }
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
-        $Div->appendChild($label);
+        $button = new XMLElement('button', null, array('aria-label' => __('Show passwords'), 'aria-pressed' => 'false', 'aria-controls' => 'password password-confirm', 'data-label-show' => __('Show passwords'), 'data-label-hide' => __('Hide passwords'), 'type' => 'button', 'class' => 'show-hide-password secondary outline'));
+        $button->setValue('<span class="icon-show">
+                <!-- visibility -->
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 24 24" focusable="false"><path d="M15.188 14.688q1.313-1.312 1.313-3.187t-1.313-3.188-3.187-1.312-3.188 1.312-1.312 3.188 1.312 3.187 3.188 1.313 3.187-1.313m-5.1-1.275q-.787-.787-.787-1.912t.787-1.913 1.913-.787 1.912.787.788 1.913-.788 1.912-1.912.788-1.913-.788m-4.737 3.55q-3-2.037-4.35-5.462 1.35-3.425 4.35-5.463T12 4.001t6.65 2.037T23 11.501q-1.35 3.425-4.35 5.462T12 19.001t-6.65-2.038m11.837-1.45q2.363-1.487 3.613-4.012-1.25-2.525-3.613-4.013T12 6.001 6.812 7.488 3.2 11.501q1.25 2.525 3.612 4.012T12 17.001t5.187-1.488"/></svg>
+            </span>
+            <span class="icon-hide" hidden>
+                <!-- visibility_off -->
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 24 24" focusable="false"><path d="m16.1 13.3-1.45-1.45q.225-1.175-.675-2.2t-2.325-.8L10.2 7.4q.425-.2.863-.3T12 7q1.875 0 3.188 1.313T16.5 11.5q0 .5-.1.938t-.3.862m3.2 3.15-1.45-1.4q.95-.725 1.688-1.588T20.8 11.5q-1.25-2.525-3.587-4.013T12 6q-.725 0-1.425.1T9.2 6.4L7.65 4.85q1.025-.425 2.1-.638T12 4q3.775 0 6.725 2.087T23 11.5q-.575 1.475-1.512 2.737T19.3 16.45m.5 6.15-4.2-4.15q-.875.275-1.762.413T12 19q-3.775 0-6.725-2.087T1 11.5q.525-1.325 1.325-2.462T4.15 7L1.4 4.2l1.4-1.4 18.4 18.4zM5.55 8.4q-.725.65-1.325 1.425T3.2 11.5q1.25 2.525 3.588 4.013T12 17q.5 0 .975-.062t.975-.138l-.9-.95q-.275.075-.525.113T12 16q-1.875 0-3.188-1.312T7.5 11.5q0-.275.037-.525t.113-.525z"/></svg>
+            </span>');
+        $div1->appendChild($input);
+        $div1->appendChild($button);
+        $div->appendChild($label);
+        $div->appendChild($div1);
+        #$label->appendChild($input);
+        $Div->appendChild($div);
 
-        $label = Widget::Label(__('Confirm Password'), null, 'column');
+        $div = new XMLElement('div', null, array('class' => 'form-field column'));
+        $label = Widget::Label(__('Confirm Password'));
+        $label->setAttribute('for', 'password-confirm');
         $input = Widget::Input('fields[user][confirm-password]', $fields['user']['confirm-password'], 'password');
+        $input->setAttribute('id', 'password-confirm');
         $input->setAttribute('autocomplete', 'new-password');
         $input->setAttribute('spellcheck', 'false');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['user-no-password']) || isset($this->_params['errors']['user-password-mismatch'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                if (isset($this->_params['errors']['user-no-password'])) {
+                    $input->setAttribute('aria-describedby', 'user-no-password');
+                } elseif (isset($this->_params['errors']['user-password-mismatch'])) {
+                    $input->setAttribute('aria-describedby', 'user-password-mismatch');
+                }
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
-        $Div->appendChild($label);
+        $div->appendChild($label);
+        $div->appendChild($input);
+        #$label->appendChild($input);
+        $Div->appendChild($div);
 
-        $this->__appendError(array('user-no-password', 'user-password-mismatch'), $Div);
+        $this->__appendError(array('user-no-password'), $Div, null, 'user-no-password');
+        $this->__appendError(array('user-password-mismatch'), $Div, null, 'user-password-mismatch');
         $User->appendChild($Div);
 
         // Personal information
@@ -575,44 +701,58 @@ class InstallerPage extends HTMLPage
         $fields['user']['lastname'] = $fields['user']['lastname'] ?? null;
         $Div = new XMLElement('div', null, array('class' => 'two columns'));
 
-        $label = Widget::Label(__('First Name'), null, 'column');
+        $div = new XMLElement('div', null, array('class' => 'form-field column'));
+        $label = Widget::Label(__('First Name'));
+        $label->setAttribute('for', 'firstname');
         $input = Widget::Input('fields[user][firstname]', $fields['user']['firstname']);
+        $input->setAttribute('id', 'firstname');
         $input->setAttribute('autocomplete', 'given-name');
         $input->setAttribute('autocapitalize', 'on');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['user-no-name'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'user-no-name');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
-        $Div->appendChild($label);
+        $div->appendChild($label);
+        $div->appendChild($input);
+        #$label->appendChild($input);
+        $Div->appendChild($div);
 
-        $label = Widget::Label(__('Last Name'), null, 'column');
+        $div = new XMLElement('div', null, array('class' => 'form-field column'));
+        $label = Widget::Label(__('Last Name'));
+        $label->setAttribute('for', 'lastname');
         $input = Widget::Input('fields[user][lastname]', $fields['user']['lastname']);
+        $input->setAttribute('id', 'lastname');
         $input->setAttribute('autocomplete', 'family-name');
         $input->setAttribute('autocapitalize', 'on');
         $input->setAttribute('required', 'required');
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['user-no-name'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'user-no-name');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
-        $Div->appendChild($label);
+        $div->appendChild($label);
+        $div->appendChild($input);
+        #$label->appendChild($input);
+        $Div->appendChild($div);
 
-        $this->__appendError(array('user-no-name'), $Div);
+        $this->__appendError(array('user-no-name'), $Div, null, 'user-no-name');
         $Fieldset->appendChild($Div);
 
         // Personal information: Email Address
         $fields['user']['email'] = $fields['user']['email'] ?? null;
+        $div = new XMLElement('div', null, array('class' => 'form-field'));
         $label = Widget::Label(__('Email Address'));
-
+        $label->setAttribute('for', 'user-email');
         $input = Widget::Input('fields[user][email]', $fields['user']['email'], 'email');
+        $input->setAttribute('id', 'user-email');
         $input->setAttribute('placeholder', 'firstname.lastname@' . $domain);
         $input->setAttribute('autocomplete', 'email');
         $input->setAttribute('autocapitalize', 'off');
@@ -620,14 +760,17 @@ class InstallerPage extends HTMLPage
         if (isset($_POST['fields'])) {
             if (isset($this->_params['errors']['user-invalid-email'])) {
                 $input->setAttribute('aria-invalid', 'true');
+                $input->setAttribute('aria-describedby', 'user-invalid-email');
             } else {
                 $input->setAttribute('aria-invalid', 'false');
             }
         }
-        $label->appendChild($input);
+        $div->appendChild($label);
+        $div->appendChild($input);
+        #$label->appendChild($input);
 
-        $this->__appendError(array('user-invalid-email'), $label);
-        $Fieldset->appendChild($label);
+        $this->__appendError(array('user-invalid-email'), $div, null, 'user-invalid-email');
+        $Fieldset->appendChild($div);
 
         $User->appendChild($Fieldset);
         $this->Form->appendChild($User);
@@ -664,7 +807,7 @@ class InstallerPage extends HTMLPage
         }
     }
 
-    private function __appendError(array $codes, XMLElement &$element, $message = null)
+    private function __appendError(array $codes, XMLElement &$element, $message = null, $id = null)
     {
         if (is_null($message)) {
             // $message =  __('The following errors have been reported:');
@@ -698,6 +841,9 @@ class InstallerPage extends HTMLPage
 
             foreach ($codes as $c) {
                 $div = new XMLElement('div', null, array('class' => 'message error-message'));
+                if (isset($id)) {
+                    $div->setAttribute('id', $id);
+                }
                 $p = new XMLElement('p', $this->_params['errors'][$c]['msg'], array('class' => 'message-heading'));
                 $div->appendChild($p);
 

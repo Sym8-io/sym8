@@ -1,0 +1,121 @@
+/*!
+ * Sym8
+ * https://sym8.io
+ * @author: tiloschroeder
+ * Copyright (c) 2026
+ * License MIT
+ */
+/*
+ * Message colors have been tested and meet WCAG 2.2 Level AAA
+ * contrast ratio requirements.
+ */
+:root {
+  --message-error-background-color: #f8dcd6; /* 100 Red */
+  --message-error-border-color: #c52f21; /* 550 Red */
+  --message-error-color: #5C160D; /* 800 Red */
+  --message-info-background-color: #d1e5fb; /* 100 Azure */
+  --message-info-border-color: #018cd4; /* 450 Azure */
+  --message-info-color: #033452; /* 800 Azure */
+  --message-success-background-color: #cbfce1; /* 50 Jade */
+  --message-success-border-color: #029764; /* 450 Jade */
+  --message-success-color: #033823; /* 800 Jade */
+  --message-warning-background-color: #fdf1b4; /* 50 Yellow */
+  --message-warning-border-color: #ad9f00; /* 350 Yellow */
+  --message-warning-color: #363100; /* 800 Yellow */
+  --message-text-color: #0f1114;
+}
+/* Message Styling */
+.message {
+  border-radius: var(--pico-border-radius);
+  flex-basis: 100%;
+  margin: 0 0 var(--pico-spacing) 0;
+  padding: var(--pico-spacing);
+}
+.message-heading {
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0 0 0.15rem 0;
+}
+.message-details {
+  color: var(--message-text-color);
+  font-size: 0.95rem;
+  margin: 0;
+}
+:dir(ltr) .message {
+  border-left: calc(var(--pico-spacing) / 2) solid transparent;
+}
+:dir(rtl) .message {
+  border-right: calc(var(--pico-spacing) / 2) solid transparent;
+}
+.message.invalid,
+.message.error-message {
+  background-color: var(--message-error-background-color);
+  color: var(--message-error-color);
+}
+.error-message .message-heading{
+  color: var(--message-error-color);
+}
+:dir(ltr) .message.invalid,
+:dir(ltr) .message.error-message {
+  border-left-color: var(--message-error-border-color);
+}
+:dir(rtl) .message.invalid,
+:dir(rtl) .message.error-message {
+  border-right-color: var(--message-error-border-color);
+}
+.message.success,
+.message.success-message {
+  background-color: var(--message-success-background-color);
+  color: var(--message-success-color);
+}
+.success-message .message-heading{
+  color: var(--message-success-color);
+}
+:dir(ltr) .message.success,
+:dir(ltr) .message.success-message {
+  border-left-color: var(--message-success-border-color);
+}
+:dir(rtl) .message.success;
+:dir(rtl) .message.success-message {
+  border-right-color: var(--message-success-border-color);
+}
+.message.info,
+.message.info-message {
+  background-color: var(--message-info-background-color);
+  color: var(--message-info-color);
+}
+.info-message .message-heading{
+  color: var(--message-info-color);
+}
+:dir(ltr) .message.info,
+:dir(ltr) .message.info-message {
+  border-left-color: var(--message-info-border-color);
+}
+:dir(rtl) .message.info,
+:dir(rtl) .message.info-message {
+  border-right-color: var(--message-info-border-color);
+}
+.message.warning,
+.message.warning-message {
+  background-color: var(--message-warning-background-color);
+  color: var(--message-warning-color);
+}
+.warning-message .message-heading {
+  color: var(--message-warning-color);
+}
+:dir(ltr) .message.warning,
+:dir(ltr) .message.warning-message {
+  border-left-color: var(--message-warning-border-color);
+}
+:dir(rtl) .message.warning,
+:dir(rtl) .message.warning-message{
+  border-right-color: var(--message-warning-border-color);
+}
+.message code {
+  background-color: transparent;
+  color: inherit;
+}
+.message a:link,
+.message a:visited {
+  color: inherit;
+}
