@@ -60,17 +60,17 @@ label {
   border-color: var(--pico-form-element-active-border-color);
   box-shadow: 0 0 0 .0625rem var(--pico-form-element-focus-color);
 }
-.input-group:has(> input[aria-invalid=true]) {
+.input-group:has(> input[aria-invalid="true"]) {
   border-color: var(--pico-form-element-invalid-border-color)!important;
 }
-.input-group:has(> input[aria-invalid=false]) {
+.input-group:has(> input[aria-invalid="false"]) {
   border-color: var(--pico-form-element-valid-border-color)!important;
 }
-.input-group:has(> input[aria-invalid=true]):focus-within {
+.input-group:has(> input[aria-invalid="true"]):focus-within {
   border-color: var(--pico-form-element-invalid-active-border-color)!important;
   box-shadow: 0 0 0 .0625rem var(--pico-form-element-invalid-focus-color)!important;
 }
-.input-group:has(> input[aria-invalid=false]):focus-within {
+.input-group:has(> input[aria-invalid="false"]):focus-within {
   border-color: var(--pico-form-element-valid-active-border-color)!important;
   box-shadow: 0 0 0 .0625rem var(--pico-form-element-valid-focus-color)!important
 }
@@ -78,16 +78,16 @@ label {
 #database-password{
   border: 0;
 }
-#password[aria-invalid=true],
-#password[aria-invalid=false],
-#database-password[aria-invalid=true],
-#database-password[aria-invalid=false] {
+#password[aria-invalid="true"],
+#password[aria-invalid="false"],
+#database-password[aria-invalid="true"],
+#database-password[aria-invalid="false"] {
   background-position: center right 4rem;
 }
-:dir(rtl) #password[aria-invalid=true],
-:dir(rtl) #password[aria-invalid=false],
-:dir(rtl) #database-password[aria-invalid=true],
-:dir(rtl) #database-password[aria-invlaid=false] {
+:dir(rtl) #password[aria-invalid="true"],
+:dir(rtl) #password[aria-invalid="false"],
+:dir(rtl) #database-password[aria-invalid="true"],
+:dir(rtl) #database-password[aria-invlaid="false"] {
   background-position: center left 4rem;
 }
 .show-hide-password,
