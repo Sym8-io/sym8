@@ -97,6 +97,7 @@ class DatasourceManager implements FileResource
     {
         $result = array();
         $structure = General::listStructure(DATASOURCES, '/data.[\\w-]+.php/', false, 'ASC', DATASOURCES);
+        $structure['filelist'] = $structure['filelist'] ?? array();
 
         if (is_array($structure['filelist']) && !empty($structure['filelist'])) {
             foreach ($structure['filelist'] as $f) {
