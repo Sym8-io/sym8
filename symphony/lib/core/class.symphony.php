@@ -1001,6 +1001,7 @@ class DatabaseExceptionHandler extends GenericExceptionHandler
         );
 
         $html = str_replace('{ASSETS_URL}', ASSETS_URL, $html);
+        $html = str_replace('{VERSION}', Symphony::Configuration()->get('version', 'symphony'), $html);
         #$html = str_replace('{SYMPHONY_URL}', SYMPHONY_URL, $html);
         $html = str_replace('{URL}', URL, $html);
 
