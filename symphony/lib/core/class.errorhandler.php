@@ -200,7 +200,11 @@ class GenericExceptionHandler
      */
     public static function render($e)
     {
-        $lines = null;
+        $author = Symphony::Author();
+
+        $lines = "<details open>\n";
+        $lines .= '<summary class="summary-button primary outline">' . __("Show error") . "</summary>\n";
+        $lines .= "<ul class='error-log'>\n";
 
         foreach (self::__nearByLines($e->getLine(), $e->getFile()) as $line => $string) {
             $lines .= sprintf(
@@ -211,7 +215,12 @@ class GenericExceptionHandler
             );
         }
 
-        $trace = null;
+        $lines .= "\n</ul>\n";
+        $lines .= "</details>\n";
+
+        $trace = "<details>\n";
+        $trace .= '<summary class="summary-button primary outline">' . __("Backtrace") . "</summary>\n";
+        $trace .= "<ul class='backtrace'>\n";
 
         foreach ($e->getTrace() as $t) {
             $trace .= sprintf(
@@ -224,12 +233,18 @@ class GenericExceptionHandler
             );
         }
 
+        $trace .= "\n</ul>\n";
+        $trace .= "</details>\n";
+
         $queries = null;
 
         if (is_object(Symphony::Database())) {
             $debug = Symphony::Database()->debug();
 
             if (!empty($debug)) {
+                $queries = "<details>\n";
+                $queries .= '<summary class="summary-button primary outline">' . __("Database Query Log") . "</summary>\n";
+                $queries .= "<ul class='queries'>\n";
                 foreach ($debug as $query) {
                     $queries .= sprintf(
                         '<li><em>[%01.4f]</em><code> %s;</code> </li>',
@@ -237,7 +252,17 @@ class GenericExceptionHandler
                         htmlspecialchars($query['query'])
                     );
                 }
+                $queries .= "\n</ul>\n";
+                $queries .= "</details>\n";
             }
+        }
+
+        $visitorMsg = null;
+
+        if ($author === null) {
+            $lines = '<p class="message info">' . __("Please contact the site administrator.") . '</p>';
+            $trace = null;
+            $queries = null;
         }
 
         return self::renderHtml(
