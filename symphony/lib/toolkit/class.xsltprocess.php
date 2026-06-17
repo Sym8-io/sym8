@@ -176,8 +176,16 @@ class XsltProcess
             restore_error_handler(); // clean up
             libxml_use_internal_errors(false);
 
-            // Return a string with the first error message so that no other TypeErrors are thrown
-            return '<code>' . __('Fatal error! ') . $errors[0]->message . __(' (see Symphony Log for further details)') . '</code>';
+            // Throw a Symphony error page with the first XSLT error message
+            // to prevent further TypeErrors from being thrown
+            $msg = '<code>' . $errors[0]->message . '</code><br>' . __('See Symphony Log for further details.');
+            throw new SymphonyErrorPage(
+                    $msg,
+                    __('Fatal error'),
+                    'generic',
+                    array(),
+                    Page::HTTP_STATUS_ERROR
+            );
 
         }
 
