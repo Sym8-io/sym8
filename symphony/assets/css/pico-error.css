@@ -1,0 +1,147 @@
+/*!
+ * Sym8
+ * https://sym8.io
+ * @author: tiloschroeder
+ * Copyright (c) 2026
+ * License MIT
+ */
+:root {
+  --pico-tile-background-color: #eff1f4;
+}
+[data-theme="dark"] {
+  --pico-tile-background-color: #2a3140;
+}
+.container h1 {
+  font-weight: 500;
+  text-align: center;
+}
+
+.errorpage {
+  margin: 0 auto;
+  max-width: 480px;
+  padding-top: 5%;
+}
+.template-generic .errorpage {
+  max-width: 560px;
+}
+.frame {
+  padding-top: calc(2 * var(--pico-block-spacing-vertical));
+}
+.inner {
+  background-color: var(--pico-tile-background-color);
+  border-radius: var(--pico-border-radius);
+  padding: var(--pico-spacing);
+}
+.inner h2 {
+  font-size: 26px;
+  font-weight: 500;
+  margin-bottom: calc(1.5 * var(--pico-spacing));
+}
+.inner code {
+  word-break: break-word;
+}
+.back-to-website {
+  margin: calc(3 * var(--pico-spacing)) 0;
+}
+.back-link {
+  /*padding-inline-start: var(--pico-spacing);*/
+}
+.back-link:before {
+  content: '\2190  ';
+  text-decoration: none;
+}
+:dir(rtl) .back-link:before {
+  content: '\2192  ';
+}
+details .summary-button {
+  --pico-background-color: transparent;
+  --pico-color: var(--pico-primary);
+  --pico-border-color: var(--pico-primary);
+  --pico-box-shadow: var(--pico-button-hover-box-shadow, 0 0 0 rgba(0, 0, 0, 0)), 0 0 0 var(--pico-outline-width) var(--pico-primary-focus);
+  --pico-background-color: var(--pico-primary-background);
+  --pico-border-color: var(--pico-primary-border);
+  --pico-box-shadow: var(--pico-button-box-shadow, 0 0 0 rgba(0, 0, 0, 0));
+  padding: var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);
+  border: var(--pico-border-width) solid var(--pico-border-color);
+  border-radius: var(--pico-border-radius);
+  outline: 0;
+  background-color: transparent;
+  box-shadow: var(--pico-box-shadow);
+  color: var(--pico-color)!important;
+  font-weight: var(--pico-font-weight);
+  font-size: calc(1rem * 1.2);
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  transition: background-color var(--pico-transition), border-color var(--pico-transition), color var(--pico-transition), box-shadow var(--pico-transition);
+}
+details .summary-button:active,
+details .summary-button:focus,
+details .summary-button:hover {
+  --pico-box-shadow: var(--pico-button-hover-box-shadow, 0 0 0 rgba(0, 0, 0, 0)), 0 0 0 var(--pico-outline-width) var(--pico-primary-focus);
+  --pico-background-color: transparent;
+  --pico-color: var(--pico-primary-hover);
+  --pico-border-color: var(--pico-primary-hover-border);
+}
+.error-log {
+  padding-inline-start: calc(var(--pico-spacing) / 2);
+  padding-inline-end: calc(var(--pico-spacing) / 2);
+}
+.error-log li {
+  align-items: stretch;
+  border: 1px solid var(--pico-code-background-color);
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin-bottom: 0;
+}
+.error-log li:first-child {
+  border-top-left-radius: var(--pico-border-radius);
+  border-top-right-radius: var(--pico-border-radius);
+}
+.error-log li:last-child {
+  border-bottom-left-radius: var(--pico-border-radius);
+  border-bottom-right-radius: var(--pico-border-radius);
+}
+.error-log strong {
+  background-color: var(--pico-code-background-color);
+  color: var(--pico-secondary);
+  font-weight: 500;
+  padding-inline-start: var(--pico-spacing);
+  padding-inline-end: var(--pico-spacing);
+}
+.error-log code {
+  border-radius: 0;
+  flex: 1;
+  white-space: pre-wrap;
+}
+@media only screen and (prefers-color-scheme: dark) {
+  :root {
+    --pico-tile-background-color: #2a3140;
+  }
+  [data-theme="light"] {
+    --pico-tile-background-color: #eff1f4;
+  }
+}
+@media screen and (min-width: 576px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
+@media (min-width: 768px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --pico-font-size: 100%;
+  }
+}
