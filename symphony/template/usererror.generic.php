@@ -17,6 +17,7 @@ $Page->addElementToHead(new XMLElement('meta', null, array('name' => 'color-sche
 $Page->addStylesheetToHead(ASSETS_URL . '/css/pico.min.css', 'screen', null, false, true);
 $Page->addStylesheetToHead(ASSETS_URL . '/css/pico-error.css', 'screen', null, false, true);
 $Page->addStylesheetToHead(ASSETS_URL . '/css/pico-messages.css', 'screen', null, false, true);
+$Page->addScriptToHead(ASSETS_URL . '/js/usererror-generic.js', null, false, true, false);
 
 $Page->setHttpStatus($e->getHttpStatusCode());
 $Page->addHeaderToPage('Content-Type', 'text/html; charset=UTF-8');
