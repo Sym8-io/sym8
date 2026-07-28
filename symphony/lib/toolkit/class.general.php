@@ -1105,6 +1105,19 @@ class General
             return true;
         }
 
+        // File system informations (file_exists, filemtime, etc.)
+        clearstatcache(true, $file);
+
+        // Discard PHP bytecode
+        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+        if (
+            $extension === 'php'
+            && function_exists('opcache_invalidate')
+        ) {
+            @opcache_invalidate($file, true);
+        }
+
         return true;
     }
 
