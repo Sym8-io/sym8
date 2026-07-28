@@ -210,7 +210,7 @@ class AdministrationPage extends HTMLPage
             }
         }
 
-        $this->Breadcrumbs->appendChild(new XMLElement('h2', $value, array('role' => 'heading', 'id' => 'symphony-subheading')));
+        $this->Breadcrumbs->appendChild(new XMLElement('h2', $value, array('id' => 'symphony-subheading')));
     }
 
     /**
@@ -359,7 +359,7 @@ class AdministrationPage extends HTMLPage
         $this->Html->setDTD('<!DOCTYPE html>');
         $this->Html->setAttribute('lang', Lang::get());
         $this->addElementToHead(new XMLElement('meta', null, array('charset' => 'UTF-8')), 0);
-        $this->addElementToHead(new XMLElement('meta', null, array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=edge,chrome=1')), 1);
+        $this->addElementToHead(new XMLElement('meta', null, array('http-equiv' => 'X-UA-Compatible', 'content' => 'IE=edge')), 1);
         $this->addElementToHead(new XMLElement('meta', null, array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1')), 2);
 
         // Add styles
@@ -416,11 +416,12 @@ class AdministrationPage extends HTMLPage
 
         // Initialise page containers
         $this->Wrapper = new XMLElement('div', null, array('id' => 'wrapper'));
-        $this->Header = new XMLElement('header', null, array('id' => 'header'));
+        $this->Header = new XMLElement('header', null, array('id' => 'header', 'class' => 'container'));
         $this->Context = new XMLElement('div', null, array('id' => 'context'));
         $this->Breadcrumbs = new XMLElement('div', null, array('id' => 'breadcrumbs'));
-        $this->Contents = new XMLElement('div', null, array('id' => 'contents', 'role' => 'main'));
-        $this->Form = Widget::Form(Administration::instance()->getCurrentPageURL(), 'post', null, null, array('role' => 'form'));
+        $this->Contents = new XMLElement('main', null, array('id' => 'contents', 'class' => 'container'));
+        $this->Form = Widget::Form(Administration::instance()->getCurrentPageURL(), 'post', null, null);
+        $this->Footer = new XMLElement('footer', null, array('class' => 'container'));
 
         /**
          * Allows developers to insert items into the page HEAD. Use
@@ -658,6 +659,7 @@ class AdministrationPage extends HTMLPage
         $this->__appendBodyId();
         $this->__appendBodyClass($this->_context);
 
+        $this->Wrapper->appendChild($this->Footer);
         /**
          * This is just prior to the page headers being rendered, and is suitable for changing them
          * @delegate PreRenderHeaders
@@ -887,7 +889,7 @@ class AdministrationPage extends HTMLPage
             'navigation' => &$nav,
         ));
 
-        $navElement = new XMLElement('nav', null, array('id' => 'nav', 'role' => 'navigation'));
+        $navElement = new XMLElement('nav', null, array('id' => 'nav'));
         $contentNav = new XMLElement('ul', null, array('class' => 'content', 'role' => 'menubar'));
         $structureNav = new XMLElement('ul', null, array('class' => 'structure', 'role' => 'menubar'));
 
@@ -899,7 +901,7 @@ class AdministrationPage extends HTMLPage
             $item_limit = isset($n['limit']) ? $n['limit'] : null;
 
             if ($this->doesAuthorHaveAccess($item_limit)) {
-                $xGroup = new XMLElement('li', General::sanitize($n['name']), array('role' => 'presentation'));
+                $xGroup = new XMLElement('li', General::sanitize($n['name']), array());
 
                 if (isset($n['class']) && trim($n['name']) !== '') {
                     $xGroup->setAttribute('class', $n['class']);
@@ -919,8 +921,9 @@ class AdministrationPage extends HTMLPage
 
                         if ($this->doesAuthorHaveAccess($child_item_limit)) {
                             $xChild = new XMLElement('li');
-                            $xChild->setAttribute('role', 'menuitem');
+                            $xChild->setAttribute('role', 'presentation');
                             $linkChild = Widget::Anchor(General::sanitize($c['name']), SYMPHONY_URL . $c['link']);
+                            $linkChild->setAttribute('role', 'menuitem');
                             if (isset($c['target'])) {
                                 $linkChild->setAttribute('target', $c['target']);
                             }
