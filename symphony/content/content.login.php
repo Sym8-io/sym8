@@ -73,6 +73,12 @@ class contentLogin extends HTMLPage
 
     public function view()
     {
+        // First, redirect unauthenticated requests to the dedicated login page
+        if (isset($this->_context['redirect'])) {
+            $redirectUrl = SYMPHONY_URL . General::sanitize($this->_context['redirect']);
+            redirect(SYMPHONY_URL . '/login/?redirect_to=' . rawurlencode($redirectUrl));
+        }
+
         if (isset($this->_context[0]) && in_array(strlen($this->_context[0]), array(6, 8, 16))) {
             if (!$this->__loginFromToken($this->_context[0])) {
                 if (Administration::instance()->isLoggedIn()) {
@@ -91,7 +97,21 @@ class contentLogin extends HTMLPage
 
         $siteName = new XMLElement('h1', __('Symphony'));
 
-        $this->Form = Widget::Form(SYMPHONY_URL . '/login/', 'post', 'frame');
+        $redirect_to = null;
+        // Validating the `redirect_to` URL against SYMPHONY_URL
+        // and URL and discarding invalid or external redirect targets
+        if (
+            isset($_GET['redirect_to'])
+            && (
+                strpos($_GET['redirect_to'], SYMPHONY_URL) === 0
+                || strpos($_GET['redirect_to'], URL) === 0
+            )
+        ) {
+            $redirect_to = General::sanitize($_GET['redirect_to']);
+            $this->Form = Widget::Form(SYMPHONY_URL . '/login/?redirect_to=' . rawurlencode($redirect_to), 'post', 'frame');
+        } else {
+            $this->Form = Widget::Form(SYMPHONY_URL . '/login/', 'post', 'frame');
+        }
 
         $divInner = new XMLElement('div', null, array('class' => 'inner'));
 
@@ -281,9 +301,9 @@ class contentLogin extends HTMLPage
             $div->appendChild($p);
             $this->Form->appendChild($div);
 
-            if (isset($this->_context['redirect'])) {
+            if ($redirect_to !== null) {
                 $this->Form->appendChild(
-                    Widget::Input('redirect', SYMPHONY_URL . General::sanitize($this->_context['redirect']), 'hidden')
+                    Widget::Input('redirect', $redirect_to, 'hidden')
                 );
             }
         }
