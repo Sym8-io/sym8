@@ -200,7 +200,12 @@ class SMTPGateway extends EmailGateway
     public function setHost($host = null)
     {
         if ($host === null) {
-            $host = '127.0.0.1';
+            $host = $_SERVER['HTTP_HOST'] ?? 'example.net';
+            // remove possible port (e.g. :8080)
+            $domain = preg_replace('/:\d+$/', '', $host);
+            $domain = filter_var($domain, FILTER_SANITIZE_URL);
+            #$host = '127.0.0.1';
+            $host = 'mail.' . $domain;
         }
 
         if (substr($host, 0, 6) == 'ssl://') {
@@ -220,7 +225,17 @@ class SMTPGateway extends EmailGateway
     public function setPort($port = null)
     {
         if (is_null($port)) {
-            $port = ($this->_protocol == 'ssl') ? 465 : 25;
+            switch ($this->_protocol) {
+                case 'ssl':
+                    $port = 465;
+                    break;
+                case 'tls':
+                    $port = 587;
+                    break;
+                default:
+                    $port = 25;
+            }
+            #$port = ($this->_protocol == 'ssl') ? 465 : 25;
         }
 
         $this->_port = $port;
@@ -341,60 +356,81 @@ class SMTPGateway extends EmailGateway
         $readonly = array('readonly' => 'readonly');
 
         $label = Widget::Label(__('HELO Hostname'));
-        $label->appendChild(Widget::Input('settings[email_smtp][helo_hostname]', General::sanitize($this->_helo_hostname), 'text', $readonly));
+        $label->appendChild(Widget::Input('settings[email_smtp][helo_hostname]', General::sanitize($this->_helo_hostname), 'text', array('aria-describedby' => 'helper-email-helo')));
         $div->appendChild($label);
 
         $group->appendChild($div);
-        $group->appendChild(new XMLElement('p', __('A fully qualified domain name (FQDN) of your server, e.g. "www.example.com". If left empty, Symphony will attempt to find an IP address for the EHLO/HELO greeting.'), array('class' => 'help')));
+        $group->appendChild(new XMLElement('p', __('A fully qualified domain name (FQDN) of your server, e.g. "www.example.com". If left empty, Symphony will attempt to find an IP address for the EHLO/HELO greeting.'), array('class' => 'help', 'id' => 'helper-email-helo')));
 
         $div = new XMLElement('div');
         $div->setAttribute('class', 'two columns');
 
         $label = Widget::Label(__('From Name'));
         $label->setAttribute('class', 'column');
-        $label->appendChild(Widget::Input('settings[email_smtp][from_name]', General::sanitize($this->_sender_name), 'text', $readonly));
+        $label->appendChild(Widget::Input('settings[email_smtp][from_name]', General::sanitize($this->_sender_name), 'text'));
         $div->appendChild($label);
 
         $label = Widget::Label(__('From Email Address'));
         $label->setAttribute('class', 'column');
-        $label->appendChild(Widget::Input('settings[email_smtp][from_address]', General::sanitize($this->_sender_email_address), 'text', $readonly));
+        $label->appendChild(Widget::Input('settings[email_smtp][from_address]', General::sanitize($this->_sender_email_address), 'text'));
         $div->appendChild($label);
+
+        $group->appendChild($div);
+
+        $div = new XMLElement('div');
+        #$div->setAttribute('class', 'two columns');
+
+        $label = Widget::Label(__('SMTP server'));
+        $input = Widget::Input('settings[email_smtp][host]', null, 'text');
+        if (Symphony::Configuration()->get('host', 'email_smtp') === null) {
+            $input->setAttribute('placeholder', General::sanitize($this->_host));
+        } else {
+            $input->setAttribute('value', General::sanitize($this->_host));
+        }
+        $input->setAttribute('aria-describedby', 'helper-email-server');
+        $label->appendChild($input);
+        $help = new XMLElement('p', __('Use the SMTP server provided by your hosting or email provider.'), array('class' => 'help', 'id' => 'helper-email-server'));
+        $div->appendChild($label);
+        $div->appendChild($help);
 
         $group->appendChild($div);
 
         $div = new XMLElement('div');
         $div->setAttribute('class', 'two columns');
 
-        $label = Widget::Label(__('Host'));
-        $label->setAttribute('class', 'column');
-        $label->appendChild(Widget::Input('settings[email_smtp][host]', General::sanitize($this->_host), 'text', $readonly));
-        $div->appendChild($label);
+        $div1 = new XMLElement('div');
+        $div1->setAttribute('class', 'column');
+        $label = Widget::Label(__('Encryption'));
+        $options = array(
+            array('no',$this->_secure == 'no', __('No encryption')),
+            array('tls',$this->_secure == 'tls', __('TLS / STARTTLS (recommended)')),
+            array('ssl',$this->_secure == 'ssl', __('SSL / Implicit TLS')),
+        );
+        $select = Widget::Select('settings[email_smtp][secure]', $options, array('aria-describedby' => 'helper-email-encryption'));
+        $label->appendChild($select);
+        $help = new XMLElement('p', __("Most email providers recommend TLS for secure SMTP connections. Refer to your provider's documentation for the required encryption method and SMTP port."), array('class' => 'help', 'id' => 'helper-email-encryption'));
+        $div1->appendChild($label);
+        $div1->appendChild($help);
+        $div->appendChild($div1);
 
+        $div2 = new XMLElement('div');
+        $div2->setAttribute('class', 'column');
         $label = Widget::Label(__('Port'));
-        $label->setAttribute('class', 'column');
-        $label->appendChild(Widget::Input('settings[email_smtp][port]', General::sanitize((string) $this->_port), 'text', $readonly));
-        $div->appendChild($label);
+        $label->appendChild(Widget::Input('settings[email_smtp][port]', General::sanitize((string) $this->_port), 'text', array('aria-describedby' => 'helper-email-ports')));
+        $help = new XMLElement('p', __('Typical SMTP ports are 25 (no encryption), 587 (TLS, recommended) and 465 (SSL).'), array('class' => 'help', 'id' => 'helper-email-ports'));
+        $div2->appendChild($label);
+        $div2->appendChild($help);
+        $div->appendChild($div2);
+
+        #$group->appendChild($label);
         $group->appendChild($div);
 
         $label = Widget::Label();
         $label->setAttribute('class', 'column');
         // To fix the issue with checkboxes that do not send a value when unchecked.
-        $options = array(
-            array('no',$this->_secure == 'no', __('No encryption')),
-            array('ssl',$this->_secure == 'ssl', __('SSL encryption')),
-            array('tls',$this->_secure == 'tls', __('TLS encryption')),
-        );
-        $select = Widget::Select('settings[email_smtp][secure]', $options, $readonly);
-        $label->appendChild($select);
-        $group->appendChild($label);
-
-        $group->appendChild(new XMLElement('p', __('For a secure connection, SSL and TLS are supported. Please check the manual of your email provider for more details.'), array('class' => 'help')));
-
-        $label = Widget::Label();
-        $label->setAttribute('class', 'column');
-        // To fix the issue with checkboxes that do not send a value when unchecked.
         $group->appendChild(Widget::Input('settings[email_smtp][auth]', '0', 'hidden'));
-        $input = Widget::Input('settings[email_smtp][auth]', '1', 'checkbox', $readonly);
+        $input = Widget::Input('settings[email_smtp][auth]', '1', 'checkbox');
+        $input->setAttribute('aria-describedby', 'helper-email-auth');
 
         if ($this->_auth === true) {
             $input->setAttribute('checked', 'checked');
@@ -403,19 +439,19 @@ class SMTPGateway extends EmailGateway
         $label->setValue(__('%s Requires authentication', array($input->generate())));
         $group->appendChild($label);
 
-        $group->appendChild(new XMLElement('p', __('Some SMTP connections require authentication. If that is the case, enter the username/password combination below.'), array('class' => 'help')));
+        $group->appendChild(new XMLElement('p', __('Some SMTP connections require authentication. If that is the case, enter the username/password combination below.'), array('class' => 'help', 'id' => 'helper-email-auth')));
 
         $div = new XMLElement('div');
         $div->setAttribute('class', 'two columns');
 
         $label = Widget::Label(__('Username'));
         $label->setAttribute('class', 'column');
-        $label->appendChild(Widget::Input('settings[email_smtp][username]', General::sanitize($this->_user), 'text', array_merge($readonly, array('autocomplete' => 'off'))));
+        $label->appendChild(Widget::Input('settings[email_smtp][username]', General::sanitize($this->_user), 'text', array('autocomplete' => 'off')));
         $div->appendChild($label);
 
         $label = Widget::Label(__('Password'));
         $label->setAttribute('class', 'column');
-        $label->appendChild(Widget::Input('settings[email_smtp][password]', General::sanitize($this->_pass), 'password', array_merge($readonly, array('autocomplete' => 'off'))));
+        $label->appendChild(Widget::Input('settings[email_smtp][password]', General::sanitize($this->_pass), 'password', array('autocomplete' => 'off')));
         $div->appendChild($label);
         $group->appendChild($div);
 

@@ -178,6 +178,14 @@ class SendmailGateway extends EmailGateway
 
         $group->appendChild($div);
 
+        $div = new XMLElement('div', null, array('class' => 'two columns'));
+        $strong = new XMLElement('p', new XMLElement('strong', __('📧 Note for sendmail')), array('class' => 'column'));
+        $p = new XMLElement('p', __('Sendmail is intended for compatibility only. For production environments, we recommend using SMTP, which provides more reliable email delivery and better compatibility with modern mail providers.'), array('class' => 'column help'));
+        $div->appendChild($strong);
+        $div->appendChild($p);
+
+        $group->appendChild($div);
+
         return $group;
     }
 }
