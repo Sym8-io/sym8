@@ -683,11 +683,14 @@ class FrontendPage extends XSLTPage
             $row = PageManager::fetchPageByType('401');
 
             if (empty($row)) {
-                Frontend::instance()->throwCustomError(
-                    __('Please login to view this page.') . ' <a href="' . SYMPHONY_URL . '/login/">' . __('Take me to the login page') . '</a>.',
-                    __('Unauthorized'),
-                    Page::HTTP_STATUS_UNAUTHORIZED
-                );
+                // Pass the page's URL as a redirect parameter to the Symphony
+                // login page instead of displaying an error page.
+                redirect(SYMPHONY_URL . '/login/?redirect_to=' . rawurlencode(URL . $this->_page));
+#                Frontend::instance()->throwCustomError(
+#                    __('Please login to view this page.') . ' <a href="' . SYMPHONY_URL . '/login/">' . __('Take me to the login page') . '</a>.',
+#                    __('Unauthorized'),
+#                    Page::HTTP_STATUS_UNAUTHORIZED
+#                );
             }
 
             $row['type'] = PageManager::fetchPageTypes($row['id']);
