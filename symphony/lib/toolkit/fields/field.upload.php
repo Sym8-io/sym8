@@ -13,9 +13,14 @@ class FieldUpload extends Field implements ExportableField, ImportableField
         'image/gif',
         'image/jpg',
         'image/jpeg',
-        'image/pjpeg',
         'image/png',
-        'image/x-png'
+        'image/webp',
+        // AVIF uses the HEIF container format.
+        // Some image libraries report valid AVIF files as image/heif.
+        // Keep this MIME type to fully support AVIF uploads.
+        'image/avif',
+        'image/heif',
+        'image/bmp'
     );
 
     public function __construct()
