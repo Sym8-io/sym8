@@ -15,9 +15,6 @@
         "issues": "https://github.com/sym8-io/sym8/issues",
         "docs": "https://sym8.io/docs/"
     },
-    "require-dev": {
-        "squizlabs/php_codesniffer": "2.*"
-    },
     "minimum-stability": "stable",
     "autoload": {
         "classmap": [
