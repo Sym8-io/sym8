@@ -310,7 +310,7 @@ class PageManager
                 'path' => $page_path
             );
 
-            if (!PageManager::createPageFiles($page_path, $child['handle'], $child['path'], $child['handle'])) {
+            if (!PageManager::createPageFiles($page_path, $child['handle'], $child['path'], $child['handle'], array())) {
                 $success = false;
             }
 
