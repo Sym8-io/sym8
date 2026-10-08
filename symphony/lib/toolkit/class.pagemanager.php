@@ -179,6 +179,8 @@ class PageManager
                 $data = file_get_contents(self::getTemplate('blueprints.page-xml'));
             } elseif (in_array('JSON', $normalizedTypes, true)) {
                 $data = file_get_contents(self::getTemplate('blueprints.page-json'));
+            } elseif (in_array('MARKDOWN', $normalizedTypes, true)) {
+                $data = file_get_contents(self::getTemplate('blueprints.page-markdown'));
             } elseif (count(array_intersect($normalizedTypes, $http4xx)) > 0) {
                 $data = file_get_contents(self::getTemplate('blueprints.page-4xx'));
             } else {
@@ -659,7 +661,7 @@ class PageManager
      */
     public static function fetchAvailablePageTypes()
     {
-        $system_types = array('index', 'XML', 'JSON', 'admin', '404', '403');
+        $system_types = array('index', 'XML', 'JSON', 'MARKDOWN', 'admin', '404', '403');
 
         $types = PageManager::fetchPageTypes();
 
