@@ -217,6 +217,8 @@ class FrontendPage extends XSLTPage
                     $this->addHeaderToPage('Content-Type', 'text/xml; charset=utf-8');
                 } elseif (General::in_iarray('JSON', $this->_pageData['type'])) {
                     $this->addHeaderToPage('Content-Type', 'application/json; charset=utf-8');
+                } elseif (General::in_iarray('MARKDOWN', $this->_pageData['type'])) {
+                    $this->addHeaderToPage('Content-Type', 'text/markdown; charset=utf-8');
                 } else {
                     $this->addHeaderToPage('Content-Type', 'text/html; charset=utf-8');
                 }
