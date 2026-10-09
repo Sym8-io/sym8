@@ -18,6 +18,8 @@ This ensures that users always receive fresh responses and avoids issues with st
 
 ## Usage
 
+__Note__: xCacheLite only caches `GET` and `HEAD` requests. `POST` requests, such as form submissions, are not cached.
+
 ### Excluding pages
 
 By default all pages are cached. You can exclude URLs from the cache by adding them to the list of excluded pages in System > Preferences. Each URL must sit on a separate line and wildcards (`*`) may be used at the end of URLs to match _everything_ below that URL.
@@ -30,6 +32,16 @@ Excluded pages are assumed to originate from the root. All the following example
     /about-us/get*
 
 Note that caching is _not_ done for logged in users. This lets you add administrative tools to the frontend of your site without them being cached for normal users.
+
+### GET parameters
+
+By default, all GET parameters are ignored when generating the cache key, and the cache for the current page is served. This has the advantage that a new cache file isn't generated for every page request with a different GET parameter, nor are its dependencies stored in the database.
+
+If you want to allow certain GET parameters (e.g. `?page` for pagination), enter each GET parameter (without the question mark) on a separate line in the xCacheLite preferences under “Allowed GET parameters”. Only the listed parameters are considered when generating the cache key.
+
+The standard GET parameter `symphony-page` is required to resolve individual pages and create a separate cache file for each one. It cannot be deleted.
+
+Please note that no cache is served to logged-in users. Logged-in users can therefore use any number of GET parameters without having to add them to the “Allowed GET parameters” list.
 
 ### Flushing the cache
 

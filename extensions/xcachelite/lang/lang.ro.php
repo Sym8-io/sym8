@@ -26,6 +26,18 @@ $dictionary = array(
     'Add a line for each URL you want to be excluded from the cache. Add a <code>*</code> to the end of the URL for wildcard matches.' =>
     'Adăugaţi o linie pentru fiecare URL care doriţi să fie exclus din cache. Adăugaţi <code>*</code> la sfârşitul URL-ului pentru potriviri multiple.',
 
+    'One parameter per line. Only listed GET parameters are considered when generating the cache key. %s is a standard system GET parameter and cannot be deleted.' =>
+    'Un parametru pe rând. La generarea cheii de cache sunt luați în considerare doar parametrii GET enumerați. %s este un parametru GET standard al sistemului și nu poate fi șters.',
+
+    'Purge cache automatically when entries change (always enabled)' =>
+    'Svuota automaticamente la cache quando le voci cambiano (sempre abilitato)',
+
+    '%s Enable additional cache cleanup via cron job (useful for large sites with many cache files' =>
+    '%s Abilita una pulizia aggiuntiva della cache tramite cron job (utile per siti di grandi dimensioni con molti file di cache)',
+
+    '%s Show comments in page source and HTTP response headers (useful for debugging)' =>
+    '%s Mostra i commenti nel codice sorgente della pagina e nelle intestazioni delle risposte HTTP (utile per il debug)',
+
     '%s Show comments in page source?' =>
     '%s Afişează comentariile în sursa paginii?',
 

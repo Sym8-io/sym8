@@ -38,6 +38,10 @@ class Extension_xcachelite extends Extension
             @unlink(MANIFEST . '/cachelite-excluded-pages');
         }
 
+        if (@file_exists(MANIFEST . '/cachelite-allowed-get-parameters')) {
+            @unlink(MANIFEST . '/cachelite-allowed-get-parameters');
+        }
+
         // Remove extension tables
         $this->dropInvalidTable();
         return $this->dropPageTable();
@@ -51,6 +55,10 @@ class Extension_xcachelite extends Extension
 
         if (!@file_exists(MANIFEST . '/cachelite-excluded-pages')) {
             @touch(MANIFEST . '/cachelite-excluded-pages');
+        }
+
+        if (!@file_exists(MANIFEST . '/cachelite-allowed-get-parameters')) {
+            @touch(MANIFEST . '/cachelite-allowed-get-parameters');
         }
 
         // Base configuration
@@ -70,6 +78,11 @@ class Extension_xcachelite extends Extension
         }
         if (version_compare($previousVersion, '2.1.0', '<')) {
             $this->createInvalidTable();
+        }
+        if (version_compare($previousVersion, '3.0.2', '<')) {
+            if (!@file_exists(MANIFEST . '/cachelite-allowed-get-parameters')) {
+                @touch(MANIFEST . '/cachelite-allowed-get-parameters');
+            }
         }
         return true;
     }
@@ -216,9 +229,18 @@ class Extension_xcachelite extends Extension
         $group->appendChild(Widget::Input('settings[cachelite][lifetime]', General::sanitize($this->getLifetime()), 'hidden'));
 
         $label = Widget::Label(__('Excluded URLs'));
-        $label->appendChild(Widget::Textarea('cachelite[excluded-pages]', 10, 50, $this->getExcludedPages()));
+        $label->setAttribute('for', 'excluded-urls');
+        $textarea = Widget::Textarea('cachelite[excluded-pages]', 5, 50, $this->getExcludedPages(), array('id' => 'excluded-urls', 'aria-describedby' => 'helper-excluded-urls'));
         $group->appendChild($label);
-        $group->appendChild(new XMLElement('p', __('Add a line for each URL you want to be excluded from the cache. Add a <code>*</code> to the end of the URL for wildcard matches.'), array('class' => 'help')));
+        $group->appendChild($textarea);
+        $group->appendChild(new XMLElement('p', __('Add a line for each URL you want to be excluded from the cache. Add a <code>*</code> to the end of the URL for wildcard matches.'), array('id' => 'helper-excluded-urls', 'class' => 'help')));
+
+        $label = Widget::Label(__('Allowed GET parameters'));
+        $label->setAttribute('for', 'allowed-get-parameters');
+        $textarea = Widget::Textarea('cachelite[allowed-get-parameters]', 5, 50, $this->getAllowedGetParameters(), array('id' => 'allowed-get-parameters', 'aria-describedby' => 'helper-allowed-get-parameters'));
+        $group->appendChild($label);
+        $group->appendChild($textarea);
+        $group->appendChild(new XMLElement('p', __('One parameter per line. Only listed GET parameters are considered when generating the cache key. %s is a standard system GET parameter and cannot be deleted.', array('<code>symphony-page</code>')), array('id' => 'helper-allowed-get-parameters', 'class' => 'help')));
 
         $div = new XMLElement('div', null, array('class' => 'two columns'));
 
@@ -271,6 +293,7 @@ class Extension_xcachelite extends Extension
     public function savePreferences($context)
     {
         $this->saveExcludedPages(stripslashes($_POST['cachelite']['excluded-pages']));
+        $this->saveAllowedGetParameters(stripslashes($_POST['cachelite']['allowed-get-parameters']));
     }
 
     /*-------------------------------------------------------------------------
@@ -712,6 +735,37 @@ class Extension_xcachelite extends Extension
         return false;
     }
 
+    private function getAllowedGetParameters()
+    {
+        $parameters = array();
+
+        if (@file_exists(MANIFEST . '/cachelite-allowed-get-parameters')) {
+            $content = @file_get_contents(MANIFEST . '/cachelite-allowed-get-parameters');
+
+            if ($content !== false) {
+                $parameters = array_filter(
+                    array_map('trim', explode("\n", $content))
+                );
+            }
+        }
+
+        $parameters = array_filter(
+            $parameters,
+            function ($parameter) {
+                return $parameter !== 'symphony-page';
+            }
+        );
+
+        array_unshift($parameters, 'symphony-page');
+
+        return implode("\n", $parameters);
+    }
+
+    private function saveAllowedGetParameters($string)
+    {
+        return @file_put_contents(MANIFEST . '/cachelite-allowed-get-parameters', $string);
+    }
+
     public static function doesRuleExcludesPath($path, $r)
     {
         // Make sure we're matching `url/blah` not `/url/blah`
@@ -917,7 +971,7 @@ class Extension_xcachelite extends Extension
 
     private function computeHash($url)
     {
-        return hash('sha512', (__SECURE__ ? 'https:' : '').serialize($url));
+        return hash('sha256', (__SECURE__ ? 'https:' : '').serialize($url));
     }
 
     private function updateFromGetValues()
@@ -925,6 +979,21 @@ class Extension_xcachelite extends Extension
         // Cache sorted $_GET;
         $this->_get = array_merge(array(), $_GET);
         ksort($this->_get);
+
+        // Filter allowed GET parameters
+        $allowedGet = array_filter(
+            array_map('trim', explode("\n", $this->getAllowedGetParameters()))
+        );
+        $get = array();
+        foreach ($allowedGet as $parameter) {
+            if (array_key_exists($parameter, $this->_get)) {
+                $get[$parameter] = $this->_get[$parameter];
+            }
+        }
+
+        $this->_get = $get;
+        ksort($this->_get);
+
         // hash it to make sure it wont overflow
         $this->_url = $this->computeHash($this->_get);
     }

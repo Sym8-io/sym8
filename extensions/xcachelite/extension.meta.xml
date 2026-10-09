@@ -16,6 +16,11 @@
     </author>
   </authors>
   <releases>
+    <release version="3.0.2" date="2026-10-05" min="2.6.x" max="2.x.x">
+      - Improved: GET parameters are now ignored unless explicitly listed, preventing
+        unnecessary cache files and database dependencies for different parameter values.
+      - Update language package
+    </release>
     <release version="3.0.1" date="2026-04-01" min="2.6.x" max="2.x.x">
         - Fix undefined property on pages without a page type
     </release>
